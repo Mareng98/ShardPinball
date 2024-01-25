@@ -1,8 +1,10 @@
-# Ignore images
-Assets/
-
 # Ignore compiled files
-Shard/ConsoleApp1/bin/
+**/Shard.deps.json
+**/Shard.runtimeconfig.json
+**/Shard.runtimeconfig.dev.json
+**/Shard.pdb
+**/Shard.exe
+**/Shard.dll
 Shard/ConsoleApp1/obj/
 
 # Ignore Visual Studio folder
