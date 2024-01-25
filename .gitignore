@@ -1,0 +1,5 @@
+# Ignore images
+Assets/
+
+# Ignore compiled files
+Shard/bin/
