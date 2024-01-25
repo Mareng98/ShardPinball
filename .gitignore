@@ -3,3 +3,7 @@ Assets/
 
 # Ignore compiled files
 Shard/ConsoleApp1/bin/
+Shard/ConsoleApp1/obj/
+
+# Ignore Visual Studio folder
+.vs/
