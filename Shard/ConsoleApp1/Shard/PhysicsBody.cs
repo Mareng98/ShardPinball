@@ -56,6 +56,7 @@ namespace Shard
         private bool usesGravity;
         private Color debugColor;
         public Color DebugColor { get => debugColor; set => debugColor = value; }
+        public Vector2 Force { get => force; set => force = value; }
 
         private float[] minAndMaxX;
         private float[] minAndMaxY;
@@ -64,9 +65,7 @@ namespace Shard
         {
 
             Vector2 gf = dir * modifier;
-
             addForce(gf);
-
         }
 
         public float AngularDrag { get => angularDrag; set => angularDrag = value; }
@@ -175,8 +174,6 @@ namespace Shard
             {
                 torque = -1 * MaxTorque;
             }
-
-
         }
 
         public void reverseForces(float prop)
@@ -237,7 +234,7 @@ namespace Shard
 
             force *= reflect;
 
-            Debug.Log("Reflect is " + reflect);
+            Debug.Log("Reflected force is " + force);
 
         }
 
@@ -307,10 +304,8 @@ namespace Shard
 
 
             trans.rotate(rot);
-
             force = this.force.Length();
-
-			trans.translate(this.force);
+            trans.translate(this.force);
 
             if (force < Drag)
             {
@@ -320,7 +315,6 @@ namespace Shard
             {
                 this.force = (this.force / force) * (force - Drag);
             }
-
 
 
         }
