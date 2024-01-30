@@ -22,13 +22,11 @@ namespace Shard
         {
             Bootstrap.getInput().addListener(this);
             PinballBall b = new PinballBall();
-            b.Transform.X = 50;
-            b.Transform.Y = 50;
-            // Bootstrap.getDisplay().getHeight()
-            // Bootstrap.getDisplay().getWidth()
+            b.Transform.X = Bootstrap.getDisplay().getWidth() / 2;
+            b.Transform.Y = Bootstrap.getDisplay().getHeight() / 2;
             Wall leftWall = new Wall("LeftWall", 0, 0, 20,Bootstrap.getDisplay().getHeight());
-            Wall topWall = new Wall("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 20);
             Wall rightWall = new Wall("RightWall", Bootstrap.getDisplay().getWidth() - 20, 0, 20, Bootstrap.getDisplay().getHeight());
+            Wall topWall = new Wall("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 20);
             Wall bottomWall = new Wall("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 20, Bootstrap.getDisplay().getWidth(), 20);
         }
 

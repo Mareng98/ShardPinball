@@ -16,25 +16,20 @@ namespace Pinball
             Transform.Y = y;
             Transform.Wid = width;
             Transform.Ht = height;
-            initialize();
+            //initialize();
         }
 
         public override void initialize()
         {
             setPhysicsEnabled();
             MyBody.Mass = 10000;
-            MyBody.Kinematic = true;
+            MyBody.Kinematic = false;
             
             MyBody.addRectCollider();
-
         }
-
-
 
         public override void update()
         {
-
-
         }
 
         public void onCollisionEnter(PhysicsBody x)
@@ -54,7 +49,5 @@ namespace Pinball
         {
             return "Wall: [" + Transform.X + ", " + Transform.Y + "]";
         }
-
-
     }
 }

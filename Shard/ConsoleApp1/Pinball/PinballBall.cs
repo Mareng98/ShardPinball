@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,27 +12,27 @@ namespace Pinball
 {
     class PinballBall : GameObject, CollisionHandler
     {
+        private List<double> maxHeight = new List<double>();
         float cx, cy;
-
         public override void initialize()
         {
-
-
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("ball.png");
             setPhysicsEnabled();
-
 
             MyBody.addCircleCollider();
 
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.Force = new Vector2(3, 3);
+            MyBody.Force = new Vector2(3, 2);
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
+
             Transform.Scalex = 2;
             Transform.Scaley = 2;
+
+            Debug.Log(this.Transform.ToString());
         }
 
         public override void update()
@@ -48,27 +49,37 @@ namespace Pinball
 
         public void onCollisionEnter(PhysicsBody other)
         {
+            // hehe magic
+            // First find a vector that is parallel with the width of the bounding box
+            Vector2 copyOther = new Vector2(other.Trans.X, other.Trans.Y);
+            Vector2 diagonalOther = new Vector2(other.Trans.Wid, other.Trans.Y);
+            Vector2 parallelOther = diagonalOther - copyOther;
+            Vector2 n = new Vector2(-parallelOther.X, parallelOther.Y);
+            n = Vector2.Normalize(n);
+            Console.WriteLine("Collision");
+            // testing reflection vector:
+
             // Commented this code out since we should try to fix ReflectOnCollision
             // Uncomment this and set reflectionOnCollision = false to try this out
-           /* Vector2 newForce = new Vector2(MyBody.Force.X, MyBody.Force.Y);
-            if (other.Parent.checkTag("BottomWall") && MyBody.Force.Y > 0)
-            {
-                newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
-            }else if (other.Parent.checkTag("TopWall") && MyBody.Force.Y < 0)
-            {
-                newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
-            }else if(other.Parent.checkTag("LeftWall") && MyBody.Force.X < 0)
-            {
-                newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
-            }else if (other.Parent.checkTag("RightWall") && MyBody.Force.X > 0)
-            {
-                newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
-            }
-            MyBody.Force = newForce;*/
+            /* Vector2 newForce = new Vector2(MyBody.Force.X, MyBody.Force.Y);
+             if (other.Parent.checkTag("BottomWall") && MyBody.Force.Y > 0)
+             {
+                 newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
+             }else if (other.Parent.checkTag("TopWall") && MyBody.Force.Y < 0)
+             {
+                 newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
+             }else if(other.Parent.checkTag("LeftWall") && MyBody.Force.X < 0)
+             {
+                 newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
+             }else if (other.Parent.checkTag("RightWall") && MyBody.Force.X > 0)
+             {
+                 newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
+             }
+             MyBody.Force = newForce;*/
+
         }
 
 
-        private List<double> maxHeight = new List<double>();
         public override void physicsUpdate()
         {
             if(maxHeight.Count >= 200)

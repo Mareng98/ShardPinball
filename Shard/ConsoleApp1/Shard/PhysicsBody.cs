@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 
 namespace Shard
 {
@@ -199,24 +200,26 @@ namespace Shard
             force = Vector2.Zero;
         }
 
-        public void reflectForces(Vector2 impulse)
+        public void reflectForces(Vector2 normal)
         {
-            Vector2 reflect = new Vector2(0, 0);
+            normal = Vector2.Normalize(normal);
+            Vector2 reflect = Vector2.Reflect(this.Force, normal);
+            
+            //Debug.Log ("Reflecting " + impulse);
 
-            Debug.Log ("Reflecting " + impulse);
-
+/*
             // We're being pushed to the right, so we must have collided with the right.
             if (impulse.X > 0)
             {
                 reflect.X = -1;
-            }
 
+            } 
             // We're being pushed to the left, so we must have collided with the left.
-            if (impulse.X < 0)
+            else if (impulse.X < 0)
             {
                 reflect.X = -1;
-
             }
+
 
             // We're being pushed upwards, so we must have collided with the top.
             if (impulse.Y < 0)
@@ -224,15 +227,14 @@ namespace Shard
                 reflect.Y = -1;
             }
 
-            // We're being pushed downwards, so we must have collided with the bottom.
-            if (impulse.Y > 0)
+            else if (impulse.Y < 0)
             {
                 reflect.Y = -1;
-
             }
 
-
             force *= reflect;
+*/
+            force = reflect;
 
             Debug.Log("Reflected force is " + force);
 

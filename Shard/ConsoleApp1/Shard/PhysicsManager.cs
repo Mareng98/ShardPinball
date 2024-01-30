@@ -294,7 +294,8 @@ namespace Shard
             foreach (PhysicsBody body in allPhysicsObjects)
             {
 
-                if (body.UsesGravity) {
+                if (body.UsesGravity) 
+                {
                     body.applyGravity(gravityModifier, gravityDir);
                 }
 
@@ -370,7 +371,6 @@ namespace Shard
         private Vector2? checkCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
         {
             Vector2? impulse;
-
             foreach (Collider col in a.getColliders())
             {
                 foreach (Collider col2 in b.getColliders())
@@ -451,7 +451,6 @@ namespace Shard
 
             foreach (CollidingObject ob in collisionsToCheck)
             {
-
                 possibleImpulse = checkCollisionBetweenObjects(ob.A, ob.B);
 
                 if (possibleImpulse.HasValue)
@@ -461,7 +460,6 @@ namespace Shard
 
                     if (ob.A.PassThrough != true && ob.B.PassThrough != true)
                     {
-
 
                         massTotal = ob.A.Mass + ob.B.Mass;
 
@@ -530,15 +528,13 @@ namespace Shard
 
 
                     if (ob.A.ReflectOnCollision)
-                    {                        
+                    {
                         ob.A.reflectForces(impulse);
                     }
                     if (ob.B.ReflectOnCollision)
                     {
                         ob.B.reflectForces(impulse);
                     }
-
-
                 }
 
 
