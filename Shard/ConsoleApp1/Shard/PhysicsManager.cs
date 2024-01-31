@@ -22,6 +22,7 @@
 *   
 */
 
+using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -451,6 +452,7 @@ namespace Shard
 
             foreach (CollidingObject ob in collisionsToCheck)
             {
+
                 possibleImpulse = checkCollisionBetweenObjects(ob.A, ob.B);
 
                 if (possibleImpulse.HasValue)

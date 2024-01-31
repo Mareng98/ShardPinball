@@ -6,6 +6,7 @@
 *   
 */
 
+using Shard.Shard;
 using System;
 using System.Drawing;
 using System.Numerics;
@@ -156,11 +157,12 @@ namespace Shard
                     // out that way.  We have to do it that way otherwise we *might* push it through a collider.
                     // We have to assume if the last position it was in was fine after the physics took effect, then 
                     // it is hopefully fine for us to push it there.
-
+                    
 
                     dir = MyRect.getLastDirection();
+                    Vector2 newDir = new Vector2(dir.X, dir.Y);
 
-                    dir = Vector2.Normalize(dir);
+                    dir = Vector2.Normalize(newDir);
 
                 }
                 else

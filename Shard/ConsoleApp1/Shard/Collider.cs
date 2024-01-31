@@ -7,6 +7,7 @@
 *   
 */
 
+using Shard.Shard;
 using System.Drawing;
 using System.Numerics;
 
@@ -41,7 +42,6 @@ namespace Shard
 
         public virtual Vector2? checkCollision(Collider c)
         {
-
             if (c is ColliderRect)
             {
                 return checkCollision((ColliderRect)c);
@@ -52,8 +52,18 @@ namespace Shard
                 return checkCollision((ColliderCircle)c);
             }
 
+            if (c is NewColliderRectangle){
+                return checkCollision((NewColliderRectangle)c);
+            }
+
             Debug.getInstance().log("Bug");
             // Not sure how we got here but c'est la vie
+            return null;
+        }
+
+        // FIX THIS
+        public virtual Vector2? checkCollision(NewColliderRectangle c)
+        {
             return null;
         }
 

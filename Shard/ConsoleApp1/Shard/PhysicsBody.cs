@@ -26,6 +26,7 @@
 *   
 */
 
+using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -359,6 +360,20 @@ namespace Shard
             return cr;
         }
 
+        public NewColliderRectangle addNewRectCollider(float x, float y, float w, float h, float r)
+        {
+            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, x, y, w, h, r);
+            addCollider(cnr);
+            return cnr;
+        }
+
+        public NewColliderRectangle addNewRectCollider(float x, float y, Vector2[] vertices, float r)
+        {
+            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, x, y, vertices, r);
+            addCollider(cnr);
+            return cnr;
+        }
+
 
         public void addCollider(Collider col)
         {
@@ -377,6 +392,7 @@ namespace Shard
 
             foreach (Collider c in myColliders)
             {
+
                 d = c.checkCollision(other);
 
                 if (d != null)
