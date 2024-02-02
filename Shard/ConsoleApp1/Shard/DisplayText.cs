@@ -11,6 +11,7 @@
 using SDL2;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Shard
 {
@@ -174,7 +175,9 @@ namespace Shard
         {
             int nx, ny, w = 0, h = 0;
 
-            IntPtr font = loadFont("Fonts/calibri.ttf", size);
+            string ffolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Fonts);
+
+            IntPtr font = loadFont(ffolder + "\\calibri.ttf", size);
             SDL.SDL_Color col = new SDL.SDL_Color();
 
             col.r = (byte)r;

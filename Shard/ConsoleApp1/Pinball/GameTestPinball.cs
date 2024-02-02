@@ -30,7 +30,6 @@ namespace Shard
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
             PinballRectangle r2 = new PinballRectangle("Rectangle",150,150,600,600);
 
-
             Wall leftWall = new Wall("LeftWall", 0, 0, 50,Bootstrap.getDisplay().getHeight());
             Wall rightWall = new Wall("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             Wall topWall = new Wall("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);

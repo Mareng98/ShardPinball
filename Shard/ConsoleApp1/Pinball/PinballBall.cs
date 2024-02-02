@@ -24,13 +24,13 @@ namespace Pinball
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.Force = new Vector2(18, 0);
+            MyBody.Force = new Vector2(5, 2);
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
 
-            Transform.Scalex = 1;
-            Transform.Scaley = 1;
+            Transform.Scalex = 10;
+            Transform.Scaley = 10;
 
             Debug.Log(this.Transform.ToString());
         }

@@ -106,7 +106,7 @@ namespace Shard
 
             SDL.SDL_SetTextureBlendMode(spriteBuffer[path], SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 
-            return img;
+            return spriteBuffer[path];
 
         }
 

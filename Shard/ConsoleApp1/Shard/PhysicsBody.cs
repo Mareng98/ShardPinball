@@ -85,6 +85,7 @@ namespace Shard
         public bool StopOnCollision { get => stopOnCollision; set => stopOnCollision = value; }
         public bool ReflectOnCollision { get => reflectOnCollision; set => reflectOnCollision = value; }
         public bool ImpartForce { get => this.impartForce; set => this.impartForce = value; }
+        internal CollisionHandler Colh { get => colh; set => colh = value; }
 
         public void drawMe()
         {
@@ -137,7 +138,7 @@ namespace Shard
 
             Parent = p;
             Trans = p.Transform;
-            colh = (CollisionHandler)p;
+            Colh = (CollisionHandler)p;
 
             AngularDrag = 0.01f;
             Drag = 0.01f;

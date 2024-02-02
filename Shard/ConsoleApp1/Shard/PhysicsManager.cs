@@ -22,9 +22,9 @@
 *   
 */
 
-using Shard.Shard;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 
 namespace Shard
@@ -120,7 +120,7 @@ namespace Shard
             if (Bootstrap.checkEnvironmentalVariable("gravity_modifier"))
             {
                 gravityModifier = float.Parse
-                    (Bootstrap.getEnvironmentalVariable("gravity_modifier"));
+                    (Bootstrap.getEnvironmentalVariable("gravity_modifier"), CultureInfo.InvariantCulture);
             }
             else
             {
@@ -295,8 +295,7 @@ namespace Shard
             foreach (PhysicsBody body in allPhysicsObjects)
             {
 
-                if (body.UsesGravity) 
-                {
+                if (body.UsesGravity) {
                     body.applyGravity(gravityModifier, gravityDir);
                 }
 
@@ -310,8 +309,8 @@ namespace Shard
             // Check for old collisions that should be persisted
             foreach (CollidingObject col in colliding)
             {
-                ch = (CollisionHandler)col.A.Parent;
-                ch2 = (CollisionHandler)col.B.Parent;
+                ch = col.A.Colh;
+                ch2 = col.B.Colh;
                 Vector2? impulse;
 
                 // If the object has been destroyed in the interim, it should still 
@@ -372,6 +371,7 @@ namespace Shard
         private Vector2? checkCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
         {
             Vector2? impulse;
+
             foreach (Collider col in a.getColliders())
             {
                 foreach (Collider col2 in b.getColliders())
@@ -463,6 +463,7 @@ namespace Shard
                     if (ob.A.PassThrough != true && ob.B.PassThrough != true)
                     {
 
+
                         massTotal = ob.A.Mass + ob.B.Mass;
 
                         if (ob.A.Kinematic)
@@ -530,13 +531,15 @@ namespace Shard
 
 
                     if (ob.A.ReflectOnCollision)
-                    {
+                    {                        
                         ob.A.reflectForces(impulse);
                     }
                     if (ob.B.ReflectOnCollision)
                     {
                         ob.B.reflectForces(impulse);
                     }
+
+
                 }
 
 
