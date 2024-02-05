@@ -122,7 +122,6 @@ namespace Shard
             Vector2 dir;
             double depth;
 
-
             if (X < other.Left)
             {
                 tx = other.Left;
