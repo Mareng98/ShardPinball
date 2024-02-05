@@ -14,10 +14,6 @@ namespace Pinball
         {
             addTag(tag);
             // For some reason NewRectCollider doesnt trigger collisions, so we use addRectCollider in initialize for debugging
-            Transform.X = x*2;
-            Transform.Y = y*2;
-            Transform.Wid = width;
-            Transform.Ht = height;
 
             MyBody.addNewRectCollider(x, y, width, height, 0);
         }
@@ -33,16 +29,12 @@ namespace Pinball
         {
             setPhysicsEnabled();
 
-            MyBody.addRectCollider();
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
-
-            Transform.Scalex = 2;
-            Transform.Scaley = 2;
         }
 
 

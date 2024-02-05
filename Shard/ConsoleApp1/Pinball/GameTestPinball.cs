@@ -25,11 +25,11 @@ namespace Shard
             Bootstrap.getInput().addListener(this);
             PinballBall b = new PinballBall();
             b.Transform.X = Bootstrap.getDisplay().getWidth() / 2;
-            b.Transform.Y = Bootstrap.getDisplay().getHeight() / 2;
+            b.Transform.Y = 50;
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
             PinballRectangle r2 = new PinballRectangle("Rectangle",150,150,600,600);
-
+            //r2.initialize();
             Wall leftWall = new Wall("LeftWall", 0, 0, 50,Bootstrap.getDisplay().getHeight());
             Wall rightWall = new Wall("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             Wall topWall = new Wall("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);

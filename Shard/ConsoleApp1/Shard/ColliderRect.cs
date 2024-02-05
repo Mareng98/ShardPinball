@@ -177,6 +177,11 @@ namespace Shard
             return impulse;
         }
 
+        public override Vector2? checkCollision(NewColliderRectangle c)
+        {
+            return null;
+        }
+
         public override Vector2? checkCollision(ColliderRect other)
         {
             ColliderRect cr;

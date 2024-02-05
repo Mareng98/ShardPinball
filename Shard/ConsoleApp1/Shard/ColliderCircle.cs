@@ -50,6 +50,8 @@ namespace Shard
         {
         }
 
+
+
         public void calculateBoundingBox()
         {
             float x1, x2, y1, y2;
@@ -107,6 +109,10 @@ namespace Shard
             calculateBoundingBox();
         }
 
+        public override Vector2? checkCollision(NewColliderRectangle c)
+        {
+            return null;
+        }
         public override Vector2? checkCollision(ColliderRect other)
         {
 

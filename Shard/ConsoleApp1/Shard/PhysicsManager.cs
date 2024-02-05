@@ -462,7 +462,7 @@ namespace Shard
 
                     if (ob.A.PassThrough != true && ob.B.PassThrough != true)
                     {
-
+                        /*
 
                         massTotal = ob.A.Mass + ob.B.Mass;
 
@@ -520,9 +520,9 @@ namespace Shard
                             ob.B.stopForces();
                         }
 
-
+                        */
                     }
-
+                        
 
                     ((CollisionHandler)ob.A.Parent).onCollisionEnter(ob.B);
                     ((CollisionHandler)ob.B.Parent).onCollisionEnter(ob.A);

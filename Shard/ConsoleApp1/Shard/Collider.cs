@@ -40,6 +40,8 @@ namespace Shard
 
         public abstract Vector2? checkCollision(ColliderCircle c);
 
+        public abstract Vector2? checkCollision(NewColliderRectangle c);
+
         public virtual Vector2? checkCollision(Collider c)
         {
             if (c is ColliderRect)
@@ -60,12 +62,12 @@ namespace Shard
             // Not sure how we got here but c'est la vie
             return null;
         }
-
+        /*
         // FIX THIS
         public virtual Vector2? checkCollision(NewColliderRectangle c)
         {
             return null;
-        }
+        }*/
 
         public abstract void drawMe(Color col);
 

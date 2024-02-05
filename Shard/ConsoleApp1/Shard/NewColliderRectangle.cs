@@ -29,7 +29,7 @@ namespace Shard
 
         public float Y
         {
-            get { return Y; }
+            get { return y; }
             set { y = value; }
         }
 
@@ -176,7 +176,13 @@ namespace Shard
 
         public override void recalculate()
         {
-            //RotateShape(-0.1f,vertices);
+            MinAndMaxX = getMinAndMaxX();
+            MinAndMaxY = getMinAndMaxY();
+        }
+
+        public override Vector2? checkCollision(NewColliderRectangle c)
+        {
+            return null;
         }
 
         public override Vector2? checkCollision(ColliderRect c)
@@ -205,11 +211,41 @@ namespace Shard
                 d.drawLine((int)(triangle[i].X), (int)(triangle[i].Y), (int)(triangle[(i + 1) % 3].X), (int)(triangle[(i + 1) % 3].Y), col);
             }
         }
+        // aka crossing number algorithm/ray casting algorithm
+        private bool pointInPolygon(Vector2 point)
+        {
+            var intersections = 0;
 
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                // first we unpack the vertices points to create a line segment
+                var x1 = vertices[i].X + x;
+                var y1 = vertices[i].Y + y;
+
+                var x2 = vertices[(i + 1) % vertices.Length].X + x;
+                var y2 = vertices[(i + 1) % vertices.Length].Y + y;
+
+                // is point between the vertical axis of the line created by (x1y1, x2y2)
+                // and less than the intersection point in the horizontal axis
+                if ((point.Y < y1) != (point.Y < y2) &&
+                    point.X < ((x2 - x1) + Math.Min(x2, x1)) * (point.Y - y1) / ((y2 - y1) + Math.Min(y2, y1)) + x1)
+                {
+                    intersections += 1;
+                }
+            }
+            return intersections % 2 == 1;
+        }
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
-            
+
+            bool isPointInPolygon = pointInPolygon(new Vector2(c.X, c.Y));
+            if (isPointInPolygon)
+            {
+                DrawTriangle(new Vector2[] { new Vector2(200, 200), new Vector2(100, 100), new Vector2(50, 50) }, Color.Green);
+                //Debug.Log("Point is in Polygon");
+            }
+
             Vector2 ballOrigin = new Vector2(c.X, c.Y);
             float[] sideLengths = new float[4];
             // If the ballOrigin is completely within the rectangle this wont always work
@@ -315,12 +351,38 @@ namespace Shard
 
         public override float[] getMinAndMaxX()
         {
-            return null;
+            float miny = vertices[0].Y;
+            float maxy = miny;
+            foreach(Vector2 v in vertices)
+            {
+                if(v.Y > maxy)
+                {
+                    maxy = v.Y;
+                }
+                if(v.Y < miny)
+                {
+                    miny = v.Y;
+                }
+            }
+            return new float[]{ miny + y,maxy + y};
         }
 
         public override float[] getMinAndMaxY()
         {
-            return null;
+            float minx = vertices[0].X;
+            float maxx = minx;
+            foreach (Vector2 v in vertices)
+            {
+                if (v.X > maxx)
+                {
+                    maxx = v.X;
+                }
+                if (v.X < minx)
+                {
+                    minx = v.X;
+                }
+            }
+            return new float[] { minx + x , maxx + x};
         }
     }
 }
