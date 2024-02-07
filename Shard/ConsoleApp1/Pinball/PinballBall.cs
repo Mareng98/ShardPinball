@@ -49,33 +49,7 @@ namespace Pinball
 
         public void onCollisionEnter(PhysicsBody other)
         {
-            // hehe magic
-            // First find a vector that is parallel with the width of the bounding box
-            Vector2 copyOther = new Vector2(other.Trans.X, other.Trans.Y);
-            Vector2 diagonalOther = new Vector2(other.Trans.Wid, other.Trans.Y);
-            Vector2 parallelOther = diagonalOther - copyOther;
-            Vector2 n = new Vector2(-parallelOther.X, parallelOther.Y);
-            n = Vector2.Normalize(n);
-            Console.WriteLine("Collision");
-            // testing reflection vector:
 
-            // Commented this code out since we should try to fix ReflectOnCollision
-            // Uncomment this and set reflectionOnCollision = false to try this out
-            /* Vector2 newForce = new Vector2(MyBody.Force.X, MyBody.Force.Y);
-             if (other.Parent.checkTag("BottomWall") && MyBody.Force.Y > 0)
-             {
-                 newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
-             }else if (other.Parent.checkTag("TopWall") && MyBody.Force.Y < 0)
-             {
-                 newForce = new Vector2(MyBody.Force.X, -MyBody.Force.Y);
-             }else if(other.Parent.checkTag("LeftWall") && MyBody.Force.X < 0)
-             {
-                 newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
-             }else if (other.Parent.checkTag("RightWall") && MyBody.Force.X > 0)
-             {
-                 newForce = new Vector2(-MyBody.Force.X, MyBody.Force.Y);
-             }
-             MyBody.Force = newForce;*/
 
         }
 
