@@ -9,27 +9,28 @@ namespace Pinball
 {
     class PinballRectangle: GameObject, CollisionHandler
     {
+        public NewColliderRectangle Collider { get; set; }
 
         public PinballRectangle(string tag, int x, int y, int width, int height)
         {
             addTag(tag);
             // For some reason NewRectCollider doesnt trigger collisions, so we use addRectCollider in initialize for debugging
 
-            MyBody.addNewRectCollider(x, y, width, height, 0);
+            Collider = MyBody.addNewRectCollider(x, y, width, height,0);
         }
 
         public PinballRectangle(string tag, int x, int y, Vector2[] vertices)
         {
             addTag(tag);
 
-            MyBody.addNewRectCollider(x, y, vertices, 0);
+            Collider = MyBody.addNewRectCollider(x, y, vertices, 0);
         }
 
         public override void initialize()
         {
             setPhysicsEnabled();
 
-            MyBody.Mass = 1;
+            MyBody.Mass = 15000;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
@@ -42,11 +43,11 @@ namespace Pinball
         {
             
             Bootstrap.getDisplay().addToDraw(this);
+            
         }
 
         public void onCollisionEnter(PhysicsBody x)
         {
-            int test = 0;
         }
 
         public void onCollisionExit(PhysicsBody x)

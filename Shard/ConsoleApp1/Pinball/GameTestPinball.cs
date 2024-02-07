@@ -19,6 +19,10 @@ namespace Shard
         }
         public override void update()
         {
+            if(r.Collider != null)
+            {
+                r.Collider.Rotation = 0.002f;
+            }
         }
         public override void initialize()
         {
@@ -28,12 +32,17 @@ namespace Shard
             b.Transform.Y = 50;
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
-            PinballRectangle r2 = new PinballRectangle("Rectangle",150,150,600,600);
+            r = new PinballRectangle("Rectangle",150,150,600,600);
+            PinballRectangle leftWall = new PinballRectangle("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
+            PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
+            PinballRectangle bottomWall = new PinballRectangle("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
             //r2.initialize();
+            /*
             Wall leftWall = new Wall("LeftWall", 0, 0, 50,Bootstrap.getDisplay().getHeight());
             Wall rightWall = new Wall("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             Wall topWall = new Wall("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
-            Wall bottomWall = new Wall("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
+            Wall bottomWall = new Wall("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);*/
         }
 
         public override int getTargetFrameRate()

@@ -105,7 +105,10 @@ namespace Shard
         {
             calculateBoundingBox();
         }
-
+        public override Vector2? CheckRaycastCollision(ColliderCircle c)
+        {
+            return null;
+        }
         public override Vector2? checkCollision(NewColliderRectangle c)
         {
             return null;

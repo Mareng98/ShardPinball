@@ -319,7 +319,7 @@ namespace Shard
                     ch2.onCollisionExit (null);
                     toRemove.Add(col);
                 }
-
+                
                 if (col.B.Parent.ToBeDestroyed)
                 {
                     ch.onCollisionExit(null);
@@ -327,7 +327,7 @@ namespace Shard
                 }
 
                 impulse = checkCollisionBetweenObjects(col.A, col.B);
-
+                //impulse = checkRaycastCollisionBetweenObjects(col.A, col.B);
                 if (impulse != null)
                 {
                     ch.onCollisionStay(col.B);
@@ -367,6 +367,26 @@ namespace Shard
                 body.drawMe();
             }
         }
+
+        /*private Vector2? checkRaycastCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
+        {
+            float minimumDistance = -1;
+            List<Vector2> distanceList = new List<Vector2>();
+            foreach (Collider col in a.getColliders())
+            {
+                foreach (Collider col2 in b.getColliders())
+                {
+
+                    minimumDistance = col.CheckRaycastCollision(col2);
+                    if(impulse != null)
+                    {
+                        impulseTrain.Add((Vector2)impulse);
+                    }
+                }
+            }
+
+            return impulse;
+        }*/
 
         private Vector2? checkCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
         {

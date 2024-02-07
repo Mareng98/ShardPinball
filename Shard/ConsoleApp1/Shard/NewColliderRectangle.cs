@@ -33,6 +33,15 @@ namespace Shard
             set { y = value; }
         }
 
+        public float Rotation
+        {
+            get { return rotation; }
+            set { 
+                rotation = value;
+                RotateShape(rotation, vertices, new Vector2(300,300));
+            }
+        }
+
         public NewColliderRectangle(CollisionHandler gob, float x, float y) :base(gob)
         {
             X = x;
@@ -135,7 +144,7 @@ namespace Shard
         // Aligns the first two vertices with the x-axis
         private void StraigthenTriangle(Vector2[] vertices)
         {
-            float angle = (float)Math.Atan2(Math.Abs(vertices[1].Y - vertices[0].Y), Math.Abs(vertices[1].X - vertices[0].X));
+            float angle = (float)Math.Atan2(vertices[1].Y - vertices[0].Y, vertices[1].X - vertices[0].X);
             RotateShape(-angle, vertices, vertices[0]);
         }
 
@@ -191,6 +200,11 @@ namespace Shard
         }
 
         public override Vector2? checkCollision(Vector2 c)
+        {
+            return null;
+        }
+
+        public override Vector2? CheckRaycastCollision(ColliderCircle c)
         {
             return null;
         }
@@ -377,7 +391,7 @@ namespace Shard
             d.drawCircle((int)centerX, (int)centerY, 2, col);
         }
 
-        public override float[] getMinAndMaxX()
+        public override float[] getMinAndMaxY()
         {
             float miny = vertices[0].Y;
             float maxy = miny;
@@ -395,7 +409,7 @@ namespace Shard
             return new float[]{ miny + y - 10,maxy + y + 10};
         }
 
-        public override float[] getMinAndMaxY()
+        public override float[] getMinAndMaxX()
         {
             float minx = vertices[0].X;
             float maxx = minx;
