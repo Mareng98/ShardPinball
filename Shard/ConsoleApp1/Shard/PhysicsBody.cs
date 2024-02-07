@@ -101,30 +101,28 @@ namespace Shard
             float max = -1 * min;
             float[] tmp;
 
+            // distance holds the x or y component of the vector from old point to new point
+            // depending on if minXAndMaxX or minYAndMaxY
+            float distance;
             foreach (Collider col in myColliders)
             {
 
                 if (x)
                 {
                     tmp = col.MinAndMaxX;
+                    distance = Math.Abs(trans.X - trans.Lx);
                 }
                 else
                 {
                     tmp = col.MinAndMaxY;
+                    distance = Math.Abs(trans.Y - trans.Ly);
                 }
 
-
-                if (tmp[0] < min)
-                {
-                    min = tmp[0];
-                }
-
-                if (tmp[1] > max)
-                {
-                    max = tmp[1];
-                }
+                // we then use distance to increase the perimeter of the min and max points
+                // that are later used in sweep and prune alg.
+                min = Math.Min(tmp[0], min) - distance;
+                max = Math.Max(max, tmp[1]) + distance;
             }
-
 
             return new float[2] { min, max };
         }

@@ -376,6 +376,7 @@ namespace Shard
             {
                 foreach (Collider col2 in b.getColliders())
                 {
+                     
                     impulse = col.checkCollision(col2);
 
 
@@ -448,11 +449,11 @@ namespace Shard
             float massTotal, massa, massb;
             float massProp = 0.0f;
 
-            //            Debug.getInstance().log("Active objects " + collisionsToCheck.Count);
+            // Debug.getInstance().log("Active objects " + collisionsToCheck.Count);
 
             foreach (CollidingObject ob in collisionsToCheck)
             {
-
+                
                 possibleImpulse = checkCollisionBetweenObjects(ob.A, ob.B);
 
                 if (possibleImpulse.HasValue)
@@ -636,7 +637,7 @@ namespace Shard
                 sx.Owner = body;
                 sx.Start = x[0];
                 sx.End = x[1];
-
+                
 
                 sapX = addToList(sapX, sx);
 

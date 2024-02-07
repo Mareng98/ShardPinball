@@ -29,8 +29,8 @@ namespace Pinball
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
 
-            Transform.Scalex = 2;
-            Transform.Scaley = 2;
+            Transform.Scalex = 1;
+            Transform.Scaley = 1;
 
             Debug.Log(this.Transform.ToString());
         }

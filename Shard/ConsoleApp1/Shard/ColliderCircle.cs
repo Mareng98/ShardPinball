@@ -84,13 +84,10 @@ namespace Shard
                 Y = y2 + (float)MyRect.Centre.Y;
             }
 
-
             MinAndMaxX[0] = X - Rad;
             MinAndMaxX[1] = X + Rad;
             MinAndMaxY[0] = Y - Rad;
             MinAndMaxY[1] = Y + Rad;
-
-
         }
         internal Transform MyRect { get => myRect; set => myRect = value; }
         public float X { get => x; set => x = value; }
