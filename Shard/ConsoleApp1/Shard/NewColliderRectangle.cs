@@ -214,7 +214,7 @@ namespace Shard
         // aka crossing number algorithm/ray casting algorithm
         private bool pointInPolygon(Vector2 point)
         {
-            var intersections = 0;
+            bool collision = false;
 
             for (int i = 0; i < vertices.Length; i++)
             {
@@ -225,16 +225,15 @@ namespace Shard
                 var x2 = vertices[(i + 1) % vertices.Length].X + x;
                 var y2 = vertices[(i + 1) % vertices.Length].Y + y;
 
-                // is point between the vertical axis of the line created by (x1y1, x2y2)
-                // and less than the intersection point in the horizontal axis
-                if ((point.Y < y1) != (point.Y < y2) &&
-                    point.X < ((x2 - x1) + Math.Min(x2, x1)) * (point.Y - y1) / ((y2 - y1) + Math.Min(y2, y1)) + x1)
+                if (((y1 > point.Y && y2 < point.Y) || (y1 < point.Y && y2 > point.Y)) &&
+                    (point.X < (x2-x1) * (point.Y-y1) / (y2-y1)+x1))
                 {
-                    intersections += 1;
+                    collision = !collision;
                 }
             }
-            return intersections % 2 == 1;
+            return collision;
         }
+
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
