@@ -225,10 +225,8 @@ namespace Shard
                 var x2 = vertices[(i + 1) % vertices.Length].X + x;
                 var y2 = vertices[(i + 1) % vertices.Length].Y + y;
 
-                // is point between the vertical axis of the line created by (x1y1, x2y2)
-                // and less than the intersection point in the horizontal axis
-                if ((point.Y < y1) != (point.Y < y2) &&
-                    point.X < ((x2 - x1) + Math.Min(x2, x1)) * (point.Y - y1) / ((y2 - y1) + Math.Min(y2, y1)) + x1)
+                if (((y1 > point.Y && y2 < point.Y) || (y1 < point.Y && y2 > point.Y)) &&
+                    (point.X < (x2-x1) * (point.Y-y1) / (y2-y1)+x1))
                 {
                     intersections += 1;
                 }
@@ -247,8 +245,6 @@ namespace Shard
             return normalVector;
         }
 
-
-
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
@@ -256,7 +252,7 @@ namespace Shard
             bool isPointInPolygon = pointInPolygon(new Vector2(c.X, c.Y));
             if (isPointInPolygon)
             {
-                DrawTriangle(new Vector2[] { new Vector2(200, 200), new Vector2(100, 100), new Vector2(50, 50) }, Color.Green);
+                DrawTriangle(new Vector2[] { new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 200, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 300, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 250, Bootstrap.getDisplay().getHeight() - 200)}, Color.Green);
                 //Debug.Log("Point is in Polygon");
             }
 
@@ -314,7 +310,7 @@ namespace Shard
             }
             // Check if the smallest distance is smaller than the radius of the ball
             float cubedRad = (float)Math.Pow(c.Rad, 2);
-            if (smallestDistance <= cubedRad)
+            if (smallestDistance <= cubedRad || isPointInPolygon)
             {
                 bool hittingCorner = false;
                 int secondIndex = 0;
