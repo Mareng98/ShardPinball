@@ -241,7 +241,7 @@ namespace Shard
             bool isPointInPolygon = pointInPolygon(new Vector2(c.X, c.Y));
             if (isPointInPolygon)
             {
-                DrawTriangle(new Vector2[] { new Vector2(200, 200), new Vector2(100, 100), new Vector2(50, 50) }, Color.Green);
+                DrawTriangle(new Vector2[] { new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 200, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 300, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 250, Bootstrap.getDisplay().getHeight() - 200)}, Color.Green);
                 //Debug.Log("Point is in Polygon");
             }
 
