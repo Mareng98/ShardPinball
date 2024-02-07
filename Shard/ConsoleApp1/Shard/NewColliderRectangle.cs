@@ -214,7 +214,7 @@ namespace Shard
         // aka crossing number algorithm/ray casting algorithm
         private bool pointInPolygon(Vector2 point)
         {
-            bool collision = false;
+            var intersections = 0;
 
             for (int i = 0; i < vertices.Length; i++)
             {
@@ -228,10 +228,10 @@ namespace Shard
                 if (((y1 > point.Y && y2 < point.Y) || (y1 < point.Y && y2 > point.Y)) &&
                     (point.X < (x2-x1) * (point.Y-y1) / (y2-y1)+x1))
                 {
-                    collision = !collision;
+                    intersections += 1;
                 }
             }
-            return collision;
+            return intersections % 2 == 1;
         }
 
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
