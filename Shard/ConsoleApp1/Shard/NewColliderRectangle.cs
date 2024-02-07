@@ -67,8 +67,8 @@ namespace Shard
             rotation = r;
             vertices = CalculateVertices();
 
-            triangle = new Vector2[] { new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150) };
-            currentTriangle = new Vector2[] { new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150) };
+            triangle = [new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150)];
+            currentTriangle = [new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150)];
         }
         // Use this if you want an uneven rectangle
         public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r) : base(gob)
@@ -235,6 +235,20 @@ namespace Shard
             }
             return intersections % 2 == 1;
         }
+
+        private Vector2 CalculateNormalVector(Vector2 a, Vector2 b)
+        {
+            float deltaX = b.X - a.X;
+            float deltaY = b.Y - a.Y;
+
+            // Calculate the normal vector by swapping and negating components
+            Vector2 normalVector = new Vector2(-deltaY, deltaX);
+
+            return normalVector;
+        }
+
+
+
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
@@ -302,20 +316,38 @@ namespace Shard
             float cubedRad = (float)Math.Pow(c.Rad, 2);
             if (smallestDistance <= cubedRad)
             {
+                bool hittingCorner = false;
+                int secondIndex = 0;
+                for(int i = 0; i < sideLengths.Length; i++)
+                {
+                    if(smallestDistanceIndex != i && smallestDistance == sideLengths[i])
+                    {
+                        hittingCorner = true;
+                        secondIndex = i;
+                    }
+                }
                 Debug.Log(smallestDistance.ToString());
                 switch (smallestDistanceIndex)
                 {
                     case 0:
                         Debug.Log("Top");
+                        Debug.Log(CalculateNormalVector(vertices[0], vertices[1]).ToString());
+                        return CalculateNormalVector(vertices[0], vertices[1]);
                         break;
                     case 1:
                         Debug.Log("Right");
+                        Debug.Log(CalculateNormalVector(vertices[1], vertices[2]).ToString());
+                        return CalculateNormalVector(vertices[1], vertices[2]);
                         break;
                     case 2:
                         Debug.Log("Bottom");
+                        Debug.Log(CalculateNormalVector(vertices[2], vertices[3]).ToString());
+                        return CalculateNormalVector(vertices[2], vertices[3]);
                         break;
                     case 3:
                         Debug.Log("Left");
+                        Debug.Log(CalculateNormalVector(vertices[3], vertices[0]).ToString());
+                        return CalculateNormalVector(vertices[3], vertices[0]);
                         break;
                 }
             }
@@ -364,7 +396,7 @@ namespace Shard
                     miny = v.Y;
                 }
             }
-            return new float[]{ miny + y,maxy + y};
+            return new float[]{ miny + y - 10,maxy + y + 10};
         }
 
         public override float[] getMinAndMaxY()
@@ -382,7 +414,7 @@ namespace Shard
                     minx = v.X;
                 }
             }
-            return new float[] { minx + x , maxx + x};
+            return new float[] { minx + x - 10 , maxx + x + 10};
         }
     }
 }
