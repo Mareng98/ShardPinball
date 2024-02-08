@@ -94,7 +94,10 @@ namespace Shard
             
             collisionNormal = new Vector2(0, 0); // Reset
 
-            Debug.Log($"GRAVITY: {projectedGravity.ToString()}");
+            if(projectedGravity.X != 0)
+            {
+                Debug.Log($"GRAVITY: {projectedGravity.ToString()}");
+            }
             addForce(projectedGravity);
         }
 
@@ -231,7 +234,29 @@ namespace Shard
         public void reflectForces(Vector2 normal)
         {
             normal = Vector2.Normalize(normal);
-            collisionNormal = normal;
+            // Set collisionNomarl to the most level slope
+            if(collisionNormal.X == 0 && collisionNormal.Y == 0)
+            {
+                // CollisionNormal is not set
+                collisionNormal = normal;
+            }else if(normal.X == 0 && normal.Y != 0)
+            {
+                // the normal is vertical -> The plane is horizontal
+                collisionNormal = normal;
+            }else if(!(collisionNormal.X == 0 && collisionNormal.Y != 0) && !(normal.X == 0 && normal.Y == 0))
+            {
+                // The CollisionNormal is not as level as it can possibly be
+                // normal has a length
+                // compare the slopes
+                float normalSlope = Math.Abs(normal.Y / normal.X);
+                float collisionNormalSlope = Math.Abs(collisionNormal.Y / collisionNormal.X);
+                if(normalSlope < collisionNormalSlope)
+                {
+                    // collisionNormal has steeper slope than normal, set it to normal.
+                    collisionNormal = normal;
+                }
+            }
+
             Vector2 reflect = Vector2.Reflect(this.Force, normal);
             
             //Debug.Log ("Reflecting " + impulse);

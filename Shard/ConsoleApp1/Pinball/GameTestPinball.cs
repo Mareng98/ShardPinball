@@ -24,6 +24,7 @@ namespace Shard
                 r.Collider.Rotation = 1;
                 test = false;
             }
+            r.Collider.Rotation = -0.001f;
         }
         public override void initialize()
         {
