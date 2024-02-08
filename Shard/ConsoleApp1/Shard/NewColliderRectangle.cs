@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Text;
@@ -17,9 +18,8 @@ namespace Shard
         private float width;
         private float height;
         private float rotation;
+        private Vector2 collisionNormal;
         private Vector2[] vertices; // Starting from top-left, going clockwise
-        private Vector2[] triangle;
-        private Vector2[] currentTriangle;
 
         public float X
         {
@@ -31,6 +31,17 @@ namespace Shard
         {
             get { return y; }
             set { y = value; }
+        }
+
+        public Vector2 CollisionNormal
+        {
+            get
+            {
+                Vector2 tmp = collisionNormal;
+                // Reset normal vector (It can be used only once)
+                collisionNormal = new Vector2(0, 0);
+                return tmp;
+            }
         }
 
         public float Rotation
@@ -50,6 +61,7 @@ namespace Shard
             height = 2;
             rotation = 0;
             vertices = CalculateVertices();
+            collisionNormal = new Vector2(0, 0);
         }
         public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h) : base(gob)
         {
@@ -59,6 +71,7 @@ namespace Shard
             height = h;
             rotation = 0;
             vertices = CalculateVertices();
+            collisionNormal = new Vector2(0, 0);
         }
         public static float CalculateLineLength(Vector2 startPoint, Vector2 endPoint)
         {
@@ -75,9 +88,7 @@ namespace Shard
             height = h;
             rotation = r;
             vertices = CalculateVertices();
-
-            triangle = [new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150)];
-            currentTriangle = [new Vector2(200, 200), new Vector2(300, 230), new Vector2(250, 150)];
+            collisionNormal = new Vector2(0, 0);
         }
         // Use this if you want an uneven rectangle
         public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r) : base(gob)
@@ -277,21 +288,14 @@ namespace Shard
             // Add the minimum distance from ball to each side
             for (int i = 0; i < 4; i++)
             {
+                
                 // Fix this so that we dont have to create new vectors geeze
                 Vector2[] triangle = new Vector2[] { new Vector2(vertices[i].X + x, vertices[i].Y+y), new Vector2(vertices[(i + 1) % 4].X + x, vertices[(i + 1) % 4].Y + y), new Vector2(c.X, c.Y) };
                 StraigthenTriangle(triangle); // Make p1 and p2 parallel with x-axis
-                // Debugging purpose, color one triangle from side to ball
-                if(i == 2)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        currentTriangle[j] = new Vector2(triangle[j].X, triangle[j].Y);
-                    }
-                }
-                DrawTriangle(triangle, Color.AliceBlue);
                 Vector2 p1 = triangle[0];
                 Vector2 p2 = triangle[1];
                 ballOrigin = triangle[2];
+
                 if (p1.X > p2.X)
                 {
                     // Swap so that p1 is to the left of p2, ugly solution that could be fixed
@@ -337,34 +341,34 @@ namespace Shard
                     }
                 }
                 Debug.Log(smallestDistance.ToString());
+                Vector2 normal;
                 switch (smallestDistanceIndex)
                 {
                     case 0:
                         Debug.Log("Top");
                         Debug.Log(CalculateNormalVector(vertices[0], vertices[1]).ToString());
-                        return CalculateNormalVector(vertices[0], vertices[1]);
+                        normal = CalculateNormalVector(vertices[0], vertices[1]);
+                        return normal;
                         break;
                     case 1:
                         Debug.Log("Right");
                         Debug.Log(CalculateNormalVector(vertices[1], vertices[2]).ToString());
-                        return CalculateNormalVector(vertices[1], vertices[2]);
+                        normal = CalculateNormalVector(vertices[1], vertices[2]);
+                        return normal;
                         break;
                     case 2:
                         Debug.Log("Bottom");
                         Debug.Log(CalculateNormalVector(vertices[2], vertices[3]).ToString());
-                        return CalculateNormalVector(vertices[2], vertices[3]);
+                        normal = CalculateNormalVector(vertices[2], vertices[3]);
+                        return normal;
                         break;
                     case 3:
                         Debug.Log("Left");
                         Debug.Log(CalculateNormalVector(vertices[3], vertices[0]).ToString());
-                        return CalculateNormalVector(vertices[3], vertices[0]);
+                        normal = CalculateNormalVector(vertices[3], vertices[0]);
+                        return normal;
                         break;
                 }
-            }
-            if (triangle != null)
-            {
-
-                triangle = new Vector2[] { new Vector2(vertices[1].X + x, vertices[1].Y + y), new Vector2(vertices[2].X + x, vertices[2].Y + y), new Vector2(c.X,c.Y) };
             }
             return null;
         }
@@ -380,13 +384,7 @@ namespace Shard
             {
                 d.drawLine((int)(vertices[i].X + x), (int)(vertices[i].Y + y), (int)(vertices[(i+1)%4].X + x), (int)(vertices[(i+1)%4].Y + y), col);
             }
-            if(triangle != null && currentTriangle != null)
-            {
-                //StraigthenTriangle(triangle);
-                //DrawTriangle(triangle,col);
-                //DrawTriangle(currentTriangle, col);
-            }
-            
+
 
             d.drawCircle((int)centerX, (int)centerY, 2, col);
         }

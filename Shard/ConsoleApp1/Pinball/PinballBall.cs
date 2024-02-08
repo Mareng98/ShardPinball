@@ -18,19 +18,21 @@ namespace Pinball
         {
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("ball.png");
             setPhysicsEnabled();
-
+            Transform.Scalex = 1;
+            Transform.Scaley = 1;
+            Transform.Wid = 6;
+            Transform.Ht = 6;
             MyBody.addCircleCollider();
 
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.Force = new Vector2(5, 0);
+            MyBody.Force = new Vector2(0, 0f);
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
 
-            Transform.Scalex = 1;
-            Transform.Scaley = 1;
+
 
             Debug.Log(this.Transform.ToString());
         }

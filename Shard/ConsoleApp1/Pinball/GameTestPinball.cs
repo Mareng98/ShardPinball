@@ -13,23 +13,24 @@ namespace Shard
     internal class GameTestPinball : Game, InputListener
     {
         PinballRectangle r;
-
+        bool test = true;
         public void handleInput(InputEvent inp, string eventType)
         {
         }
         public override void update()
         {
-            if(r.Collider != null)
+            if(r.Collider != null && test)
             {
-                r.Collider.Rotation = 0.002f;
+                r.Collider.Rotation = 1;
+                test = false;
             }
         }
         public override void initialize()
         {
             Bootstrap.getInput().addListener(this);
             PinballBall b = new PinballBall();
-            b.Transform.X = Bootstrap.getDisplay().getWidth() / 2;
-            b.Transform.Y = 50;
+            b.Transform.X = 650;
+            b.Transform.Y = 200;
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
             r = new PinballRectangle("Rectangle",150,150,600,600);

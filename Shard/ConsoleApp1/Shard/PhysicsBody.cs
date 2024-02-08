@@ -57,6 +57,7 @@ namespace Shard
         private bool passThrough;
         private bool usesGravity;
         private Color debugColor;
+        private Vector2 collisionNormal;
         public Color DebugColor { get => debugColor; set => debugColor = value; }
         public Vector2 Force { get => force; set => force = value; }
 
@@ -65,9 +66,36 @@ namespace Shard
 
         public void applyGravity(float modifier, Vector2 dir)
         {
+            Vector2 projectedGravity;
+            Vector2 newDirection;
+            if(collisionNormal.Y > 0)
+            {
+                if(collisionNormal.X > 0)
+                {
+                    // First quadrant - Rotate normal 90 degrees clockwise
+                    newDirection = new Vector2(-collisionNormal.Y,collisionNormal.X);
+                    projectedGravity = (Vector2.Dot(dir, newDirection) / Vector2.Dot(newDirection, newDirection)) * newDirection;
+                }
+                else if(collisionNormal.X < 0)
+                {
+                    // Second quadrant - Rotate normal 90 degrees anti-clockwise
+                    newDirection = new Vector2(collisionNormal.Y, -collisionNormal.X);
+                    projectedGravity = (Vector2.Dot(dir, newDirection) / Vector2.Dot(newDirection, newDirection)) * newDirection;
+                }
+                else
+                {
+                    projectedGravity = new Vector2(0, 0);
+                }
+            }
+            else
+            {
+                projectedGravity = dir * modifier;
+            }
+            
+            collisionNormal = new Vector2(0, 0); // Reset
 
-            Vector2 gf = dir * modifier;
-            addForce(gf);
+            Debug.Log($"GRAVITY: {projectedGravity.ToString()}");
+            addForce(projectedGravity);
         }
 
         public float AngularDrag { get => angularDrag; set => angularDrag = value; }
@@ -130,7 +158,7 @@ namespace Shard
         public PhysicsBody(GameObject p)
         {
             DebugColor = Color.Green;
-
+            collisionNormal = new Vector2(0, 0);
             myColliders = new List<Collider>();
             collisionCandidates = new List<Collider>();
 
@@ -203,6 +231,7 @@ namespace Shard
         public void reflectForces(Vector2 normal)
         {
             normal = Vector2.Normalize(normal);
+            collisionNormal = normal;
             Vector2 reflect = Vector2.Reflect(this.Force, normal);
             
             //Debug.Log ("Reflecting " + impulse);
