@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Pinball;
+using Pinball.GameBreakout;
 using Shard.Shard;
 
 namespace Shard
@@ -14,6 +15,7 @@ namespace Shard
     {
         PinballRectangle r;
         bool test = true;
+        List<Obstacle> obstacles;
         public void handleInput(InputEvent inp, string eventType)
         {
         }
@@ -32,9 +34,20 @@ namespace Shard
             PinballBall b = new PinballBall();
             b.Transform.X = 650;
             b.Transform.Y = 200;
+
+            for(int i = 0; i < 7; i++)
+            {
+                int offset = 100;
+                for(int j = 0; j < 10; j++)
+                {
+                    Obstacle o = new Obstacle();
+                    o.Transform.X = offset + j * 100;
+                    o.Transform.Y = offset + i * 100;
+                }
+            }
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
-            r = new PinballRectangle("Rectangle",150,150,600,600);
+            r = new PinballRectangle("Rectangle",150,150,50,50);
             PinballRectangle leftWall = new PinballRectangle("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);

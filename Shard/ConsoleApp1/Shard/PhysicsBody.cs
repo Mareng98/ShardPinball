@@ -57,7 +57,7 @@ namespace Shard
         private bool passThrough;
         private bool usesGravity;
         private Color debugColor;
-        private Vector2 collisionNormal;
+        private List<Vector2> collisionNormals;
         public Color DebugColor { get => debugColor; set => debugColor = value; }
         public Vector2 Force { get => force; set => force = value; }
 
@@ -68,6 +68,63 @@ namespace Shard
         {
             Vector2 projectedGravity;
             Vector2 newDirection;
+            Vector2 collisionNormal = new Vector2(0,0);
+            for (int i = 0; i < collisionNormals.Count; i++)
+            {
+                /*// Set collisionNomarl to the most level slope
+                if (collisionNormal.X == 0 && collisionNormal.Y == 0)
+                {
+                    // CollisionNormal is not set
+                    collisionNormal = normal;
+                }
+                else if (normal.X == 0 && normal.Y != 0)
+                {
+                    // the normal is vertical -> The plane is horizontal
+                    collisionNormal = normal;
+                }
+                else if ()
+                {
+                    // The CollisionNormal is not as level as it can possibly be
+                    // normal has a length
+                    // compare the slopes
+                    float normalSlope = Math.Abs(normal.Y / normal.X);
+                    float collisionNormalSlope = Math.Abs(collisionNormal.Y / collisionNormal.X);
+                    if (normalSlope < collisionNormalSlope)
+                    {
+                        // collisionNormal has steeper slope than normal, set it to normal.
+                        collisionNormal = normal;
+                    }
+                }*/
+                Vector2 newNormal = collisionNormals[i];
+                if (collisionNormal.X == 0 && collisionNormal.Y > 0)
+                {
+                    // CollisionNormal's plane is already horizontal
+                    break;
+                }
+                else if (collisionNormal.X == 0 && collisionNormal.Y == 0 || newNormal.X == 0 && newNormal.Y > 0)
+                {
+                    // CollisionNormal is either 0, or newNormal's plane is horizontal
+                    collisionNormal = newNormal;
+                }
+                else if (newNormal.X == 0 && newNormal.Y == 0)
+                {
+                    // newNormal is 0 (should never happen), or collisionNormal's plane is horizontal
+                    continue;
+                }
+                else if (newNormal.Y > 0)
+                {
+                    // collisionNormal X != 0 and Y > 0
+                    // newNormal X != 0 and Y > 0
+                    // compare the slopes
+                    float newNormalSlope = Math.Abs(newNormal.Y / newNormal.X);
+                    float collisionNormalSlope = Math.Abs(collisionNormal.Y / collisionNormal.X);
+                    if (newNormalSlope < collisionNormalSlope)
+                    {
+                        // collisionNormal has steeper slope than newNormal, set it to newNormal.
+                        collisionNormal = newNormal;
+                    }
+                }
+            }
             if(collisionNormal.Y > 0)
             {
                 if(collisionNormal.X > 0)
@@ -91,8 +148,8 @@ namespace Shard
             {
                 projectedGravity = dir * modifier;
             }
-            
-            collisionNormal = new Vector2(0, 0); // Reset
+
+            collisionNormals.Clear(); // Reset
 
             if(projectedGravity.X != 0)
             {
@@ -161,7 +218,7 @@ namespace Shard
         public PhysicsBody(GameObject p)
         {
             DebugColor = Color.Green;
-            collisionNormal = new Vector2(0, 0);
+            collisionNormals = new List<Vector2>();
             myColliders = new List<Collider>();
             collisionCandidates = new List<Collider>();
 
@@ -234,30 +291,13 @@ namespace Shard
         public void reflectForces(Vector2 normal)
         {
             normal = Vector2.Normalize(normal);
-            // Set collisionNomarl to the most level slope
-            if(collisionNormal.X == 0 && collisionNormal.Y == 0)
+            if(!(normal.X == 0 && normal.Y == 0))
             {
-                // CollisionNormal is not set
-                collisionNormal = normal;
-            }else if(normal.X == 0 && normal.Y != 0)
-            {
-                // the normal is vertical -> The plane is horizontal
-                collisionNormal = normal;
-            }else if(!(collisionNormal.X == 0 && collisionNormal.Y != 0) && !(normal.X == 0 && normal.Y == 0))
-            {
-                // The CollisionNormal is not as level as it can possibly be
-                // normal has a length
-                // compare the slopes
-                float normalSlope = Math.Abs(normal.Y / normal.X);
-                float collisionNormalSlope = Math.Abs(collisionNormal.Y / collisionNormal.X);
-                if(normalSlope < collisionNormalSlope)
-                {
-                    // collisionNormal has steeper slope than normal, set it to normal.
-                    collisionNormal = normal;
-                }
+                collisionNormals.Add(normal);
+                force = Vector2.Reflect(this.Force, normal);
             }
 
-            Vector2 reflect = Vector2.Reflect(this.Force, normal);
+            
             
             //Debug.Log ("Reflecting " + impulse);
 
@@ -288,9 +328,6 @@ namespace Shard
 
             force *= reflect;
 */
-            force = reflect;
-
-            Debug.Log("Reflected force is " + force);
 
         }
 

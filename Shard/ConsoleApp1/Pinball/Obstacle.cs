@@ -8,110 +8,71 @@ using Shard;
 
 namespace Pinball
 {
-    internal class Obstacle: GameObject, CollisionHandler
+    
+using Shard;
+
+namespace GameBreakout
+{
+    class Obstacle : GameObject, InputListener, CollisionHandler
     {
-        float cx, cy;
-        Vector2 dir, lastDir;
-        internal Vector2 LastDir { get => lastDir; set => lastDir = value; }
-        internal Vector2 Dir { get => dir; set => dir = value; }
 
         public override void initialize()
         {
 
 
-            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("ball.png");
             setPhysicsEnabled();
-
-
-            MyBody.addCircleCollider();
-
-            MyBody.Mass = 1;
-            MyBody.MaxForce = 15;
+            Transform.Scalex = 10;
+            Transform.Scaley = 20;
+            Transform.Wid = 6;
+            Transform.Ht = 6;
+            MyBody.Mass = 15000;
+            MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
-            MyBody.StopOnCollision = true;
-            MyBody.ReflectOnCollision = false;
-            Transform.Scalex = 3;
-            Transform.Scaley = 3;
-            Transform.rotate(90);
+            MyBody.StopOnCollision = false;
+            MyBody.ReflectOnCollision = true;
+            MyBody.addCircleCollider();
+
+            addTag("Obstacle");
+
+        }
+
+        public void handleInput(InputEvent inp, string eventType)
+        {
+
+
 
 
         }
+
 
         public override void update()
         {
-            //            Debug.Log ("" + this);
+
 
             Bootstrap.getDisplay().addToDraw(this);
-
         }
 
-        public void onCollisionStay(PhysicsBody other)
-        {
-        }
-
-        public void onCollisionEnter(PhysicsBody other)
+        public void onCollisionEnter(PhysicsBody x)
         {
 
-            if (other.Parent.checkTag("Pinball"))
-            {
-               
-            }
-
-            if (other.Parent.checkTag("Brick"))
-            {
-                //                            Debug.Log("Hit the Brick");
-
-                //                            Dir = new Shard.Vector();
-                //                            Dir.X = (float)(Transform.Centre.X - other.Trans.Centre.X);
-                //                            Dir.Y = (float)(Transform.Centre.Y - other.Trans.Centre.Y);
-
-            }
-
-
-
         }
 
-
-
-
-
-        public void changeDir(int x, int y)
-        {
-            if (Dir == Vector2.Zero)
-            {
-                dir = lastDir;
-            }
-
-            if (x != 0)
-            {
-                dir = new Vector2(x, dir.Y);
-            }
-
-            if (y != 0)
-            {
-                dir = new Vector2(dir.X, y);
-            }
-
-        }
-
-
-        public override void physicsUpdate()
-        {
-
-
-        }
         public void onCollisionExit(PhysicsBody x)
         {
 
         }
 
+        public void onCollisionStay(PhysicsBody x)
+        {
+        }
 
         public override string ToString()
         {
-            return "Obstacle: [" + Transform.X + ", " + Transform.Y + ", Dir: " + Dir + ", LastDir: " + LastDir + ", " + Transform.Lx + ", " + Transform.Ly + "]";
+            return "Obstacle: [" + Transform.X + ", " + Transform.Y + ", " + Transform.Wid + ", " + Transform.Ht + "]";
         }
 
-
     }
+}
+
 }
