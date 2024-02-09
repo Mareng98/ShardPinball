@@ -93,8 +93,8 @@ namespace Shard
         // Use this if you want an uneven rectangle
         public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r) : base(gob)
         {
-            if (inputVertices.Length != 4)
-                throw new ArgumentException("Invalid number of vertices. Must be 4 for a rectangle.");
+            //if (inputVertices.Length != 4)
+            //    throw new ArgumentException("Invalid number of vertices. Must be 4 for a rectangle.");
             X = x;
             Y = y;
             rotation = r;
@@ -286,11 +286,13 @@ namespace Shard
             // If the ballOrigin is completely within the rectangle this wont always work
             // If the ball is at least partly outside, this will work
             // Add the minimum distance from ball to each side
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
                 
                 // Fix this so that we dont have to create new vectors geeze
-                Vector2[] triangle = new Vector2[] { new Vector2(vertices[i].X + x, vertices[i].Y+y), new Vector2(vertices[(i + 1) % 4].X + x, vertices[(i + 1) % 4].Y + y), new Vector2(c.X, c.Y) };
+                Vector2[] triangle = new Vector2[] { new Vector2(vertices[i].X + x, vertices[i].Y+y), 
+                    new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y), 
+                    new Vector2(c.X, c.Y) };
                 StraigthenTriangle(triangle); // Make p1 and p2 parallel with x-axis
                 Vector2 p1 = triangle[0];
                 Vector2 p2 = triangle[1];
@@ -318,7 +320,7 @@ namespace Shard
             // Find the smallest distance
             int smallestDistanceIndex = 0;
             float smallestDistance = sideLengths[0];
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < vertices.Length; i++)
             {
                 if (sideLengths[i] < smallestDistance)
                 {
@@ -332,9 +334,9 @@ namespace Shard
             {
                 bool hittingCorner = false;
                 int secondIndex = 0;
-                for(int i = 0; i < sideLengths.Length; i++)
+                for (int i = 0; i < sideLengths.Length; i++)
                 {
-                    if(smallestDistanceIndex != i && smallestDistance == sideLengths[i])
+                    if (smallestDistanceIndex != i && smallestDistance == sideLengths[i])
                     {
                         hittingCorner = true;
                         secondIndex = i;
@@ -342,6 +344,7 @@ namespace Shard
                 }
                 Debug.Log(smallestDistance.ToString());
                 Vector2 normal;
+                return CalculateNormalVector(vertices[smallestDistanceIndex], vertices[(smallestDistanceIndex + 1) % vertices.Length]);
                 switch (smallestDistanceIndex)
                 {
                     case 0:
@@ -380,9 +383,9 @@ namespace Shard
             float centerX = (vertices[0].X + vertices[2].X) / 2;
             float centerY = (vertices[0].Y + vertices[2].Y) / 2;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
-                d.drawLine((int)(vertices[i].X + x), (int)(vertices[i].Y + y), (int)(vertices[(i+1)%4].X + x), (int)(vertices[(i+1)%4].Y + y), col);
+                d.drawLine((int)(vertices[i].X + x), (int)(vertices[i].Y + y), (int)(vertices[(i+1)% vertices.Length].X + x), (int)(vertices[(i+1)% vertices.Length].Y + y), col);
             }
 
 
