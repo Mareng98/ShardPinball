@@ -464,6 +464,13 @@ namespace Shard
             return cnr;
         }
 
+        public NewColliderRectangle addNewRectCollider(float x, float y, Vector2[] vertices, float r, Vector2 rotationPivot)
+        {
+            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, x, y, vertices, r, rotationPivot);
+            addCollider(cnr);
+            return cnr;
+        }
+
 
         public void addCollider(Collider col)
         {

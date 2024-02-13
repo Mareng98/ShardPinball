@@ -18,6 +18,7 @@ namespace Shard
         private float width;
         private float height;
         private float rotation;
+        private Vector2 rotationPivot;
         private Vector2 collisionNormal;
         private Vector2[] vertices; // Starting from top-left, going clockwise
 
@@ -44,54 +45,107 @@ namespace Shard
             }
         }
 
+        public Vector2 RotationPivot
+        {
+            get { return rotationPivot; }
+            set { rotationPivot = value;  }
+        }
+
         public float Rotation
         {
             get { return rotation; }
-            set { 
-                rotation = value;
-                RotateShape(rotation, vertices, new Vector2(300,300));
+            set {
+                RotateVertices(value, vertices, rotationPivot);
             }
         }
 
-        public NewColliderRectangle(CollisionHandler gob, float x, float y) :base(gob)
+        public NewColliderRectangle(CollisionHandler gob, float x, float y) : base(gob)
         {
             X = x;
             Y = y;
             width = 2;
             height = 2;
-            rotation = 0;
             vertices = CalculateVertices();
             collisionNormal = new Vector2(0, 0);
+            RotationPivot = new Vector2(width/2,height/2);
+
+            Rotation = 0;
         }
+
+        public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2 rotationPivot) :base(gob)
+        {
+            X = x;
+            Y = y;
+            width = 2;
+            height = 2;
+            vertices = CalculateVertices();
+            collisionNormal = new Vector2(0, 0);
+            RotationPivot = rotationPivot;
+
+            Rotation = 0;
+        }
+        public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h, Vector2 rotationPivot) : base(gob)
+        {
+            X = x;
+            Y = y;
+            width = w;
+            height = h;
+            vertices = CalculateVertices();
+            collisionNormal = new Vector2(0, 0);
+            RotationPivot = rotationPivot;
+            Rotation = 0;
+        }
+
         public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h) : base(gob)
         {
             X = x;
             Y = y;
             width = w;
             height = h;
-            rotation = 0;
             vertices = CalculateVertices();
             collisionNormal = new Vector2(0, 0);
+            RotationPivot = new Vector2(w/2, h/2);
+            Rotation = 0;
         }
-        public static float CalculateLineLength(Vector2 startPoint, Vector2 endPoint)
-        {
-            float deltaX = endPoint.X - startPoint.X;
-            float deltaY = endPoint.Y - startPoint.Y;
 
-            return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
-        }
         public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h, float r) : base(gob)
         {
             X = x;
             Y = y;
             width = w;
             height = h;
-            rotation = r;
             vertices = CalculateVertices();
             collisionNormal = new Vector2(0, 0);
+            RotationPivot = new Vector2(w / 2, h / 2);
+            Rotation = r;
+        }
+
+        public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h, float r, Vector2 rotationPivot) : base(gob)
+        {
+            X = x;
+            Y = y;
+            width = w;
+            height = h;
+            vertices = CalculateVertices();
+            collisionNormal = new Vector2(0, 0);
+            RotationPivot = rotationPivot;
+            Rotation = 0;
         }
         // Use this if you want an uneven rectangle
         public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r) : base(gob)
+        {
+            X = x;
+            Y = y;
+            rotation = r;
+            vertices = inputVertices;
+            // Fix these later
+            width = CalculateWidth();
+            height = CalculateHeight();
+            RotationPivot = inputVertices[0];
+            Rotation = 0;
+        }
+
+        public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r, Vector2 rotationPivot) : base(gob)
         {
             //if (inputVertices.Length != 4)
             //    throw new ArgumentException("Invalid number of vertices. Must be 4 for a rectangle.");
@@ -104,10 +158,16 @@ namespace Shard
             // This is a placeholder and might not work in every case.
             width = CalculateWidth();
             height = CalculateHeight();
-            rotation = CalculateRotation();
-
+            RotationPivot = rotationPivot;
+            Rotation = 0;
         }
+        public static float CalculateLineLength(Vector2 startPoint, Vector2 endPoint)
+        {
+            float deltaX = endPoint.X - startPoint.X;
+            float deltaY = endPoint.Y - startPoint.Y;
 
+            return (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        }
         private Vector2[] CalculateVertices()
         {
 
@@ -119,9 +179,6 @@ namespace Shard
             new Vector2(0, height)  // Bottom-left
             };
 
-            // Rotate the vertices based on the given rotation angle
-            RotateVertices(calculatedVertices, rotation);
-
             return calculatedVertices;
         }
 
@@ -132,7 +189,29 @@ namespace Shard
             return -angle; // Negative because the rotation is performed in the opposite direction
         }
 
-        public void RotateShape(float angle, Vector2[] vertices, Vector2 pivot)
+        public void RotateVertices(float targetRotation, Vector2[] vertices, Vector2 rotationPivot)
+        {
+            float newRotation = targetRotation % 6.283f - rotation;
+            float cosAngle = (float)Math.Cos(newRotation);
+            float sinAngle = (float)Math.Sin(newRotation);
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                // Translate the vertex to the origin
+                float x = vertices[i].X - rotationPivot.X;
+                float y = vertices[i].Y - rotationPivot.Y;
+
+                // Rotate the translated vertex
+                float rotatedX = x * cosAngle - y * sinAngle;
+                float rotatedY = x * sinAngle + y * cosAngle;
+
+                // Translate the rotated vertex back to its original position
+                vertices[i] = new Vector2(rotatedX + rotationPivot.X, rotatedY + rotationPivot.Y);
+                rotation = targetRotation % 6.283f;
+            }
+        }
+
+        private void RotateTriangle(float angle, Vector2[] vertices, Vector2 rotationPivot)
         {
             float cosAngle = (float)Math.Cos(angle);
             float sinAngle = (float)Math.Sin(angle);
@@ -140,15 +219,15 @@ namespace Shard
             for (int i = 0; i < vertices.Length; i++)
             {
                 // Translate the vertex to the origin
-                float x = vertices[i].X - pivot.X;
-                float y = vertices[i].Y - pivot.Y;
+                float x = vertices[i].X - rotationPivot.X;
+                float y = vertices[i].Y - rotationPivot.Y;
 
                 // Rotate the translated vertex
                 float rotatedX = x * cosAngle - y * sinAngle;
                 float rotatedY = x * sinAngle + y * cosAngle;
 
                 // Translate the rotated vertex back to its original position
-                vertices[i] = new Vector2(rotatedX + pivot.X, rotatedY + pivot.Y);
+                vertices[i] = new Vector2(rotatedX + rotationPivot.X, rotatedY + rotationPivot.Y);
             }
         }
 
@@ -156,22 +235,9 @@ namespace Shard
         private void StraigthenTriangle(Vector2[] vertices)
         {
             float angle = (float)Math.Atan2(vertices[1].Y - vertices[0].Y, vertices[1].X - vertices[0].X);
-            RotateShape(-angle, vertices, vertices[0]);
+            RotateTriangle(-angle, vertices, vertices[0]);
         }
 
-        private void RotateVertices(Vector2[] verticesToRotate, float angle)
-        {
-            float cosAngle = (float)Math.Cos(angle);
-            float sinAngle = (float)Math.Sin(angle);
-
-            for (int i = 0; i < verticesToRotate.Length; i++)
-            {
-                float x = verticesToRotate[i].X;
-                float y = verticesToRotate[i].Y;
-
-                verticesToRotate[i] = new Vector2(x * cosAngle - y * sinAngle, x * sinAngle + y * cosAngle);
-            }
-        }
 
         private float CalculateWidth()
         {
@@ -270,19 +336,39 @@ namespace Shard
             return normalVector;
         }
 
+        private bool CircleInBoundingBox(Vector2 origin, float radius)
+        {
+            float[] minMaxX = getMinAndMaxX();
+            float maxX = minMaxX[1];
+            float minX = minMaxX[0];
+
+            float[] minMaxY = getMinAndMaxY();
+            float maxY = minMaxY[1];
+            float minY = minMaxY[0];
+
+            // Check if the circle is within the bounding box
+            bool isInsideX = (origin.X + radius) > minX && (origin.X - radius) < maxX;
+            bool isInsideY = (origin.Y + radius) > minY && (origin.Y - radius) < maxY;
+
+            return isInsideX && isInsideY;
+        }
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
-
-            bool isPointInPolygon = pointInPolygon(new Vector2(c.X, c.Y));
+            Vector2 ballOrigin = new Vector2(c.X, c.Y);
+            if (!CircleInBoundingBox(ballOrigin, c.Rad))
+            {
+                return null;
+            }
+            bool isPointInPolygon = pointInPolygon(ballOrigin);
             if (isPointInPolygon)
             {
                 DrawTriangle(new Vector2[] { new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 200, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 300, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 250, Bootstrap.getDisplay().getHeight() - 200)}, Color.Green);
                 //Debug.Log("Point is in Polygon");
             }
 
-            Vector2 ballOrigin = new Vector2(c.X, c.Y);
-            float[] sideLengths = new float[4];
+            
+            float[] sideLengths = new float[vertices.Length];
             // If the ballOrigin is completely within the rectangle this wont always work
             // If the ball is at least partly outside, this will work
             // Add the minimum distance from ball to each side

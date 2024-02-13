@@ -27,7 +27,7 @@ namespace Pinball
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.Force = new Vector2(5, -8.2f);
+            MyBody.Force = new Vector2(5.3f, 8.2f);
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;

@@ -14,7 +14,6 @@ namespace Pinball
         public PinballRectangle(string tag, int x, int y, int width, int height)
         {
             addTag(tag);
-            // For some reason NewRectCollider doesnt trigger collisions, so we use addRectCollider in initialize for debugging
 
             Collider = MyBody.addNewRectCollider(x, y, width, height,0);
         }
