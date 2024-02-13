@@ -55,7 +55,7 @@ namespace Shard
                 r.Collider.Rotation = 1;
                 test = false;
             }
-            r.Collider.Rotation = -0.001f;
+            //r.Collider.Rotation = -0.001f;
         }
         public override void initialize()
         {
@@ -77,8 +77,8 @@ namespace Shard
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
             r = new PinballRectangle("Rectangle",150,150,50,50);
-            leftFlipper = new Flipper("Flipper", 500, 400, 80, 20, 10, FlipperSide.Left);
-            rightFlipper = new Flipper("Flipper", 600, 400, 80, 10, 20, FlipperSide.Right);
+            leftFlipper = new Flipper("Flipper", 300, 400, 150, 80, 40, FlipperSide.Left);
+            rightFlipper = new Flipper("Flipper", 700, 400, 150, 40, 80, FlipperSide.Right);
             //Flipper f4 = new Flipper("Flipper", 850, 400, 80, 40, 20);
             /*PinballRectangle ramp = new PinballRectangle("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, [new Vector2(0, 0),
                 new Vector2(400, 400),

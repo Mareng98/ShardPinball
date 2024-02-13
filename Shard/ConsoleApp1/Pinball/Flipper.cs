@@ -59,11 +59,11 @@ namespace Pinball
             Vector2 rotationPivot;
             if(side == FlipperSide.Left)
             {
-                rotationPivot = new Vector2(leftRadius, leftRadius);
+                rotationPivot = new Vector2(leftRadius, 0);
             }
             else
             {
-                rotationPivot = new Vector2(leftRadius + width, rightRadius);
+                rotationPivot = new Vector2(width,0);
             }
 
             Collider = MyBody.addNewRectCollider(x, y, vertices.ToArray(), 0, rotationPivot);

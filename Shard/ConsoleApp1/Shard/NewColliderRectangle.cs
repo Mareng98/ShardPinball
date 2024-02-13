@@ -194,7 +194,6 @@ namespace Shard
             float newRotation = targetRotation % 6.283f - rotation;
             float cosAngle = (float)Math.Cos(newRotation);
             float sinAngle = (float)Math.Sin(newRotation);
-
             for (int i = 0; i < vertices.Length; i++)
             {
                 // Translate the vertex to the origin
@@ -207,8 +206,8 @@ namespace Shard
 
                 // Translate the rotated vertex back to its original position
                 vertices[i] = new Vector2(rotatedX + rotationPivot.X, rotatedY + rotationPivot.Y);
-                rotation = targetRotation % 6.283f;
             }
+            rotation = (rotation + newRotation) % (2 * MathF.PI);
         }
 
         private void RotateTriangle(float angle, Vector2[] vertices, Vector2 rotationPivot)
@@ -227,7 +226,7 @@ namespace Shard
                 float rotatedY = x * sinAngle + y * cosAngle;
 
                 // Translate the rotated vertex back to its original position
-                vertices[i] = new Vector2(rotatedX + rotationPivot.X, rotatedY + rotationPivot.Y);
+                vertices[i] = new Vector2(rotatedX , rotatedY + rotationPivot.Y);
             }
         }
 
