@@ -62,7 +62,7 @@ namespace Shard
             Bootstrap.getInput().addListener(this);
             PinballBall b = new PinballBall();
             b.Transform.X = 650;
-            b.Transform.Y = 200;
+            b.Transform.Y = 807;
 
             /*for(int i = 0; i < 4; i++)
             {
@@ -79,13 +79,17 @@ namespace Shard
             r = new PinballRectangle("Rectangle",150,150,50,50);
             leftFlipper = new Flipper("Flipper", 300, 400, 150, 80, 40, FlipperSide.Left);
             rightFlipper = new Flipper("Flipper", 700, 400, 150, 40, 80, FlipperSide.Right);
+            
             //Flipper f4 = new Flipper("Flipper", 850, 400, 80, 40, 20);
-            /*PinballRectangle ramp = new PinballRectangle("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, [new Vector2(0, 0),
+            PinballRectangle ramp = new PinballRectangle("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, 
+                [new Vector2(0, 0),
                 new Vector2(400, 400),
                 new Vector2(0, 400)]);
-            PinballRectangle ramp2 = new PinballRectangle("LeftRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, [new Vector2(400, 0),
-                new Vector2(0, 400),
-                new Vector2(400, 400)]);*/
+            /*PinballRectangle ramp2 = new PinballRectangle("RightRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, 
+                [new Vector2(400, 0),
+                    new Vector2(400, 400),
+                new Vector2(0, 400)
+                ]);*/
             PinballRectangle leftWall = new PinballRectangle("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
@@ -101,7 +105,7 @@ namespace Shard
         public override int getTargetFrameRate()
         {
 
-            return 1000;
+            return 200;
 
 
         }

@@ -34,7 +34,7 @@ namespace Pinball
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
-            MyBody.ReflectOnCollision = true;
+            MyBody.ReflectOnCollision = false;
         }
 
 

@@ -330,7 +330,7 @@ namespace Shard
             float deltaY = b.Y - a.Y;
 
             // Calculate the normal vector by swapping and negating components
-            Vector2 normalVector = new Vector2(-deltaY, deltaX);
+            Vector2 normalVector = new Vector2(deltaY, -deltaX);
 
             return normalVector;
         }
@@ -351,9 +351,62 @@ namespace Shard
 
             return isInsideX && isInsideY;
         }
+
+
+
+        public Vector2? checkCollisionv2(ColliderCircle c)
+        {
+            Vector2 ballOrigin = new Vector2(c.X, c.Y);
+            Vector2 lastBallOrigin = new Vector2(c.Lx, c.Ly);
+            bool isPointInPolygon = pointInPolygon(ballOrigin);
+            bool isPreviousPointInPolygon = pointInPolygon(lastBallOrigin);
+            // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
+            if (!CircleInBoundingBox(ballOrigin, c.Rad) || isPreviousPointInPolygon)
+            {
+                return null;
+            }
+            // (Distance , vertices start index)
+            List<(float,int)> collisionSegmentCanidates = new List<(float,int)>();
+            for(int i = 0; i < vertices.Length; i++)
+            {
+                Vector2[] currentDistanceTriangle = { new Vector2(vertices[i].X + x, vertices[i].Y+y),
+                    new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y),
+                    new Vector2(c.X, c.Y) };
+                StraigthenTriangle(currentDistanceTriangle);
+                Vector2 p0 = currentDistanceTriangle[0];
+                Vector2 p2 = currentDistanceTriangle[2];
+
+                Vector2[] lastDistanceTriangle = { new Vector2(vertices[i].X + x, vertices[i].Y+y),
+                    new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y),
+                    new Vector2(c.Lx, c.Ly) };
+                StraigthenTriangle(lastDistanceTriangle);
+                Vector2 lp0 = lastDistanceTriangle[0];
+                Vector2 lp2 = lastDistanceTriangle[2];
+                // Check if the ball has passed through this line segment
+                if (p2.Y > p0.Y != lp2.Y > lp0.Y)
+                {
+                    // Add current distance of ball to segment, along with the interesting index
+                    collisionSegmentCanidates.Add((Math.Abs(p2.Y - p0.Y),i));
+                }
+            }
+            if(collisionSegmentCanidates.Count > 0)
+            {
+                var tmp = collisionSegmentCanidates.Min();
+                float distance = tmp.Item1;
+                int vertexIndex = tmp.Item2;
+                if (distance < c.Rad || isPointInPolygon)
+                {
+                    return CalculateNormalVector(vertices[vertexIndex], vertices[(vertexIndex + 1) % vertices.Length]);
+                }
+            }
+            return null;
+            
+        }
+
         // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
         public override Vector2? checkCollision(ColliderCircle c)
         {
+            //return checkCollisionv2(c);
             Vector2 ballOrigin = new Vector2(c.X, c.Y);
             if (!CircleInBoundingBox(ballOrigin, c.Rad))
             {
@@ -365,7 +418,6 @@ namespace Shard
                 DrawTriangle(new Vector2[] { new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 200, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 300, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 250, Bootstrap.getDisplay().getHeight() - 200)}, Color.Green);
                 //Debug.Log("Point is in Polygon");
             }
-
             
             float[] sideLengths = new float[vertices.Length];
             // If the ballOrigin is completely within the rectangle this wont always work
@@ -373,12 +425,16 @@ namespace Shard
             // Add the minimum distance from ball to each side
             for (int i = 0; i < vertices.Length; i++)
             {
-                
                 // Fix this so that we dont have to create new vectors geeze
-                Vector2[] triangle = new Vector2[] { new Vector2(vertices[i].X + x, vertices[i].Y+y), 
+                Vector2[] triangle = { new Vector2(vertices[i].X + x, vertices[i].Y+y), 
                     new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y), 
                     new Vector2(c.X, c.Y) };
+                Vector2[] trianglePrevious = { new Vector2(vertices[i].X + x, vertices[i].Y+y),
+                    new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y),
+                    new Vector2(c.MyRect.Lx + c.Rad, c.MyRect.Ly + c.Rad) };
                 StraigthenTriangle(triangle); // Make p1 and p2 parallel with x-axis
+                StraigthenTriangle(trianglePrevious);
+                
                 Vector2 p1 = triangle[0];
                 Vector2 p2 = triangle[1];
                 ballOrigin = triangle[2];
@@ -394,12 +450,13 @@ namespace Shard
                 if(ballOrigin.X < p1.X ||ballOrigin.X > p2.X)
                 {
                     // The ball is not within the column; make the distance the minimum distance of sides going out from ball
-                    sideLengths[i] = Math.Min(GetSquaredSideLength(ballOrigin, p1), GetSquaredSideLength(ballOrigin, p2));
+                    //sideLengths[i] = Math.Min(GetSquaredSideLength(ballOrigin, p1), GetSquaredSideLength(ballOrigin, p2));
+                    sideLengths[i] = float.MaxValue;
                 }
                 else
                 {
                     // The ball is within the column, simply add the height of the triangle
-                    sideLengths[i] = (float)Math.Pow(Math.Abs(ballOrigin.Y - p1.Y),2); 
+                    sideLengths[i] = Math.Abs((ballOrigin.Y - p1.Y)); 
                 }
             }
             // Find the smallest distance
@@ -407,15 +464,16 @@ namespace Shard
             float smallestDistance = sideLengths[0];
             for (int i = 1; i < vertices.Length; i++)
             {
-                if (sideLengths[i] < smallestDistance)
+
+                if ( sideLengths[i] < smallestDistance)
                 {
                     smallestDistance = sideLengths[i];
                     smallestDistanceIndex = i;
                 }
             }
+
             // Check if the smallest distance is smaller than the radius of the ball
-            float cubedRad = (float)Math.Pow(c.Rad, 2);
-            if (smallestDistance <= cubedRad || isPointInPolygon)
+            if (smallestDistance <= c.Rad || isPointInPolygon)
             {
                 bool hittingCorner = false;
                 int secondIndex = 0;
@@ -427,9 +485,47 @@ namespace Shard
                         secondIndex = i;
                     }
                 }
-                Debug.Log(smallestDistance.ToString());
-                Vector2 normal;
-                return CalculateNormalVector(vertices[smallestDistanceIndex], vertices[(smallestDistanceIndex + 1) % vertices.Length]);
+                /*float lx = c.MyRect.Lx;
+                float ly = c.MyRect.Ly;
+                Vector2[] triangle = new Vector2[] { new Vector2(vertices[smallestDistanceIndex].X + x, vertices[smallestDistanceIndex].Y+y),
+                    new Vector2(vertices[(smallestDistanceIndex + 1) % vertices.Length].X + x, vertices[(smallestDistanceIndex + 1) % vertices.Length].Y + y),
+                    new Vector2(lx, ly) };
+
+                Vector2 p1 = triangle[0];
+                Vector2 p2 = triangle[1];
+                ballOrigin = triangle[2];
+                var d = distanceToNearestLine(p1, p2, ballOrigin);
+                var line = p1 + (p2 - p1) * d;
+                c.MyRect.Centre.X = line.X;
+                c.MyRect.Centre.Y = line.Y;
+                */
+                /*if(isPointInPolygon){
+                    Vector2 intersection;
+                    Vector2 ballReverseDirection = Vector2.Normalize((new Vector2(c.Lx, c.Ly) - new Vector2(c.X, c.Y)));
+                    bool isThereAnIntersection = FindIntersection(vertices[smallestDistanceIndex] + new Vector2(x,y), vertices[(smallestDistanceIndex + 1) % vertices.Length ] + new Vector2(x, y), 
+                        new Vector2(c.X,c.Y), new Vector2(c.Lx,c.Ly), out intersection);
+                    
+                    if (isThereAnIntersection)
+                    {
+                        Vector2 newPosition = intersection + ballReverseDirection * c.Rad;
+                        c.X = newPosition.X;
+                        c.Y = newPosition.Y;
+                    }
+                    // Fix this later to verify -> if(isThereAnIntersection && isPointInPolygon && )
+                }*/
+                // Check if the ball is already heading away from the shape
+                //Vector2 speedVector = new Vector2(c.Lx, c.Ly) - new Vector2(c.X, c.Y);
+                Vector2 normal = CalculateNormalVector(vertices[smallestDistanceIndex], vertices[(smallestDistanceIndex + 1) % vertices.Length]);
+                /*float dotProduct = Vector2.Dot(normal, speedVector);
+                if(dotProduct >= 0)
+                {
+                    return normal;
+                }
+                else
+                {
+                    return null;
+                }*/
+                return normal;
                 switch (smallestDistanceIndex)
                 {
                     case 0:
@@ -461,6 +557,79 @@ namespace Shard
             return null;
         }
 
+        public float distanceToNearestLine(Vector2 pointOnLine, Vector2 line, Vector2 point)
+        {
+            // Vector from pointOnLine to point
+            Vector2 pointOnLineToPoint = point - pointOnLine;
+            // Vector from pointOnLine to Line, let's call this AB
+            Vector2 pointOnLineToLine = line - pointOnLine;
+
+            float magnitudeAB = pointOnLineToLine.LengthSquared();
+            float prod = Vector2.Dot(pointOnLineToPoint, pointOnLineToLine);
+            float dist = prod / magnitudeAB;
+            return dist;
+        }
+
+
+
+
+        private bool FindIntersection(Vector2 s1, Vector2 e1, Vector2 s2, Vector2 e2, out Vector2 result)
+        {
+            // Let vectors construct the bounding box
+            float left = float.MaxValue;
+            float right = float.MinValue;
+            float top = float.MaxValue;
+            float bottom = float.MinValue;
+            Vector2[] vectors = { s1, e1, s2, e2 };
+            for(int i = 0; i < 4; i++)
+            {
+                float vx = vectors[i].X;
+                float vy = vectors[i].Y;
+                if (vx < left)
+                {
+                    left = vx;
+                }
+                if(vx > right)
+                {
+                    right = vx;
+                }
+                if(vy < top)
+                {
+                    top = vy;
+                }
+                if(vy > bottom)
+                {
+                    bottom = vy;
+                }
+            }
+            float a1 = e1.Y - s1.Y;
+            float b1 = s1.X - e1.X;
+            float c1 = a1 * s1.X + b1 * s1.Y;
+
+            float a2 = e2.Y - s2.Y;
+            float b2 = s2.X - e2.X;
+            float c2 = a2 * s2.X + b2 * s2.Y;
+
+            float delta = a1 * b2 - a2 * b1;
+            //If lines are parallel, the result will be null.
+            if(delta == 0)
+            {
+                result = new Vector2();
+                return false;
+            }
+            else
+            {
+                result = new Vector2((b2 * c1 - b1 * c2) / delta, (a1 * c2 - a2 * c1) / delta);
+                // Check if the intersection is happening within the bounding box
+                if(result.X < left || result.X > right || result.Y > bottom ||result.Y < top)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+
         public override void drawMe(Color col)
         {
             Display d = Bootstrap.getDisplay();
@@ -472,7 +641,27 @@ namespace Shard
             {
                 d.drawLine((int)(vertices[i].X + x), (int)(vertices[i].Y + y), (int)(vertices[(i+1)% vertices.Length].X + x), (int)(vertices[(i+1)% vertices.Length].Y + y), col);
             }
-
+            Vector2[] triangle = { new Vector2(100, 182), new Vector2(150, 300), new Vector2(300, 50) };
+            Vector2[] triangleTmp = { new Vector2(100, 182), new Vector2(150, 300), new Vector2(300, 50) };
+            Vector2[] newTriangle = { triangle[0], triangle[1], triangle[2]};
+            float dv = distanceToNearestLine(triangle[0], triangle[1], triangle[2]);
+            //Vector2 line = triangle[0] + (triangle[2] - triangle[1]) * dv;
+            StraigthenTriangle(triangleTmp);
+            Vector2 start; 
+            bool isOk = FindIntersection(triangle[0], triangle[1], triangle[2], new Vector2(50,220), out start);
+            //d.drawLine((int)triangle[2].X, (int)triangle[2].Y, (int)line.X, (int)line.Y, Color.GreenYellow);
+            //DrawTriangle(triangle, Color.AliceBlue);
+            for(int i = 0; i < vertices.Length; i++)
+            {
+                //line = Vector2.Normalize(CalculateNormalVector(vertices[i], vertices[(i + 1) % vertices.Length]))  + vertices[i] + new Vector2(x,y) + (vertices[(i + 1) % vertices.Length] - vertices[i]) / 2;
+                //d.drawLine((int)line.X, (int)line.Y, (int)(vertices[i].X + x), (int)(vertices[(i + 1) % vertices.Length].Y + y + (vertices[(i + 1) % vertices.Length] - vertices[i]).Y / 2), Color.GreenYellow);
+                Vector2 normal = Vector2.Normalize(CalculateNormalVector(vertices[i], vertices[(i + 1) % vertices.Length]));
+                Vector2 translation = new Vector2(x, y);
+                Vector2 midPoint = (vertices[i] + vertices[(i + 1) % vertices.Length] + translation*2) / 2;
+                start = midPoint + normal*50;
+                Vector2 end = midPoint;
+                d.drawLine((int)start.X, (int)start.Y, (int)end.X, (int)end.Y, Color.GreenYellow);
+            }
 
             d.drawCircle((int)centerX, (int)centerY, 2, col);
         }

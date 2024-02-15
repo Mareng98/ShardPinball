@@ -96,22 +96,23 @@ namespace Shard
                     }
                 }*/
                 Vector2 newNormal = collisionNormals[i];
-                if (collisionNormal.X == 0 && collisionNormal.Y > 0)
+                if (collisionNormal.X == 0 && collisionNormal.Y != 0)
                 {
                     // CollisionNormal's plane is already horizontal
+
                     break;
                 }
-                else if (collisionNormal.X == 0 && collisionNormal.Y == 0 || newNormal.X == 0 && newNormal.Y > 0)
+                else if (collisionNormal.X == 0 && collisionNormal.Y == 0 || newNormal.X == 0 && newNormal.Y < 0)
                 {
                     // CollisionNormal is either 0, or newNormal's plane is horizontal
                     collisionNormal = newNormal;
                 }
                 else if (newNormal.X == 0 && newNormal.Y == 0)
                 {
-                    // newNormal is 0 (should never happen), or collisionNormal's plane is horizontal
+                    // newNormal is 0 (should never happen)
                     continue;
                 }
-                else if (newNormal.Y > 0)
+                else if (newNormal.Y < 0)
                 {
                     // collisionNormal X != 0 and Y > 0
                     // newNormal X != 0 and Y > 0
@@ -125,7 +126,7 @@ namespace Shard
                     }
                 }
             }
-            if(collisionNormal.Y > 0)
+            if(collisionNormal.Y < 0)
             {
                 if(collisionNormal.X > 0)
                 {
@@ -146,16 +147,14 @@ namespace Shard
             }
             else
             {
-                projectedGravity = dir * modifier;
+                projectedGravity = dir;
             }
-
-            collisionNormals.Clear(); // Reset
 
             if(projectedGravity.X != 0)
             {
                 Debug.Log($"GRAVITY: {projectedGravity.ToString()}");
             }
-            addForce(projectedGravity);
+            addForce(projectedGravity* modifier);
         }
 
         public float AngularDrag { get => angularDrag; set => angularDrag = value; }
@@ -167,6 +166,8 @@ namespace Shard
         public float[] MinAndMaxY { get => minAndMaxY; set => minAndMaxY = value; }
         public float MaxForce { get => maxForce; set => maxForce = value; }
         public float MaxTorque { get => maxTorque; set => maxTorque = value; }
+
+        public float Torque { get => torque; set => torque = value; }
         public bool Kinematic { get => kinematic; set => kinematic = value; }
         public bool PassThrough { get => passThrough; set => passThrough = value; }
         public bool UsesGravity { get => usesGravity; set => usesGravity = value; }
@@ -288,13 +289,12 @@ namespace Shard
             force = Vector2.Zero;
         }
 
-        public void reflectForces(Vector2 normal)
+        public void AddReflectionNormal(Vector2 normal)
         {
             normal = Vector2.Normalize(normal);
             if(!(normal.X == 0 && normal.Y == 0))
             {
                 collisionNormals.Add(normal);
-                force = Vector2.Reflect(this.Force, normal);
             }
 
             
@@ -329,6 +329,21 @@ namespace Shard
             force *= reflect;
 */
 
+        }
+
+        public void Reflect()
+        {
+            foreach(Vector2 normal in collisionNormals)
+            {
+                // Make sure the object is on its way into the object before reflecting
+                float dotProduct = Vector2.Dot(normal, this.Force);
+                if (dotProduct <= 0)
+                {
+                    force = Vector2.Reflect(this.Force, normal);
+                }
+                
+            }
+            collisionNormals.Clear();
         }
 
         public void reduceForces(float prop) {
@@ -394,9 +409,7 @@ namespace Shard
                 torque -= Math.Sign(torque) * AngularDrag;
             }
 
-
-
-            trans.rotate(rot);
+            //trans.rotate(rot);
             force = this.force.Length();
             trans.translate(this.force);
 

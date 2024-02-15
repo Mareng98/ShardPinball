@@ -295,10 +295,6 @@ namespace Shard
             foreach (PhysicsBody body in allPhysicsObjects)
             {
 
-                if (body.UsesGravity) {
-                    body.applyGravity(gravityModifier, gravityDir);
-                }
-
                 body.physicsTick();
                 body.recalculateColliders();
 
@@ -396,7 +392,8 @@ namespace Shard
             {
                 foreach (Collider col2 in b.getColliders())
                 {
-                     
+                    // Handle collider rectangle differently
+                    
                     impulse = col.checkCollision(col2);
 
 
@@ -426,6 +423,12 @@ namespace Shard
             {
                 for (int j = 0; j < allPhysicsObjects.Count; j++)
                 {
+                    tmp = new CollidingObject();
+
+                    tmp.A = allPhysicsObjects[i];
+                    tmp.B = allPhysicsObjects[j];
+
+                    collisionsToCheck.Add(tmp);
 
                     if (i == j)
                     {
@@ -442,12 +445,7 @@ namespace Shard
                         continue;
                     }
 
-                    tmp = new CollidingObject();
 
-                    tmp.A = allPhysicsObjects[i];
-                    tmp.B = allPhysicsObjects[j];
-
-                    collisionsToCheck.Add(tmp);
 
                 }
             }
@@ -550,20 +548,39 @@ namespace Shard
                     colliding.Add(ob);
 
 
-
+                    // Add the normal that the object should reflect around
                     if (ob.A.ReflectOnCollision)
                     {                        
-                        ob.A.reflectForces(impulse);
+                        ob.A.AddReflectionNormal(impulse);
                     }
                     if (ob.B.ReflectOnCollision)
                     {
-                        ob.B.reflectForces(impulse);
+                        ob.B.AddReflectionNormal(impulse);
                     }
 
 
                 }
 
 
+            }
+            foreach (PhysicsBody body in allPhysicsObjects)
+            {
+
+                if (body.UsesGravity)
+                {
+                    body.applyGravity(gravityModifier, gravityDir);
+                }
+            }
+                foreach (CollidingObject ob in colliding)
+            {
+                if (ob.A.ReflectOnCollision)
+                {
+                    ob.A.Reflect();
+                }
+                if (ob.B.ReflectOnCollision)
+                {
+                    ob.B.Reflect();
+                }
             }
         }
 
@@ -610,11 +627,11 @@ namespace Shard
                             col.B = start.Owner;
                             col.A = activeObjects[i].Owner;
                         }
-
-                        if (!findColliding(col.A, col.B))
+                        collisionsToCheck.Add(col);
+                        /*if (!findColliding(col.A, col.B))
                         {
-                            collisionsToCheck.Add(col);
-                        }
+                            
+                        }*/
                         // Debug.getInstance().log("Adding potential collision: " + col.ToString());
 
                     }

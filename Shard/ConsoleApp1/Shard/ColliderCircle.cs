@@ -16,7 +16,7 @@ namespace Shard
     class ColliderCircle : Collider
     {
         private Transform myRect;
-        private float x, y, rad;
+        private float x, y, rad, lx, ly;
         private float xoff, yoff;
         private bool fromTrans;
         public ColliderCircle(CollisionHandler gob, Transform t) : base(gob)
@@ -90,8 +90,21 @@ namespace Shard
             MinAndMaxY[1] = Y + Rad;
         }
         internal Transform MyRect { get => myRect; set => myRect = value; }
-        public float X { get => x; set => x = value; }
-        public float Y { get => y; set => y = value; }
+
+        public float Lx { get => lx; set => lx = value; }
+        public float Ly { get => ly; set => ly = value; }
+        public float X { get => x; set
+            {
+                lx = x;
+                x = value;
+            }
+        }
+        public float Y { get => y; set
+            {
+                ly = y;
+                y = value;
+            }
+        }
         public float Rad { get => rad; set => rad = value; }
 
         public float Left { get => MinAndMaxX[0]; set => MinAndMaxX[0] = value; }
