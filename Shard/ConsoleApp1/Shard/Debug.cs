@@ -64,5 +64,10 @@ namespace Shard
             getInstance().log(message, DEBUG_LEVEL_ALL);
         }
 
+        public static void Assert(bool condition)
+        {
+            System.Diagnostics.Debug.Assert(condition);
+        }
+
     }
 }
