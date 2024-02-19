@@ -20,9 +20,10 @@ namespace GameBreakout
         {
 
 
+            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("blueObstacle.png");
             setPhysicsEnabled();
-            Transform.Scalex = 10;
-            Transform.Scaley = 20;
+            Transform.Scalex = 2;
+            Transform.Scaley = 2;
             Transform.Wid = 6;
             Transform.Ht = 6;
             MyBody.Mass = 15000;

@@ -10,6 +10,7 @@ using Shard.Shard;
 using System;
 using System.Drawing;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace Shard
 {
@@ -208,8 +209,26 @@ namespace Shard
 
         }
 
+        private bool IsInsideCircle(Vector2 o1, float r1, Vector2 o2, float r2)
+        {
+            float dist = (o1 - o2).Length();
+            if(dist < r1 + r2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public override Vector2? checkCollision(ColliderCircle c)
         {
+            if (IsInsideCircle(new Vector2(c.Lx, c.Ly),c.Rad, new Vector2(this.X, this.Y), this.Rad))
+            {
+                // The collision has already happened
+                return null;
+            }
             double dist, depth, radsq;
             double xpen, ypen;
             Vector2 dir;
@@ -232,7 +251,7 @@ namespace Shard
 
                 dir *= (float)depth;
 
-                return dir;
+                return -dir;
             }
 
             return null;

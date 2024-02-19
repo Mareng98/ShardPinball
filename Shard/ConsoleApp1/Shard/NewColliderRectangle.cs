@@ -360,10 +360,34 @@ namespace Shard
             Vector2 lastBallOrigin = new Vector2(c.Lx, c.Ly);
             bool isPointInPolygon = pointInPolygon(ballOrigin);
             bool isPreviousPointInPolygon = pointInPolygon(lastBallOrigin);
-            // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
+            
             if (!CircleInBoundingBox(ballOrigin, c.Rad) || isPreviousPointInPolygon)
             {
+                // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
                 return null;
+            }
+            int smallestDistanceIndex = 0;
+            float smallestDistance = float.MaxValue;
+            bool borderCrossed = false;
+            // Check if any border has been passed
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                Vector2 result;
+                if(FindIntersection(lastBallOrigin, ballOrigin, new Vector2(vertices[i].X + x, vertices[i].Y + y),
+                    new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y), out result))
+                {
+                    // Intersection found
+                    if((lastBallOrigin - result).Length() < smallestDistance)
+                    {
+                        borderCrossed = true;
+                        smallestDistance = (lastBallOrigin - result).Length();
+                        smallestDistanceIndex = i;
+                    }
+                }
+            }
+            if (borderCrossed)
+            {
+                return CalculateNormalVector(vertices[smallestDistanceIndex], vertices[(smallestDistanceIndex + 1) % vertices.Length]);
             }
             // (Distance , vertices start index)
             List<(float,int)> collisionSegmentCanidates = new List<(float,int)>();
@@ -407,7 +431,7 @@ namespace Shard
         public override Vector2? checkCollision(ColliderCircle c)
         {
             //return checkCollisionv2(c);
-            Vector2 ballOrigin = new Vector2(c.X, c.Y);
+            /*Vector2 ballOrigin = new Vector2(c.X, c.Y);
             if (!CircleInBoundingBox(ballOrigin, c.Rad))
             {
                 return null;
@@ -417,8 +441,51 @@ namespace Shard
             {
                 DrawTriangle(new Vector2[] { new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 200, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 300, Bootstrap.getDisplay().getHeight() / 2), new Vector2(Bootstrap.getDisplay().getWidth() / 2 + 250, Bootstrap.getDisplay().getHeight() - 200)}, Color.Green);
                 //Debug.Log("Point is in Polygon");
+            }*/
+            Vector2 ballOrigin = new Vector2(c.X, c.Y);
+            Vector2 lastBallOrigin = new Vector2(c.Lx, c.Ly);
+            bool isPointInPolygon = pointInPolygon(ballOrigin);
+            bool isPreviousPointInPolygon = pointInPolygon(lastBallOrigin);
+
+            if (!CircleInBoundingBox(ballOrigin, c.Rad) || isPreviousPointInPolygon)
+            {
+                // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
+                return null;
             }
-            
+            Display d = Bootstrap.getDisplay();
+            d.drawCircle((int)c.X, (int)c.Y, (int)c.Rad, Color.AliceBlue);
+            drawMe(Color.Green);
+            d.display();
+            int shortestPathIndex = 0;
+            float shortestPath = float.MaxValue;
+            bool borderCrossed = false;
+            // Check if any border has been passed
+            if (!isPreviousPointInPolygon) { 
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    Vector2 result;
+                    if (FindIntersection(lastBallOrigin, ballOrigin,
+                        new Vector2(vertices[i].X + x, vertices[i].Y + y),
+                        new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y), out result))
+                    {
+                        // Intersection found
+                        if ((lastBallOrigin - result).Length() < shortestPath)
+                        {
+                            FindIntersection(lastBallOrigin, ballOrigin,
+                        new Vector2(vertices[i].X + x, vertices[i].Y + y),
+                        new Vector2(vertices[(i + 1) % vertices.Length].X + x, vertices[(i + 1) % vertices.Length].Y + y), out result);
+                            borderCrossed = true;
+                            shortestPath = (lastBallOrigin - result).Length();
+                            shortestPathIndex = i;
+                        }
+                    }
+                }
+                if (borderCrossed)
+                {
+                    return CalculateNormalVector(vertices[shortestPathIndex], vertices[(shortestPathIndex + 1) % vertices.Length]);
+                }
+            }
+
             float[] sideLengths = new float[vertices.Length];
             // If the ballOrigin is completely within the rectangle this wont always work
             // If the ball is at least partly outside, this will work
@@ -571,16 +638,35 @@ namespace Shard
         }
 
 
-
+        private void DrawShape(Vector2[] a)
+        {
+            Display d = Bootstrap.getDisplay();
+            
+            for (int i = 0; i < a.Length; i++)
+            {
+                d.drawLine((int) a[i].X, (int)a[i].Y, (int)a[(i + 1) % a.Length].X, (int)a[(i + 1) % a.Length].Y,Color.Purple);
+            }
+            d.display();
+        }
 
         private bool FindIntersection(Vector2 s1, Vector2 e1, Vector2 s2, Vector2 e2, out Vector2 result)
         {
-            // Let vectors construct the bounding box
-            float left = float.MaxValue;
-            float right = float.MinValue;
-            float top = float.MaxValue;
-            float bottom = float.MinValue;
-            Vector2[] vectors = { s1, e1, s2, e2 };
+            // Let Ball's last movement make up the bounding box
+            float left = Math.Min(s1.X,e1.X);
+            float right = Math.Max(s1.X, e1.X);
+            float top = Math.Min(s1.Y, e1.Y);
+            float bottom = Math.Max(s1.Y, e1.Y);
+            float lineLeft = Math.Min(s2.X, e2.X);
+            float lineRight = Math.Max(s2.X, e2.X);
+            float lineTop = Math.Min(s2.Y, e2.Y);
+            float lineBottom = Math.Max(s2.Y, e2.Y);
+            Vector2 topLeft = new Vector2(Math.Min(s1.X, e1.X), Math.Min(s1.Y, e1.Y));
+            Vector2 topRight = new Vector2(Math.Max(s1.X, e1.X), Math.Min(s1.Y, e1.Y));
+            Vector2 bottomLeft = new Vector2(Math.Min(s1.X, e1.X), Math.Max(s1.Y, e1.Y));
+            Vector2 bottomRight = new Vector2(Math.Max(s1.X, e1.X), Math.Max(s1.Y, e1.Y));
+            
+
+            /*Vector2[] vectors = { s1, e1, s2, e2 };
             for(int i = 0; i < 4; i++)
             {
                 float vx = vectors[i].X;
@@ -601,16 +687,16 @@ namespace Shard
                 {
                     bottom = vy;
                 }
-            }
-            float a1 = e1.Y - s1.Y;
-            float b1 = s1.X - e1.X;
-            float c1 = a1 * s1.X + b1 * s1.Y;
+            }*/
+            double dy1 = e1.Y - s1.Y;
+            double dx1 = s1.X - e1.X;
+            double c1 = dy1 * s1.X + dx1 * s1.Y;
 
-            float a2 = e2.Y - s2.Y;
-            float b2 = s2.X - e2.X;
-            float c2 = a2 * s2.X + b2 * s2.Y;
+            double dy2 = e2.Y - s2.Y;
+            double dx2 = s2.X - e2.X;
+            double c2 = dy2 * s2.X + dx2 * s2.Y;
 
-            float delta = a1 * b2 - a2 * b1;
+            double delta = dy1 * dx2 - dy2 * dx1;
             //If lines are parallel, the result will be null.
             if(delta == 0)
             {
@@ -619,12 +705,18 @@ namespace Shard
             }
             else
             {
-                result = new Vector2((b2 * c1 - b1 * c2) / delta, (a1 * c2 - a2 * c1) / delta);
+                result = new Vector2((float)((dx2 * c1 - dx1 * c2) / delta), (float)((dy1 * c2 - dy2 * c1) / delta));
+                // Check if the intersection is happening outside of line
+                if(result.X < lineLeft || result.X > lineRight || result.Y > lineBottom || result.Y < lineTop)
+                {
+                    return false;
+                }
                 // Check if the intersection is happening within the bounding box
                 if(result.X < left || result.X > right || result.Y > bottom ||result.Y < top)
                 {
                     return false;
                 }
+                DrawShape([topLeft, topRight, bottomRight, bottomLeft]);
                 return true;
             }
         }
@@ -648,7 +740,7 @@ namespace Shard
             //Vector2 line = triangle[0] + (triangle[2] - triangle[1]) * dv;
             StraigthenTriangle(triangleTmp);
             Vector2 start; 
-            bool isOk = FindIntersection(triangle[0], triangle[1], triangle[2], new Vector2(50,220), out start);
+            //bool isOk = FindIntersection(triangle[0], triangle[1], triangle[2], new Vector2(50,220), out start);
             //d.drawLine((int)triangle[2].X, (int)triangle[2].Y, (int)line.X, (int)line.Y, Color.GreenYellow);
             //DrawTriangle(triangle, Color.AliceBlue);
             for(int i = 0; i < vertices.Length; i++)

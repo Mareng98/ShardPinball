@@ -14,12 +14,13 @@ namespace Pinball
     {
         private List<double> maxHeight = new List<double>();
         float cx, cy;
+
         public override void initialize()
         {
-            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("ball.png");
+            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("pinball.png");
             setPhysicsEnabled();
-            Transform.Scalex = 1;
-            Transform.Scaley = 1;
+            Transform.Scalex = 0.5f;
+            Transform.Scaley = 0.5f;
             Transform.Wid = 6;
             Transform.Ht = 6;
             MyBody.addCircleCollider();
@@ -27,7 +28,7 @@ namespace Pinball
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.Force = new Vector2(18f,13f);
+            MyBody.Force = new Vector2(2f,-10f);
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
