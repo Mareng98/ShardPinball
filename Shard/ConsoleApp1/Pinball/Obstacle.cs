@@ -26,14 +26,15 @@ namespace GameBreakout
             Transform.Scaley = 2;
             Transform.Wid = 6;
             Transform.Ht = 6;
-            MyBody.Mass = 15000;
+            MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.UsesGravity = false;
+            MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
             MyBody.addCircleCollider();
-
+                MyBody.FrictionCoefficient = 0.04f;
+                MyBody.Force = new Vector2(0, 0);
             addTag("Obstacle");
 
         }

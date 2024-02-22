@@ -13,6 +13,7 @@ namespace Shard
 {
     class NewColliderRectangle : Collider
     {
+        private Transform trans;
         private float x;
         private float y;
         private float width;
@@ -59,7 +60,7 @@ namespace Shard
             }
         }
 
-        public NewColliderRectangle(CollisionHandler gob, float x, float y) : base(gob)
+        public NewColliderRectangle(CollisionHandler gob, Transform trans, float x, float y) : base(gob)
         {
             X = x;
             Y = y;
@@ -108,7 +109,7 @@ namespace Shard
             Rotation = 0;
         }
 
-        public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h, float r) : base(gob)
+        public NewColliderRectangle(CollisionHandler gob, Transform trans, float x, float y, float w, float h, float r) : base(gob)
         {
             X = x;
             Y = y;
@@ -118,9 +119,10 @@ namespace Shard
             collisionNormal = new Vector2(0, 0);
             RotationPivot = new Vector2(w / 2, h / 2);
             Rotation = r;
+            this.trans = trans;
         }
 
-        public NewColliderRectangle(CollisionHandler gob, float x, float y, float w, float h, float r, Vector2 rotationPivot) : base(gob)
+        public NewColliderRectangle(CollisionHandler gob, Transform trans, float x, float y, float w, float h, float r, Vector2 rotationPivot) : base(gob)
         {
             X = x;
             Y = y;
@@ -130,9 +132,10 @@ namespace Shard
             collisionNormal = new Vector2(0, 0);
             RotationPivot = rotationPivot;
             Rotation = 0;
+            this.trans = trans;
         }
         // Use this if you want an uneven rectangle
-        public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r) : base(gob)
+        public NewColliderRectangle(CollisionHandler gob, Transform trans, float x, float y, Vector2[] inputVertices, float r) : base(gob)
         {
             X = x;
             Y = y;
@@ -143,9 +146,10 @@ namespace Shard
             height = CalculateHeight();
             RotationPivot = inputVertices[0];
             Rotation = 0;
+            this.trans = trans;
         }
 
-        public NewColliderRectangle(CollisionHandler gob, float x, float y, Vector2[] inputVertices, float r, Vector2 rotationPivot) : base(gob)
+        public NewColliderRectangle(CollisionHandler gob, Transform trans, float x, float y, Vector2[] inputVertices, float r, Vector2 rotationPivot) : base(gob)
         {
             //if (inputVertices.Length != 4)
             //    throw new ArgumentException("Invalid number of vertices. Must be 4 for a rectangle.");
@@ -160,6 +164,7 @@ namespace Shard
             height = CalculateHeight();
             RotationPivot = rotationPivot;
             Rotation = 0;
+            this.trans = trans;
         }
         public static float CalculateLineLength(Vector2 startPoint, Vector2 endPoint)
         {
@@ -191,7 +196,7 @@ namespace Shard
 
         public void RotateVertices(float targetRotation, Vector2[] vertices, Vector2 rotationPivot)
         {
-            float newRotation = targetRotation % 6.283f - rotation;
+            float newRotation = (targetRotation * MathF.PI / 180.0f) - rotation;
             float cosAngle = (float)Math.Cos(newRotation);
             float sinAngle = (float)Math.Sin(newRotation);
             for (int i = 0; i < vertices.Length; i++)
@@ -263,6 +268,7 @@ namespace Shard
         {
             MinAndMaxX = getMinAndMaxX();
             MinAndMaxY = getMinAndMaxY();
+            RotateVertices(trans.Rotz, vertices, rotationPivot);
         }
 
         public override Vector2? checkCollision(NewColliderRectangle c)
@@ -452,10 +458,10 @@ namespace Shard
                 // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
                 return null;
             }
-            Display d = Bootstrap.getDisplay();
-            d.drawCircle((int)c.X, (int)c.Y, (int)c.Rad, Color.AliceBlue);
-            drawMe(Color.Green);
-            d.display();
+            //Display d = Bootstrap.getDisplay();
+            //d.drawCircle((int)c.X, (int)c.Y, (int)c.Rad, Color.AliceBlue);
+            //drawMe(Color.Green);
+            //d.display();
             int shortestPathIndex = 0;
             float shortestPath = float.MaxValue;
             bool borderCrossed = false;

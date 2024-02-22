@@ -209,50 +209,16 @@ namespace Shard
 
         }
 
-        private bool IsInsideCircle(Vector2 o1, float r1, Vector2 o2, float r2)
-        {
-            float dist = (o1 - o2).Length();
-            if(dist < r1 + r2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+
 
         public override Vector2? checkCollision(ColliderCircle c)
         {
-            if (IsInsideCircle(new Vector2(c.Lx, c.Ly),c.Rad, new Vector2(this.X, this.Y), this.Rad))
-            {
-                // The collision has already happened
-                return null;
-            }
-            double dist, depth, radsq;
-            double xpen, ypen;
-            Vector2 dir;
 
-            xpen = Math.Pow(c.X - this.X, 2);
-            ypen = Math.Pow(c.Y - this.Y, 2);
-
-            radsq = Math.Pow(c.Rad + this.Rad, 2);
-
-            dist = xpen + ypen;
-
-
-            depth = (c.Rad + Rad) - Math.Sqrt(dist);
-
-
-            if (dist <= radsq)
-            {
-                dir = new Vector2(X - c.X, Y - c.Y);
-                dir = Vector2.Normalize(dir);
-
-                dir *= (float)depth;
-
-                return -dir;
-            }
+            Vector2 normal = new Vector2(c.x, c.y) - new Vector2(this.x, this.y);
+            if (normal.Length() <= c.Rad + this.Rad) {
+                float test = normal.Length();
+                return Vector2.Normalize(normal);
+            } 
 
             return null;
         }

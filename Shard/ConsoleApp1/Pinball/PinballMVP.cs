@@ -47,9 +47,7 @@ namespace Shard
         public override void initialize()
         {
             Bootstrap.getInput().addListener(this);
-            PinballBall b = new PinballBall();
-            b.Transform.X = 650;
-            b.Transform.Y = 500;
+
 
             leftFlipper = new Flipper("Flipper", 500, 800, 100, 30, 20, FlipperSide.Left);
             rightFlipper = new Flipper("Flipper", 660, 800, 100, 20, 30, FlipperSide.Right);
@@ -66,7 +64,9 @@ namespace Shard
                     obstacles.Add(o);
                 }
             }
-
+            PinballBall b = new PinballBall();
+            b.Transform.X = 620;
+            b.Transform.Y = 100;
             //Flipper f4 = new Flipper("Flipper", 850, 400, 80, 40, 20);
             PinballRectangle ramp = new PinballRectangle("LeftRamp", 260, Bootstrap.getDisplay().getHeight() - 480,
                 [new Vector2(0, 0),
@@ -80,7 +80,7 @@ namespace Shard
             PinballRectangle leftWall = new PinballRectangle("LeftWall", 210, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 260, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
-            Well well = new Well("Well", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
+            PinballRectangle well = new PinballRectangle("Well", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
         }
 
         public override int getTargetFrameRate()

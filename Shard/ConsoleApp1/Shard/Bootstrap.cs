@@ -261,14 +261,14 @@ namespace Shard
             timeInMillisecondsStart = startTime;
             lastTick = startTime;
 
-            phys.GravityModifier = 0.1f;
+            phys.GravityModifier = 0f;
             // This is our game loop.
 
             if (getEnvironmentalVariable("physics_debug") == "1")
             {
                 physDebug = true;
             }
-
+            int tickNumber = 0;
             while (true)
             {
                 frames += 1;
@@ -298,8 +298,12 @@ namespace Shard
                     if (phys.willTick())
                     {
                         GameObjectManager.getInstance().prePhysicsUpdate();
+                        tickNumber += 1;
                     }
-
+                    if(tickNumber == 200)
+                    {
+                        phys.GravityModifier = 0.15f;
+                    }
                     // Update the physics.  If it's too soon, it'll return false.   Otherwise 
                     // it'll return true.
                     physUpdate = phys.update();

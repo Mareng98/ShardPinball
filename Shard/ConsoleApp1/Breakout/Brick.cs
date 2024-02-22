@@ -9,6 +9,17 @@ namespace GameBreakout
 
         public int Health { get => health; set => health = value; }
 
+        public Brick(int x, int y)
+        {
+            health = 3;
+            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("brick" + Health + ".png");
+            Transform.X = x;
+            Transform.Y = y;
+            Transform.Wid = 100;
+            Transform.Ht = 20;
+            MyBody.addNewRectCollider(x, y, 60, 30, 0);
+        }
+
         public override void initialize()
         {
 
@@ -18,7 +29,7 @@ namespace GameBreakout
             MyBody.Mass = 1;
             MyBody.Kinematic = true;
 
-            MyBody.addRectCollider();
+            
 
             addTag("Brick");
 

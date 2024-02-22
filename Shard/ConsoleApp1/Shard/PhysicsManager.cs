@@ -548,14 +548,15 @@ namespace Shard
                     colliding.Add(ob);
 
 
-                    // Add the normal that the object should reflect around
+                    // Add the normal that the object should reflect around, as well as the physicsBody that it is collided with
+                    // The reflection of both objects will be appropriately calculated and set in either one of these cases
                     if (ob.A.ReflectOnCollision)
                     {                        
-                        ob.A.AddReflectionNormal(impulse);
+                        ob.A.AddCollisionInfo(-impulse, ob.B);
                     }
-                    if (ob.B.ReflectOnCollision)
+                    else if (ob.B.ReflectOnCollision)
                     {
-                        ob.B.AddReflectionNormal(impulse);
+                        ob.B.AddCollisionInfo(impulse, ob.A);
                     }
 
 
@@ -569,6 +570,7 @@ namespace Shard
                 if (body.UsesGravity)
                 {
                     body.applyGravity(gravityModifier, gravityDir);
+                    body.AddFriction();
                 }
             }
                 foreach (CollidingObject ob in colliding)
