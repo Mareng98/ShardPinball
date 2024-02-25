@@ -29,9 +29,9 @@ namespace GameBreakout
             MyBody.Mass = 1;
             MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
-            MyBody.UsesGravity = true;
+            MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
-            MyBody.ReflectOnCollision = true;
+            MyBody.ReflectOnCollision = false;
             MyBody.addCircleCollider();
                 MyBody.FrictionCoefficient = 0.04f;
                 MyBody.Force = new Vector2(0, 0);

@@ -261,7 +261,7 @@ namespace Shard
             timeInMillisecondsStart = startTime;
             lastTick = startTime;
 
-            phys.GravityModifier = 0f;
+            phys.GravityModifier = 0.3f;
             // This is our game loop.
 
             if (getEnvironmentalVariable("physics_debug") == "1")
@@ -302,7 +302,7 @@ namespace Shard
                     }
                     if(tickNumber == 200)
                     {
-                        phys.GravityModifier = 0.15f;
+                        phys.GravityModifier = 0.3f;
                     }
                     // Update the physics.  If it's too soon, it'll return false.   Otherwise 
                     // it'll return true.

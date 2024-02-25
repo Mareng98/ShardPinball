@@ -453,14 +453,13 @@ namespace Shard
             bool isPointInPolygon = pointInPolygon(ballOrigin);
             bool isPreviousPointInPolygon = pointInPolygon(lastBallOrigin);
 
-            if (!CircleInBoundingBox(ballOrigin, c.Rad) || isPreviousPointInPolygon)
+            if (!CircleInBoundingBox(ballOrigin, c.Rad))
             {
-                // If ballorigin is not in bounding box, or it was previously inside of polygon, return null
                 return null;
             }
-            //Display d = Bootstrap.getDisplay();
+            Display d = Bootstrap.getDisplay();
             //d.drawCircle((int)c.X, (int)c.Y, (int)c.Rad, Color.AliceBlue);
-            //drawMe(Color.Green);
+           // drawMe(Color.Green);
             //d.display();
             int shortestPathIndex = 0;
             float shortestPath = float.MaxValue;
@@ -749,7 +748,7 @@ namespace Shard
             //bool isOk = FindIntersection(triangle[0], triangle[1], triangle[2], new Vector2(50,220), out start);
             //d.drawLine((int)triangle[2].X, (int)triangle[2].Y, (int)line.X, (int)line.Y, Color.GreenYellow);
             //DrawTriangle(triangle, Color.AliceBlue);
-            for(int i = 0; i < vertices.Length; i++)
+            /*for(int i = 0; i < vertices.Length; i++)
             {
                 //line = Vector2.Normalize(CalculateNormalVector(vertices[i], vertices[(i + 1) % vertices.Length]))  + vertices[i] + new Vector2(x,y) + (vertices[(i + 1) % vertices.Length] - vertices[i]) / 2;
                 //d.drawLine((int)line.X, (int)line.Y, (int)(vertices[i].X + x), (int)(vertices[(i + 1) % vertices.Length].Y + y + (vertices[(i + 1) % vertices.Length] - vertices[i]).Y / 2), Color.GreenYellow);
@@ -759,9 +758,9 @@ namespace Shard
                 start = midPoint + normal*50;
                 Vector2 end = midPoint;
                 d.drawLine((int)start.X, (int)start.Y, (int)end.X, (int)end.Y, Color.GreenYellow);
-            }
+            }*/
 
-            d.drawCircle((int)centerX, (int)centerY, 2, col);
+            //d.drawCircle((int)centerX, (int)centerY, 2, col);
         }
 
         public override float[] getMinAndMaxY()
