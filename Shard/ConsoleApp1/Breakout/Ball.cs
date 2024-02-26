@@ -26,7 +26,7 @@ namespace GameBreakout
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
-
+            MyBody.Force = new Vector2(5, 5);
             Transform.Scalex = 2;
             Transform.Scaley = 2;
 
@@ -54,7 +54,7 @@ namespace GameBreakout
                         if (other.Parent.checkTag("Paddle"))
                         {
 //                            Debug.Log ("Hit the Paddle");
-                            Dir = new Vector2(Transform.Centre.X - other.Trans.Centre.X, LastDir.Y * -1);
+                            //Dir = new Vector2(Transform.Centre.X - other.Trans.Centre.X, LastDir.Y * -1);
                         }
 
                         if (other.Parent.checkTag("Brick"))
@@ -97,7 +97,7 @@ namespace GameBreakout
 
         public override void physicsUpdate()
         {
-
+            /*
 
             if (Transform.Centre.Y - Transform.Ht <= 0)
             {
@@ -163,7 +163,7 @@ namespace GameBreakout
 
                 LastDir = Dir;
                 dir = Vector2.Zero;
-            }
+            }*/
 
         }
         public void onCollisionExit(PhysicsBody x)

@@ -10,6 +10,11 @@ namespace GameBreakout
         int wid;
 
 
+        public Paddle()
+        {
+            MyBody.addNewRectCollider(500, 800, 80, 20, 0);
+        }
+
         public override void initialize()
         {
 
@@ -31,7 +36,6 @@ namespace GameBreakout
             MyBody.MaxForce = 20;
             MyBody.Drag = 0.1f;
 
-            MyBody.addRectCollider();
 
             addTag("Paddle");
 
@@ -87,28 +91,15 @@ namespace GameBreakout
 
             if (left)
             {
-                MyBody.addForce(this.Transform.Forward, -1 * 2000f);
+                MyBody.addForce(new System.Numerics.Vector2(-1,0), 2000f);
             }
 
 
             if (right)
             {
-                MyBody.addForce(this.Transform.Forward, 2000f);
+                MyBody.addForce(new System.Numerics.Vector2(1, 0), 2000f);
             }
 
-
-            if (this.Transform.X < 0)
-            {
-                this.Transform.translate(-1 * Transform.X, 0);
-            }
-
-
-            boundsx = wid - (this.Transform.X + this.Transform.Wid);
-
-            if (boundsx < 0)
-            {
-                this.Transform.translate(boundsx, 0);
-            }
 
 
 

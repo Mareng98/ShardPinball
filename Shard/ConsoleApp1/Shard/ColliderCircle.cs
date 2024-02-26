@@ -10,6 +10,7 @@ using Shard.Shard;
 using System;
 using System.Drawing;
 using System.Numerics;
+using System.Security.Cryptography;
 
 namespace Shard
 {
@@ -208,32 +209,16 @@ namespace Shard
 
         }
 
+
+
         public override Vector2? checkCollision(ColliderCircle c)
         {
-            double dist, depth, radsq;
-            double xpen, ypen;
-            Vector2 dir;
 
-            xpen = Math.Pow(c.X - this.X, 2);
-            ypen = Math.Pow(c.Y - this.Y, 2);
-
-            radsq = Math.Pow(c.Rad + this.Rad, 2);
-
-            dist = xpen + ypen;
-
-
-            depth = (c.Rad + Rad) - Math.Sqrt(dist);
-
-
-            if (dist <= radsq)
-            {
-                dir = new Vector2(X - c.X, Y - c.Y);
-                dir = Vector2.Normalize(dir);
-
-                dir *= (float)depth;
-
-                return dir;
-            }
+            Vector2 normal = new Vector2(c.x, c.y) - new Vector2(this.x, this.y);
+            if (normal.Length() <= c.Rad + this.Rad) {
+                float test = normal.Length();
+                return Vector2.Normalize(normal);
+            } 
 
             return null;
         }

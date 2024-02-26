@@ -23,12 +23,16 @@ namespace Shard
         private GameObject owner;
         private float x, y;
         private float lx, ly;
-        private float rotz;
+        private float rotz; // Angle in degrees
         private int wid, ht;
         private float scalex, scaley;
         private string spritePath;
         private Vector2 forward;
         private Vector2 right, centre;
+        public Vector2 Pivot { get; set; }
+
+        public float MaxAngle { get; set; }
+        public bool UsesMaxAngle { get; set; }
 
         public Vector2 getLastDirection()
         {
@@ -55,6 +59,9 @@ namespace Shard
             lx = 0;
             ly = 0;
 
+            UsesMaxAngle = false;
+            MaxAngle = 0;
+            Pivot = Vector2.Zero;
             rotate(0);
         }
 
@@ -95,8 +102,11 @@ namespace Shard
 
         public void rotate(float dir)
         {
-            rotz += (float)dir;
-
+            if(dir > 0)
+            {
+                float test = 0;
+            }
+            Rotz += (float)dir;
             rotz %= 360;
 
             float angle = (float)(Math.PI * rotz / 180.0f);
@@ -131,7 +141,22 @@ namespace Shard
         public float Rotz
         {
             get => rotz;
-            set => rotz = value;
+            set
+            {
+                // Make sure that the rotation doesn't exceed the max angle.
+                if(!UsesMaxAngle || Math.Abs(value) < MaxAngle / 2)
+                {
+                    rotz = value;
+                }
+                else if(value > 0)
+                {
+                    rotz = MaxAngle/2;
+                }
+                else
+                {
+                    rotz = -MaxAngle/2;
+                }
+            }
         }
 
 

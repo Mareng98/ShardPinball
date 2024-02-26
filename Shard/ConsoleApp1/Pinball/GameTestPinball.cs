@@ -62,7 +62,8 @@ namespace Shard
             Bootstrap.getInput().addListener(this);
             PinballBall b = new PinballBall();
             b.Transform.X = 650;
-            b.Transform.Y = 807;
+            b.Transform.Y = 500;
+            //b.Transform.Y = 807;
 
             /*for(int i = 0; i < 4; i++)
             {
@@ -77,19 +78,19 @@ namespace Shard
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
             r = new PinballRectangle("Rectangle",150,150,50,50);
-            leftFlipper = new Flipper("Flipper", 300, 400, 150, 80, 40, FlipperSide.Left);
-            rightFlipper = new Flipper("Flipper", 700, 400, 150, 40, 80, FlipperSide.Right);
+            leftFlipper = new Flipper("Flipper", 300, 400, 150, 40, 20, FlipperSide.Left);
+            rightFlipper = new Flipper("Flipper", 700, 400, 150, 20, 40, FlipperSide.Right);
             
             //Flipper f4 = new Flipper("Flipper", 850, 400, 80, 40, 20);
             PinballRectangle ramp = new PinballRectangle("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, 
                 [new Vector2(0, 0),
                 new Vector2(400, 400),
                 new Vector2(0, 400)]);
-            /*PinballRectangle ramp2 = new PinballRectangle("RightRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, 
+            PinballRectangle ramp2 = new PinballRectangle("RightRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, 
                 [new Vector2(400, 0),
                     new Vector2(400, 400),
                 new Vector2(0, 400)
-                ]);*/
+                ]);
             PinballRectangle leftWall = new PinballRectangle("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);

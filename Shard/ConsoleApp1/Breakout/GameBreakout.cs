@@ -1,4 +1,5 @@
 ﻿using GameBreakout;
+using Pinball;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -43,13 +44,15 @@ namespace Shard
                         continue;
                     }
 
-                    Brick br = new Brick();
-                    br.Transform.X = 100 + (i * 65);
-                    br.Transform.Y = 100 + (j * 33);
+                    Brick br = new Brick(100 + (i * 65), 100 + (j * 33));
                     br.Health = 1 + rand.Next(3);
                     myBricks.Add(br);
                 }
             }
+            PinballRectangle leftWall = new PinballRectangle("LeftWall", 0, 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth(), 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballRectangle topWall = new PinballRectangle("TopWall", 0, -50, Bootstrap.getDisplay().getWidth(), 50);
+            PinballRectangle well = new PinballRectangle("Well", 0, Bootstrap.getDisplay().getHeight() , Bootstrap.getDisplay().getWidth(), 50);
         }
 
         public override void initialize()
@@ -63,8 +66,6 @@ namespace Shard
             Ball b = new Ball();
             b.Transform.X = 50;
             b.Transform.Y = 50;
-            b.Dir = new Vector2(1, 1);
-            b.LastDir = new Vector2(1, 1);
 
 
         }

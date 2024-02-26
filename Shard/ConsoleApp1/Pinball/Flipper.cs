@@ -69,6 +69,7 @@ namespace Pinball
             Collider = MyBody.addNewRectCollider(x, y, vertices.ToArray(), 0, rotationPivot);
             this.side = side;
             rotationDirection = FlipperRotationDirection.Stop;
+            MyBody.Trans.Pivot = rotationPivot + new Vector2(x,y);
         }
 
         private float YfromX(float radius, float x)
@@ -82,12 +83,16 @@ namespace Pinball
         {
             setPhysicsEnabled();
 
-            MyBody.Mass = 15000;
-            MyBody.MaxForce = 15000;
-            MyBody.Drag = 0f;
+            MyBody.Mass = 1;
+            MyBody.MaxForce = 1337;
+            MyBody.MaxTorque = 15000;
+            MyBody.AngularDrag = 0.08f;
+            MyBody.Drag = 0.1f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
-            MyBody.ReflectOnCollision = true;
+            MyBody.ReflectOnCollision = false;
+            MyBody.Trans.UsesMaxAngle = true;
+            MyBody.Trans.MaxAngle = 60f; // 60 degrees
         }
 
         public override void update()
@@ -97,15 +102,15 @@ namespace Pinball
                 switch (rotationDirection)
                 {
                     case FlipperRotationDirection.Up:
-                        if (this.Collider.Rotation > -1)
+                        if (MyBody.Trans.Rotz > -1)
                         {
-                            this.Collider.Rotation -= 0.01f;
+                            MyBody.addTorque(-1f);
                         }
                         break;
                     case FlipperRotationDirection.Stop:
-                        if (this.Collider.Rotation < 0)
+                        if (MyBody.Trans.Rotz < 0)
                         {
-                            this.Collider.Rotation += 0.01f;
+                            MyBody.addTorque(1f);
                         }
                         break;
                 }
@@ -115,15 +120,15 @@ namespace Pinball
                 switch (rotationDirection)
                 {
                     case FlipperRotationDirection.Up:
-                        if (this.Collider.Rotation < 1)
+                        if (MyBody.Trans.Rotz < 1)
                         {
-                            this.Collider.Rotation += 0.01f;
+                            MyBody.addTorque(1f);
                         }
                         break;
                     case FlipperRotationDirection.Stop:
-                        if (this.Collider.Rotation > 0)
+                        if (MyBody.Trans.Rotz > 0)
                         {
-                            this.Collider.Rotation -= 0.01f;
+                            MyBody.addTorque(-1f);
                         }
                         break;
                 }
