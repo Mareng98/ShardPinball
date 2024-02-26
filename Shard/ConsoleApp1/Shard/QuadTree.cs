@@ -16,13 +16,13 @@ namespace Shard
      */
     internal class QuadTree
     {
-        int maxDepth;
-        int maxThreshold;
+        private readonly int maxDepth;
+        private readonly int maxThreshold;
 
         private QNode root;
-        public readonly Box globalBox;
+        private readonly Box globalBox;
 
-        internal QNode Root { get => root; set => root = value; }
+        public QNode Root { get => root; set => root = value; }
 
         public QuadTree(int x, int y, int width, int height, int depth = 8, int threshold = 16)
         {
@@ -34,12 +34,12 @@ namespace Shard
 
 
 
-        public bool isLeaf(QNode node)
+        private bool isLeaf(QNode node)
         {
             return node.children is null;
         }
 
-        public Box computeBox(Box box, NodeDirection dir)
+        private Box computeBox(Box box, NodeDirection dir)
         {
             var origin = box.GetTopLeft();
             var childSize = box.Size() / 2.0f;
@@ -63,7 +63,7 @@ namespace Shard
                     return null;
             }
         }
-        public NodeDirection findQuadrant(Box nodeBox, Box toBeInserted)
+        private NodeDirection findQuadrant(Box nodeBox, Box toBeInserted)
         {
             var center = nodeBox.GetCenter();
             // Implies we're in the "west" quadrants
@@ -106,7 +106,7 @@ namespace Shard
             }
         }
 
-        public void split(QNode node, Box box)
+        private void split(QNode node, Box box)
         {
             Debug.Assert(node != null);
             Debug.Assert(isLeaf(node));
@@ -217,7 +217,7 @@ namespace Shard
             return intersections;
         }
 
-        public void internalFindAllIntersections(QNode node, List<Tuple<Box, Box>> intersections)
+        private void internalFindAllIntersections(QNode node, List<Tuple<Box, Box>> intersections)
         {
             for (int i = 0; i < node.boxes.Count; i++)
             {
@@ -247,7 +247,7 @@ namespace Shard
             }
         }
 
-        public void findIntersectingChildren(QNode node, Box box, List<Tuple<Box, Box>> intersections)
+        private void findIntersectingChildren(QNode node, Box box, List<Tuple<Box, Box>> intersections)
         {
             foreach (var b in node.boxes)
             {
