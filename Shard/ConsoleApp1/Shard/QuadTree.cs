@@ -128,7 +128,6 @@ namespace Shard
                 }
                 else
                 {
-                    Console.WriteLine("added to parent box: ", box.ToString());
                     newBoxes.Add(node.boxes[i]); 
                 }
             }
@@ -149,7 +148,6 @@ namespace Shard
                 // If it's a leaf and there are less than 16 nodes (our threshold) then insert. 
                 if (depth >= maxDepth || node.boxes.Count < 1)
                 {
-                    Console.WriteLine(boxToBeInserted.ToString());
                     node.boxes.Add(boxToBeInserted);
                 }
                 else
