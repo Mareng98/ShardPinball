@@ -9,7 +9,7 @@ namespace Pinball
 {
     class PinballRectangle: GameObject, CollisionHandler
     {
-        public NewColliderRectangle Collider { get; set; }
+        public ColliderPolygon Collider { get; set; }
 
         public PinballRectangle(string tag, int x, int y, int width, int height)
         {

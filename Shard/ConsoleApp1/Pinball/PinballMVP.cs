@@ -50,8 +50,8 @@ namespace Shard
             Bootstrap.getInput().addListener(this);
 
 
-            leftFlipper = new Flipper("Flipper", 500, 800, 100, 30, 20, FlipperSide.Left);
-            rightFlipper = new Flipper("Flipper", 660, 800, 100, 20, 30, FlipperSide.Right);
+            //leftFlipper = new Flipper("Flipper", 500, 800, 100, 30, 20, FlipperSide.Left);
+            //rightFlipper = new Flipper("Flipper", 660, 800, 100, 20, 30, FlipperSide.Right);
 
             obstacles = new List<Obstacle>();
             for (int i = 0; i < 4; i++)

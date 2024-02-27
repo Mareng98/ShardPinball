@@ -14,6 +14,8 @@
 using SDL2;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Numerics;
 using System.Threading;
 
 namespace Shard
@@ -52,9 +54,11 @@ namespace Shard
 
     class DisplaySDL : DisplayText
     {
+
         private List<Transform> _toDraw;
         private List<Line> _linesToDraw;
         private List<Circle> _circlesToDraw;
+        private List<SDL.SDL_Vertex[]> _polygonsToDraw;
         private Dictionary<string, IntPtr> spriteBuffer;
         public override void initialize()
         {
@@ -65,7 +69,7 @@ namespace Shard
             _toDraw = new List<Transform>();
             _linesToDraw = new List<Line>();
             _circlesToDraw = new List<Circle>();
-
+            _polygonsToDraw = new List<SDL.SDL_Vertex[]>();
 
         }
 
@@ -204,13 +208,66 @@ namespace Shard
             _linesToDraw.Add(l);
         }
 
+
+
+        // Helper method to add a triangle to _polygonsToDraw
+        void AddTriangleToDraw(Vector2[] triangle, Color color, byte opacity)
+        {
+            SDL.SDL_Vertex[] sdlVertices = new SDL.SDL_Vertex[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 v = triangle[i];
+                sdlVertices[i] = new SDL.SDL_Vertex
+                {
+                    position = new SDL.SDL_FPoint { x = v.X, y = v.Y },
+                    color = new SDL.SDL_Color { r = color.R, g = color.G, b = color.B, a = opacity },
+                    tex_coord = new SDL.SDL_FPoint { x = 1, y = 1 }
+                };
+            }
+
+            _polygonsToDraw.Add(sdlVertices);
+        }
+
+        /// <summary>
+        /// Renders a Polygon with no intersecting lines, or vertex that is on a straight line between two other vertices.
+        /// </summary>
+        /// <param name="vertices">The vertices to render from.</param>
+        public override void renderGeometry(Vector2[] vertices, Color color, byte opacity)
+        {
+            
+            if (vertices is null)
+            {
+                throw new ArgumentNullException("vertices");
+            }else if(vertices.Length < 3)
+            {
+                throw new ArgumentOutOfRangeException("needs at least 3 vertices");
+            }else if(vertices.Length == 3)
+            {
+                AddTriangleToDraw(vertices, color, opacity);
+                return;
+            }
+
+            // Perform ear clipping
+            List<Vector2[]> triangles = Triangulator.Triangulate(vertices);
+            foreach(Vector2[] triangle in triangles)
+            {
+                AddTriangleToDraw(triangle, color, opacity);
+            }
+        }
+
         public override void display()
         {
 
             SDL.SDL_Rect sRect;
             SDL.SDL_Rect tRect;
 
-
+            foreach(SDL.SDL_Vertex[] polygon in _polygonsToDraw)
+            {
+                SDL.SDL_SetRenderDrawColor(_rend, 255, 255, 255, 255);
+                int[] indices = { 0, 1, 2};
+                SDL.SDL_RenderGeometry(_rend, nint.Zero, polygon, polygon.Length, indices,3);
+            }
 
             foreach (Transform trans in _toDraw)
             {
@@ -259,7 +316,7 @@ namespace Shard
             _toDraw.Clear();
             _circlesToDraw.Clear();
             _linesToDraw.Clear();
-
+            _polygonsToDraw.Clear();
             base.clearDisplay();
         }
 

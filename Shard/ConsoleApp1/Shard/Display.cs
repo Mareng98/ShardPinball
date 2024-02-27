@@ -7,6 +7,7 @@
 */
 
 using System.Drawing;
+using System.Numerics;
 
 namespace Shard
 {
@@ -23,6 +24,9 @@ namespace Shard
             drawLine(x, y, x2, y2, col.R, col.G, col.B, col.A);
         }
 
+        public virtual void renderGeometry(Vector2[] vertices, Color color, byte opacity)
+        {
+        }
 
         public virtual void drawCircle(int x, int y, int rad, int r, int g, int b, int a)
         {

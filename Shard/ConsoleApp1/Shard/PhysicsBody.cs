@@ -487,23 +487,23 @@ namespace Shard
             return cr;
         }
 
-        public NewColliderRectangle addNewRectCollider(float x, float y, float w, float h, float r)
+        public ColliderPolygon addNewRectCollider(float x, float y, float w, float h, float r)
         {
-            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, parent.Transform, x, y, w, h, r);
+            ColliderPolygon cnr = new ColliderPolygon((CollisionHandler)parent, parent.Transform, x, y, w, h, r);
             addCollider(cnr);
             return cnr;
         }
 
-        public NewColliderRectangle addNewRectCollider(float x, float y, Vector2[] vertices, float r)
+        public ColliderPolygon addNewRectCollider(float x, float y, Vector2[] vertices, float r)
         {
-            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, parent.Transform, x, y, vertices, r);
+            ColliderPolygon cnr = new ColliderPolygon((CollisionHandler)parent, parent.Transform, x, y, vertices, r);
             addCollider(cnr);
             return cnr;
         }
 
-        public NewColliderRectangle addNewRectCollider(float x, float y, Vector2[] vertices, float r, Vector2 rotationPivot)
+        public ColliderPolygon addNewRectCollider(float x, float y, Vector2[] vertices, float r, Vector2 rotationPivot)
         {
-            NewColliderRectangle cnr = new NewColliderRectangle((CollisionHandler)parent, parent.Transform, x, y, vertices, r, rotationPivot);
+            ColliderPolygon cnr = new ColliderPolygon((CollisionHandler)parent, parent.Transform, x, y, vertices, r, rotationPivot);
             addCollider(cnr);
             return cnr;
         }

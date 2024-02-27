@@ -22,7 +22,7 @@ namespace Pinball
             get { return rotationDirection; }
             set { rotationDirection = value; }
         }
-        public NewColliderRectangle Collider { get; set; }
+        public ColliderPolygon Collider { get; set; }
 
         public Flipper(string tag, int x, int y, int width, int leftHeight, int rightHeight, FlipperSide side)
         {

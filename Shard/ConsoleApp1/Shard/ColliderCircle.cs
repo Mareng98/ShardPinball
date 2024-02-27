@@ -123,7 +123,7 @@ namespace Shard
         {
             return null;
         }
-        public override Vector2? checkCollision(NewColliderRectangle c)
+        public override Vector2? checkCollision(ColliderPolygon c)
         {
             return null;
         }

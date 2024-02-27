@@ -40,7 +40,7 @@ namespace Shard
 
         public abstract Vector2? checkCollision(ColliderCircle c);
 
-        public abstract Vector2? checkCollision(NewColliderRectangle c);
+        public abstract Vector2? checkCollision(ColliderPolygon c);
 
         public abstract Vector2? CheckRaycastCollision(ColliderCircle c);
 
@@ -56,8 +56,8 @@ namespace Shard
                 return checkCollision((ColliderCircle)c);
             }
 
-            if (c is NewColliderRectangle){
-                return checkCollision((NewColliderRectangle)c);
+            if (c is ColliderPolygon){
+                return checkCollision((ColliderPolygon)c);
             }
 
             Debug.getInstance().log("Bug");
@@ -77,9 +77,9 @@ namespace Shard
                 return CheckRaycastCollision((ColliderCircle)c);
             }
 
-            if (c is NewColliderRectangle)
+            if (c is ColliderPolygon)
             {
-                return CheckRaycastCollision((NewColliderRectangle)c);
+                return CheckRaycastCollision((ColliderPolygon)c);
             }
 
             Debug.getInstance().log("Collider is not defined in Collider.CheckRaycastCollision()");
