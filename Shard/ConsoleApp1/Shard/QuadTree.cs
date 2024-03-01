@@ -210,14 +210,14 @@ namespace Shard
         }
 
         // given a quad tree, find all its intersecting boxes.
-        public List<Tuple<Box, Box>> findAllIntersections()
+        public List<CollidingObject> findAllIntersections()
         {
-            List<Tuple<Box, Box>> intersections = new();
+            List<CollidingObject> intersections = new();
             internalFindAllIntersections(root, intersections);
             return intersections;
         }
 
-        private void internalFindAllIntersections(QNode node, List<Tuple<Box, Box>> intersections)
+        private void internalFindAllIntersections(QNode node, List<CollidingObject> intersections)
         {
             for (int i = 0; i < node.boxes.Count; i++)
             {
@@ -225,7 +225,10 @@ namespace Shard
                 {
                     if (node.boxes[i].Intersects(node.boxes[j]))
                     {
-                        intersections.Add(new Tuple<Box, Box>(node.boxes[i], node.boxes[j]));
+                        var cb = new CollidingObject();
+                        cb.A = node.boxes[i].body;
+                        cb.B = node.boxes[j].body;
+                        intersections.Add(cb);
                     }
                 }
             }
@@ -247,13 +250,16 @@ namespace Shard
             }
         }
 
-        private void findIntersectingChildren(QNode node, Box box, List<Tuple<Box, Box>> intersections)
+        private void findIntersectingChildren(QNode node, Box box, List<CollidingObject> intersections)
         {
             foreach (var b in node.boxes)
             {
                 if (box.Intersects(b))
                 {
-                    intersections.Add(new Tuple<Box, Box>(box, b));
+                    var cb = new CollidingObject();
+                    cb.A = box.body;
+                    cb.B = b.body;
+                    intersections.Add(cb);
                 }
             }
 
@@ -279,6 +285,9 @@ namespace Shard
         private float width;
         private float height;
 
+        // temporary wrapping a physicsBody (this is not the correct design, just doing this to get stuff to temporarily work.
+        public PhysicsBody body;
+
         public Box(float top, float left, float width, float height)
         {
             this.top = top;
@@ -286,7 +295,12 @@ namespace Shard
             this.width = width;
             this.height = height;
         }
-        
+
+        public Box(float top, float left, float width, float height, PhysicsBody body) : this(top, left, width, height)
+        {
+            this.body = body;
+        }
+
         public float GetRight()
         {
             return left + width;
