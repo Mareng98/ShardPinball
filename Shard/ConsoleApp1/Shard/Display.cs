@@ -28,13 +28,14 @@ namespace Shard
         {
         }
 
-        public virtual void drawCircle(int x, int y, int rad, int r, int g, int b, int a)
-        {
-        }
-
         public virtual void drawCircle(int x, int y, int rad, Color col)
         {
             drawCircle(x, y, rad, col.R, col.G, col.B, col.A);
+        }
+
+        public virtual void drawCircle(int x, int y, int rad, int r, int g, int b, int a)
+        {
+            drawCircle(x, y, rad, r, g, b, a);
         }
 
         public virtual void drawFilledCircle(int x, int y, int rad, Color col)

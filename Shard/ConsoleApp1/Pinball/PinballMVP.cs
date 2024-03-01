@@ -28,6 +28,7 @@ namespace Shard
                 case 80: // 80 left arrow
                     if (eventType.Equals("KeyDown"))
                     {
+                        Bootstrap.getSound().playSound("mechanical.wav");
                         leftFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else
@@ -38,6 +39,7 @@ namespace Shard
                 case 79: // 79 right arrow
                     if (eventType.Equals("KeyDown"))
                     {
+                        Bootstrap.getSound().playSound("mechanical.wav");
                         rightFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else

@@ -85,9 +85,11 @@ namespace Pinball
 
         public void onCollisionStay(PhysicsBody x)
         {
-            if (x.Parent.checkTag("Ball") && charge == FlipperDirection.Stop)
+            if (x.Parent.checkTag("Ball") && charge == FlipperDirection.Stop && power != 0)
             {
-                x.Force += new System.Numerics.Vector2(0, -power);
+
+                Bootstrap.getSound().playSound("spring.wav");
+                x.Force += new Vector2(0, -power);
                 power = 0;
             }
         }

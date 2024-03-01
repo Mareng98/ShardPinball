@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -10,19 +11,23 @@ namespace Pinball
 {
     class Obstacle : GameObject, InputListener, CollisionHandler
     {
+        ColliderCircle circleCollider;
         private ObstacleTypes obstacleType;
         private string obstacleLightOnPath;
         private string obstacleLightOffPath;
         private int obstacleLightOnDuration = 15;
         private int lightDuration = 0;
+        private Random rnd;
+        Display d = Bootstrap.getDisplay();
         public Obstacle(ObstacleTypes type)
         {
-            if(type == ObstacleTypes.SimpleBlue)
+            obstacleType = type;
+            if(obstacleType == ObstacleTypes.SimpleBlue)
             {
                 obstacleLightOnPath = "blueObstacleOn.png";
                 obstacleLightOffPath = "blueObstacleOff.png";
             }
-            else if(type == ObstacleTypes.SimpleRed)
+            else if(obstacleType == ObstacleTypes.SimpleRed)
             {
                 obstacleLightOnPath = "redObstacleOn.png";
                 obstacleLightOffPath = "redObstacleOff.png";
@@ -39,10 +44,11 @@ namespace Pinball
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = false;
-            MyBody.addCircleCollider();
+            circleCollider = MyBody.addCircleCollider();
             MyBody.FrictionCoefficient = 0.04f;
             MyBody.Force = new Vector2(0, 0);
             addTag("Obstacle");
+            rnd = new Random();
         }
 
         private void ObstacleLightOff()
@@ -50,6 +56,24 @@ namespace Pinball
             if(lightDuration > 0)
             {
                 lightDuration -= 1;
+                int opacity = 1;
+                if(obstacleType == ObstacleTypes.SimpleRed)
+                {
+                    for (int rad = (int)circleCollider.Rad + 5; rad > circleCollider.Rad; rad--)
+                    {
+                        opacity++;
+                        d.drawCircle((int)circleCollider.X, (int)circleCollider.Y, rad, 255, 80, 80, 20 * opacity);
+                    }
+                }
+                else
+                {
+                    for (int rad = (int)circleCollider.Rad + 5; rad > circleCollider.Rad; rad--)
+                    {
+                        opacity++;
+                        d.drawCircle((int)circleCollider.X, (int)circleCollider.Y, rad, 80, 80, 255, 20 * opacity);
+                    }
+                }
+
             }
             else
             {
@@ -92,6 +116,16 @@ namespace Pinball
         {
             if (x.Parent.checkTag("Ball"))
             {
+                if(rnd.Next(3) == 1)
+                {
+                    Bootstrap.getSound().playSound("obstacle1.wav");
+                }
+                else
+                {
+
+                    Bootstrap.getSound().playSound("obstacle2.wav");
+                }
+
                 ObstacleLightOn();
             }
         }
