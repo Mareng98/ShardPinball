@@ -211,7 +211,7 @@ namespace Shard
 
 
         // Helper method to add a triangle to _polygonsToDraw
-        void AddTriangleToDraw(Vector2[] triangle, Color color, byte opacity)
+        void AddTriangleToDraw(Vector2[] triangle, Color color)
         {
             SDL.SDL_Vertex[] sdlVertices = new SDL.SDL_Vertex[3];
 
@@ -221,7 +221,7 @@ namespace Shard
                 sdlVertices[i] = new SDL.SDL_Vertex
                 {
                     position = new SDL.SDL_FPoint { x = v.X, y = v.Y },
-                    color = new SDL.SDL_Color { r = color.R, g = color.G, b = color.B, a = opacity },
+                    color = new SDL.SDL_Color { r = color.R, g = color.G, b = color.B, a = color.A },
                     tex_coord = new SDL.SDL_FPoint { x = 1, y = 1 }
                 };
             }
@@ -233,7 +233,7 @@ namespace Shard
         /// Renders a Polygon with no intersecting lines, or vertex that is on a straight line between two other vertices.
         /// </summary>
         /// <param name="vertices">The vertices to render from.</param>
-        public override void renderGeometry(Vector2[] vertices, Color color, byte opacity)
+        public override void renderGeometry(Vector2[] vertices, Color color)
         {
             
             if (vertices is null)
@@ -244,7 +244,7 @@ namespace Shard
                 throw new ArgumentOutOfRangeException("needs at least 3 vertices");
             }else if(vertices.Length == 3)
             {
-                AddTriangleToDraw(vertices, color, opacity);
+                AddTriangleToDraw(vertices, color);
                 return;
             }
 
@@ -252,7 +252,7 @@ namespace Shard
             List<Vector2[]> triangles = Triangulator.Triangulate(vertices);
             foreach(Vector2[] triangle in triangles)
             {
-                AddTriangleToDraw(triangle, color, opacity);
+                AddTriangleToDraw(triangle, color);
             }
         }
 

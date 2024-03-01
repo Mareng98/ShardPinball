@@ -8,14 +8,16 @@ namespace Shard
 {
     internal class Well : GameObject, CollisionHandler
     {
+        private PinballMVP parent;
 
-        public Well(string tag, int x, int y, int width, int height)
+        public Well(string tag, int x, int y, int width, int height, PinballMVP parent)
         {
             addTag(tag);
             Transform.X = x;
             Transform.Y = y;
             Transform.Wid = width;
             Transform.Ht = height;
+            this.parent = parent;
             //initialize();
         }
 
@@ -35,7 +37,11 @@ namespace Shard
 
         public void onCollisionEnter(PhysicsBody x)
         {
-            x.Parent.ToBeDestroyed = true;
+            if (x.Parent.checkTag("Ball"))
+            {
+                x.Parent.ToBeDestroyed = true;
+                parent.ResetBall();
+            }
         }
 
         public void onCollisionExit(PhysicsBody x)

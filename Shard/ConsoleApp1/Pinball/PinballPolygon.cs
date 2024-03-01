@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -7,22 +8,25 @@ using System.Threading.Tasks;
 using Shard;
 namespace Pinball
 {
-    class PinballRectangle: GameObject, CollisionHandler
+    class PinballPolygon: GameObject, CollisionHandler
     {
         public ColliderPolygon Collider { get; set; }
 
-        public PinballRectangle(string tag, int x, int y, int width, int height)
+        public PinballPolygon(string tag, int x, int y, int width, int height)
         {
             addTag(tag);
 
-            Collider = MyBody.addNewRectCollider(x, y, width, height,0);
+            Collider = MyBody.addPolygonCollider(x, y, width, height,0);
         }
 
-        public PinballRectangle(string tag, int x, int y, Vector2[] vertices)
+        public PinballPolygon(string tag, int x, int y, Vector2[] vertices)
         {
             addTag(tag);
-
-            Collider = MyBody.addNewRectCollider(x, y, vertices, 0);
+            Collider = MyBody.addPolygonCollider(x, y, vertices, 0);
+            if (!tag.Equals("Well"))
+            {
+                Collider.DrawingColor = Color.Coral;
+            }
         }
 
         public override void initialize()

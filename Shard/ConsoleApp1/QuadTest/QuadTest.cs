@@ -38,7 +38,7 @@ namespace Shard
             var boxes = traverseQuadTree(qt);
             foreach (var b in boxes)
             {
-                PinballRectangle r = new("", (int)b.Left, (int)b.Top, (int)b.Width, (int)b.Height);
+                PinballPolygon r = new("", (int)b.Left, (int)b.Top, (int)b.Width, (int)b.Height);
             }
         }
 

@@ -6,14 +6,13 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Pinball;
-using Pinball.GameBreakout;
 using Shard.Shard;
 
 namespace Shard
 {
     internal class GameTestPinball : Game, InputListener
     {
-        PinballRectangle r;
+        PinballPolygon r;
         bool test = true;
         List<Obstacle> obstacles;
         Flipper leftFlipper;
@@ -28,21 +27,21 @@ namespace Shard
                 case 80: // 80 left arrow
                     if (eventType.Equals("KeyDown"))
                     {
-                        leftFlipper.RotatationDirection = FlipperRotationDirection.Up;
+                        leftFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else
                     {
-                        leftFlipper.RotatationDirection = FlipperRotationDirection.Stop;
+                        leftFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;
                 case 79: // 79 right arrow
                     if (eventType.Equals("KeyDown"))
                     {
-                        rightFlipper.RotatationDirection = FlipperRotationDirection.Up;
+                        rightFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else
                     {
-                        rightFlipper.RotatationDirection = FlipperRotationDirection.Stop;
+                        rightFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;
             }
@@ -60,9 +59,7 @@ namespace Shard
         public override void initialize()
         {
             Bootstrap.getInput().addListener(this);
-            PinballBall b = new PinballBall();
-            b.Transform.X = 650;
-            b.Transform.Y = 500;
+            PinballBall b = new PinballBall("Ball",650,500,new Vector2(0,5));
             //b.Transform.Y = 807;
 
             /*for(int i = 0; i < 4; i++)
@@ -77,24 +74,24 @@ namespace Shard
             }*/
             //Vector2[] vertices = { new Vector2(0, 0), new Vector2(50, 20), new Vector2(60, 30), new Vector2(10, 15) };
             //PinballRectangle r = new PinballRectangle("Rectangle", 100, 100, vertices);
-            r = new PinballRectangle("Rectangle",150,150,50,50);
+            r = new PinballPolygon("Rectangle",150,150,50,50);
             leftFlipper = new Flipper("Flipper", 300, 400, 150, 40, 20, FlipperSide.Left);
             rightFlipper = new Flipper("Flipper", 700, 400, 150, 20, 40, FlipperSide.Right);
             
             //Flipper f4 = new Flipper("Flipper", 850, 400, 80, 40, 20);
-            PinballRectangle ramp = new PinballRectangle("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, 
+            PinballPolygon ramp = new PinballPolygon("LeftRamp", 50, Bootstrap.getDisplay().getHeight() - 450, 
                 [new Vector2(0, 0),
                 new Vector2(400, 400),
                 new Vector2(0, 400)]);
-            PinballRectangle ramp2 = new PinballRectangle("RightRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, 
+            PinballPolygon ramp2 = new PinballPolygon("RightRamp", Bootstrap.getDisplay().getWidth() - 450, Bootstrap.getDisplay().getHeight() - 450, 
                 [new Vector2(400, 0),
                     new Vector2(400, 400),
                 new Vector2(0, 400)
                 ]);
-            PinballRectangle leftWall = new PinballRectangle("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
-            PinballRectangle bottomWall = new PinballRectangle("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
+            PinballPolygon leftWall = new PinballPolygon("LeftWall", 0,0, 50, Bootstrap.getDisplay().getHeight());
+            PinballPolygon rightWall = new PinballPolygon("RightWall", Bootstrap.getDisplay().getWidth() - 50, 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballPolygon topWall = new PinballPolygon("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);
+            PinballPolygon bottomWall = new PinballPolygon("BottomWall", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50);
             //r2.initialize();
             /*
             Wall leftWall = new Wall("LeftWall", 0, 0, 50,Bootstrap.getDisplay().getHeight());

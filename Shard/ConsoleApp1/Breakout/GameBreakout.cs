@@ -49,10 +49,10 @@ namespace Shard
                     myBricks.Add(br);
                 }
             }
-            PinballRectangle leftWall = new PinballRectangle("LeftWall", 0, 0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth(), 0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle topWall = new PinballRectangle("TopWall", 0, -50, Bootstrap.getDisplay().getWidth(), 50);
-            PinballRectangle well = new PinballRectangle("Well", 0, Bootstrap.getDisplay().getHeight() , Bootstrap.getDisplay().getWidth(), 50);
+            PinballPolygon leftWall = new PinballPolygon("LeftWall", 0, 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballPolygon rightWall = new PinballPolygon("RightWall", Bootstrap.getDisplay().getWidth(), 0, 50, Bootstrap.getDisplay().getHeight());
+            PinballPolygon topWall = new PinballPolygon("TopWall", 0, -50, Bootstrap.getDisplay().getWidth(), 50);
+            PinballPolygon well = new PinballPolygon("Well", 0, Bootstrap.getDisplay().getHeight() , Bootstrap.getDisplay().getWidth(), 50);
         }
 
         public override void initialize()

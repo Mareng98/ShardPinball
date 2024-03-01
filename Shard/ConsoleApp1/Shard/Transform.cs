@@ -98,8 +98,27 @@ namespace Shard
             translate(vect.X, vect.Y);
         }
 
+        // Takes rotation angle in degrees
+        public float getRotationAngle(float rotation)
+        {
+            float newRotation = rotz + rotation;
+            // Make sure that the rotation doesn't exceed the max angle.
+            if (!UsesMaxAngle || Math.Abs(newRotation) < MaxAngle / 2)
+            {
+                return rotation;
+            }
+            else if (newRotation > 0)
+            {
+                return MaxAngle / 2 - rotz;
+            }
+            else
+            {
+                return MaxAngle / 2 + rotz;
+            }
+        }
 
 
+        // If MaxAngle is set: Return true if the object could rotate, else stop
         public void rotate(float dir)
         {
             if(dir > 0)
@@ -119,13 +138,7 @@ namespace Shard
 
             right.X = -1 * forward.Y;
             right.Y = forward.X;
-
-
-
-
         }
-
-
 
         public float X
         {

@@ -8,19 +8,26 @@ using Shard;
 
 namespace Pinball
 {
-    
-using Shard;
-
-namespace GameBreakout
-{
     class Obstacle : GameObject, InputListener, CollisionHandler
     {
-
-        public override void initialize()
+        private ObstacleTypes obstacleType;
+        private string obstacleLightOnPath;
+        private string obstacleLightOffPath;
+        private int obstacleLightOnDuration = 15;
+        private int lightDuration = 0;
+        public Obstacle(ObstacleTypes type)
         {
-
-
-            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("blueObstacle.png");
+            if(type == ObstacleTypes.SimpleBlue)
+            {
+                obstacleLightOnPath = "blueObstacleOn.png";
+                obstacleLightOffPath = "blueObstacleOff.png";
+            }
+            else if(type == ObstacleTypes.SimpleRed)
+            {
+                obstacleLightOnPath = "redObstacleOn.png";
+                obstacleLightOffPath = "redObstacleOff.png";
+            }
+            ObstacleLightOff();
             setPhysicsEnabled();
             Transform.Scalex = 2;
             Transform.Scaley = 2;
@@ -33,9 +40,35 @@ namespace GameBreakout
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = false;
             MyBody.addCircleCollider();
-                MyBody.FrictionCoefficient = 0.04f;
-                MyBody.Force = new Vector2(0, 0);
+            MyBody.FrictionCoefficient = 0.04f;
+            MyBody.Force = new Vector2(0, 0);
             addTag("Obstacle");
+        }
+
+        private void ObstacleLightOff()
+        {
+            if(lightDuration > 0)
+            {
+                lightDuration -= 1;
+            }
+            else
+            {
+                Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath(obstacleLightOffPath);
+            }
+           
+        }
+
+        private void ObstacleLightOn()
+        {
+            Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath(obstacleLightOnPath);
+            lightDuration = obstacleLightOnDuration;
+        }
+
+        public override void initialize()
+        {
+
+
+
 
         }
 
@@ -51,13 +84,16 @@ namespace GameBreakout
         public override void update()
         {
 
-
+            ObstacleLightOff();
             Bootstrap.getDisplay().addToDraw(this);
         }
 
         public void onCollisionEnter(PhysicsBody x)
         {
-
+            if (x.Parent.checkTag("Ball"))
+            {
+                ObstacleLightOn();
+            }
         }
 
         public void onCollisionExit(PhysicsBody x)
@@ -77,4 +113,3 @@ namespace GameBreakout
     }
 }
 
-}

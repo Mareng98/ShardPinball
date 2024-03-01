@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Pinball
 {
-    internal enum FlipperRotationDirection
+    internal enum ObstacleTypes
     {
-        Up,
-        Stop
+        SimpleRed,
+        SimpleBlue,
     }
 }

@@ -115,7 +115,7 @@ namespace Shard
             gravityDir = new Vector2(0, 1);
             // 50 FPS            
 
-            TimeInterval = 20;
+            TimeInterval = 10;
             
             if (Bootstrap.checkEnvironmentalVariable("gravity_modifier"))
             {
@@ -284,10 +284,12 @@ namespace Shard
             {
                 return false;
             }
+            else
+            {
+                lastUpdate = Bootstrap.getCurrentMillis();
+            }
 
-            //            Debug.Log("Tick: " + Bootstrap.TimeElapsed);
-
-            lastUpdate = Bootstrap.getCurrentMillis();
+            
 
 
             toRemove = new List<CollidingObject>();
@@ -541,23 +543,23 @@ namespace Shard
 
                         */
                     }
-                        
-
                     ((CollisionHandler)ob.A.Parent).onCollisionEnter(ob.B);
                     ((CollisionHandler)ob.B.Parent).onCollisionEnter(ob.A);
                     colliding.Add(ob);
-
-
-                    // Add the normal that the object should reflect around, as well as the physicsBody that it is collided with
-                    // The reflection of both objects will be appropriately calculated and set in either one of these cases
-                    if (ob.A.ReflectOnCollision)
-                    {                        
-                        ob.A.AddCollisionInfo(-impulse, ob.B);
-                    }
-                    else if (ob.B.ReflectOnCollision)
+                    if (!ob.A.PassThrough && !ob.B.PassThrough!)
                     {
-                        ob.B.AddCollisionInfo(impulse, ob.A);
+                        // Add the normal that the object should reflect around, as well as the physicsBody that it is collided with
+                        // The reflection of both objects will be appropriately calculated and set in either one of these cases
+                        if (ob.A.ReflectOnCollision)
+                        {
+                            ob.A.AddCollisionInfo(-impulse, ob.B);
+                        }
+                        else if (ob.B.ReflectOnCollision)
+                        {
+                            ob.B.AddCollisionInfo(impulse, ob.A);
+                        }
                     }
+
 
 
                 }

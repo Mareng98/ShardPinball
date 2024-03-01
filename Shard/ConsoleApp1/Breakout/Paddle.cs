@@ -12,7 +12,7 @@ namespace GameBreakout
 
         public Paddle()
         {
-            MyBody.addNewRectCollider(500, 800, 80, 20, 0);
+            MyBody.addPolygonCollider(500, 800, 80, 20, 0);
         }
 
         public override void initialize()
