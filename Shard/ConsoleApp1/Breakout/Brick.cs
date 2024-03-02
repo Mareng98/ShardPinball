@@ -17,7 +17,7 @@ namespace GameBreakout
             Transform.Y = y;
             Transform.Wid = 100;
             Transform.Ht = 20;
-            MyBody.addNewRectCollider(x, y, 60, 30, 0);
+            MyBody.addPolygonCollider(x, y, 60, 30, 0);
         }
 
         public override void initialize()

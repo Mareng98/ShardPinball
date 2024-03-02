@@ -20,7 +20,6 @@ namespace Shard
         private float width;
         private float height;
         private float rotation;
-        private Vector2 rotationPivot;
         private Vector2 collisionNormal;
         private Vector2[] vertices; // Starting from top-left, going clockwise
 
@@ -47,17 +46,16 @@ namespace Shard
             }
         }
 
-        public Vector2 RotationPivot
-        {
-            get { return rotationPivot; }
-            set { rotationPivot = value;  }
-        }
 
         public float Rotation
         {
             get { return rotation; }
             set {
-                RotateVertices(value,  rotationPivot);
+                if(trans != null)
+                {
+
+                    RotateVertices(value, trans.Pivot);
+                }
             }
         }
 
@@ -70,7 +68,6 @@ namespace Shard
             height = h;
             vertices = CalculateVertices();
             collisionNormal = new Vector2(0, 0);
-            RotationPivot = new Vector2(w / 2, h / 2);
             Rotation = r;
             this.trans = trans;
         }
@@ -84,21 +81,6 @@ namespace Shard
             vertices = inputVertices;
             width = CalculateWidth();
             height = CalculateHeight();
-            RotationPivot = inputVertices[0];
-            Rotation = 0;
-            this.trans = trans;
-        }
-
-        // Any polygon with a user-defined rotation-pivot
-        public ColliderPolygon(CollisionHandler gob, Transform trans, float x, float y, Vector2[] inputVertices, float r, Vector2 rotationPivot) : base(gob)
-        {
-            X = x;
-            Y = y;
-            rotation = r;
-            vertices = inputVertices;
-            width = CalculateWidth();
-            height = CalculateHeight();
-            RotationPivot = rotationPivot;
             Rotation = 0;
             this.trans = trans;
         }
@@ -126,15 +108,15 @@ namespace Shard
             for (int i = 0; i < vertices.Length; i++)
             {
                 // Translate the vertex to the origin
-                float x = vertices[i].X - rotationPivot.X;
-                float y = vertices[i].Y - rotationPivot.Y;
+                float x = vertices[i].X - rotationPivot.X + X;
+                float y = vertices[i].Y - rotationPivot.Y + Y;
 
                 // Rotate the translated vertex
                 float rotatedX = x * cosAngle - y * sinAngle;
                 float rotatedY = x * sinAngle + y * cosAngle;
 
                 // Translate the rotated vertex back to its original position
-                vertices[i] = new Vector2(rotatedX + rotationPivot.X, rotatedY + rotationPivot.Y);
+                vertices[i] = new Vector2(rotatedX + rotationPivot.X - X, rotatedY + rotationPivot.Y - Y);
             }
             rotation = (rotation + newRotation) % (2 * MathF.PI);
         }
@@ -183,7 +165,7 @@ namespace Shard
         {
             MinAndMaxX = getMinAndMaxX();
             MinAndMaxY = getMinAndMaxY();
-            RotateVertices(trans.Rotz, rotationPivot);
+            RotateVertices(trans.Rotz, trans.Pivot);
         }
 
         public override Vector2? checkCollision(ColliderPolygon c)
@@ -458,7 +440,7 @@ namespace Shard
                 Vector2 v = vertices[i];
                 renderedVertices[i] = v + new Vector2(x, y);
             }
-            d.renderGeometry(renderedVertices, Color.Coral,255);
+            d.renderGeometry(renderedVertices, col);
             // Debug
             //DrawDebug(d, col);
         }

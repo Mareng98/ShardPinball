@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -10,14 +11,14 @@ namespace Pinball
     class Flipper : GameObject, CollisionHandler
     {
         private FlipperSide side;
-        private FlipperRotationDirection rotationDirection;
+        private FlipperDirection rotationDirection;
 
         public FlipperSide Side
         {
             get { return side; }
         }
 
-        public FlipperRotationDirection RotatationDirection
+        public FlipperDirection RotatationDirection
         {
             get { return rotationDirection; }
             set { rotationDirection = value; }
@@ -66,9 +67,9 @@ namespace Pinball
                 rotationPivot = new Vector2(width,0);
             }
 
-            Collider = MyBody.addNewRectCollider(x, y, vertices.ToArray(), 0, rotationPivot);
+            Collider = MyBody.addPolygonCollider(x, y, vertices.ToArray(), 0);
             this.side = side;
-            rotationDirection = FlipperRotationDirection.Stop;
+            rotationDirection = FlipperDirection.Stop;
             MyBody.Trans.Pivot = rotationPivot + new Vector2(x,y);
         }
 
@@ -86,13 +87,14 @@ namespace Pinball
             MyBody.Mass = 1;
             MyBody.MaxForce = 1337;
             MyBody.MaxTorque = 15000;
-            MyBody.AngularDrag = 0.08f;
-            MyBody.Drag = 0.1f;
+            MyBody.AngularDrag = 0f;
+            MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = false;
             MyBody.Trans.UsesMaxAngle = true;
-            MyBody.Trans.MaxAngle = 60f; // 60 degrees
+            MyBody.Trans.MaxAngle = 90f; // degrees
+            MyBody.MomentOfInertia = 0.2f;
         }
 
         public override void update()
@@ -101,16 +103,22 @@ namespace Pinball
             {
                 switch (rotationDirection)
                 {
-                    case FlipperRotationDirection.Up:
+                    case FlipperDirection.Up:
                         if (MyBody.Trans.Rotz > -1)
                         {
-                            MyBody.addTorque(-1f);
+                            if (MyBody.AngularVelocity > 0) MyBody.AngularVelocity = 0;
+                            MyBody.NetTorque = -0.2f;
                         }
                         break;
-                    case FlipperRotationDirection.Stop:
+                    case FlipperDirection.Stop:
                         if (MyBody.Trans.Rotz < 0)
                         {
-                            MyBody.addTorque(1f);
+                            MyBody.NetTorque = 0.2f;
+                        }
+                        else
+                        {
+                            MyBody.AngularVelocity = 0;
+                            MyBody.NetTorque = 0f;
                         }
                         break;
                 }
@@ -119,21 +127,27 @@ namespace Pinball
             {
                 switch (rotationDirection)
                 {
-                    case FlipperRotationDirection.Up:
+                    case FlipperDirection.Up:
                         if (MyBody.Trans.Rotz < 1)
                         {
-                            MyBody.addTorque(1f);
+                            if (MyBody.AngularVelocity < 0) MyBody.AngularVelocity = 0;
+                            MyBody.NetTorque = 0.2f;
                         }
                         break;
-                    case FlipperRotationDirection.Stop:
+                    case FlipperDirection.Stop:
                         if (MyBody.Trans.Rotz > 0)
                         {
-                            MyBody.addTorque(-1f);
+                            MyBody.NetTorque = -0.2f;
+                        }
+                        else
+                        {
+                            MyBody.AngularVelocity = 0;
+                            MyBody.NetTorque = 0;
                         }
                         break;
                 }
             }
-            
+            Collider.DrawingColor = Color.LightCoral;
             Bootstrap.getDisplay().addToDraw(this);
 
         }

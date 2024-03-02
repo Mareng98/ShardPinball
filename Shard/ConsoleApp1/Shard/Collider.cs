@@ -19,6 +19,7 @@ namespace Shard
         private float[] minAndMaxX;
         private float[] minAndMaxY;
         private bool rotateAtOffset;
+        public Color? DrawingColor { get; set; }
 
         public abstract void recalculate();
         public Collider(CollisionHandler gob)
