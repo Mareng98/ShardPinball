@@ -18,9 +18,11 @@ namespace Pinball
         private int obstacleLightOnDuration = 15;
         private int lightDuration = 0;
         private Random rnd;
+        private ScoreKeeper scoreKeeper;
         Display d = Bootstrap.getDisplay();
-        public Obstacle(ObstacleTypes type)
+        public Obstacle(ObstacleTypes type, ScoreKeeper scoreKeeper)
         {
+            this.scoreKeeper = scoreKeeper;
             obstacleType = type;
             if(obstacleType == ObstacleTypes.SimpleBlue)
             {
@@ -39,14 +41,11 @@ namespace Pinball
             Transform.Wid = 6;
             Transform.Ht = 6;
             MyBody.Mass = 1;
-            MyBody.MaxForce = 15000;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = false;
             circleCollider = MyBody.addCircleCollider();
-            MyBody.FrictionCoefficient = 0.04f;
-            MyBody.Force = new Vector2(0, 0);
             addTag("Obstacle");
             rnd = new Random();
         }
@@ -125,7 +124,7 @@ namespace Pinball
 
                     Bootstrap.getSound().playSound("obstacle2.wav");
                 }
-
+                scoreKeeper.AddScore(x.Parent.Transform.Centre + new Vector2(0,-5), 10);
                 ObstacleLightOn();
             }
         }

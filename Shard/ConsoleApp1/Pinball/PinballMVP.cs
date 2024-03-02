@@ -29,24 +29,24 @@ namespace Shard
             switch (inp.Key)
             {
                 case 80: // 80 left arrow
-                    if (eventType.Equals("KeyDown"))
-                    {
-                        leftFlipper.RotatationDirection = FlipperDirection.Up;
-                    }
-                    else
+                    if (eventType.Equals("KeyDown") && leftFlipper.RotatationDirection == FlipperDirection.Stop)
                     {
                         Bootstrap.getSound().playSound("mechanical.wav");
+                        leftFlipper.RotatationDirection = FlipperDirection.Up;
+                    }
+                    else if(eventType.Equals("KeyUp"))
+                    {
                         leftFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;
                 case 79: // 79 right arrow
-                    if (eventType.Equals("KeyDown"))
-                    {
-                        rightFlipper.RotatationDirection = FlipperDirection.Up;
-                    }
-                    else
+                    if (eventType.Equals("KeyDown") && rightFlipper.RotatationDirection == FlipperDirection.Stop)
                     {
                         Bootstrap.getSound().playSound("mechanical.wav");
+                        rightFlipper.RotatationDirection = FlipperDirection.Up;
+                    }
+                    else if (eventType.Equals("KeyUp"))
+                    {
                         rightFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;
@@ -79,6 +79,7 @@ namespace Shard
             leftFlipper = new Flipper("Flipper", 505, arenaHeight-65, 100, 30, 20, FlipperSide.Left);
             rightFlipper = new Flipper("Flipper", 655, arenaHeight-65, 100, 20, 30, FlipperSide.Right);
             obstacles = new List<Obstacle>();
+            ScoreKeeper scoreKeeper = new ScoreKeeper(new Vector2(20, 20), 60, 0);
             for (int i = 0; i < 4; i++)
             {
                 int offset = 220;
@@ -93,7 +94,7 @@ namespace Shard
                     {
                         ot = ObstacleTypes.SimpleRed;
                     }
-                    Obstacle o = new Obstacle(ot);
+                    Obstacle o = new Obstacle(ot, scoreKeeper);
                     o.Transform.X = offset + 200 + j * 100;
                     o.Transform.Y = offset + i * 100;
                     obstacles.Add(o);
