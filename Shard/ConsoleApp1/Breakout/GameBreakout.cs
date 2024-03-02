@@ -16,7 +16,6 @@ namespace Shard
 
         public GameBreakout() : base()
         {
-            GameStateManager.getInstance().SetGame(this);
         }
         public override void update()
         {
