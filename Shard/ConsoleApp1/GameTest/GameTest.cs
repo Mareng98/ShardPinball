@@ -5,10 +5,13 @@ using System.Drawing;
 
 namespace Shard
 {
-    class GameTest : Game, InputListener
+    class PinballMvp : Game, InputListener
     {
         GameObject background;
         List<GameObject> asteroids;
+
+        public PinballMvp() : base() { }
+
         public override void update()
         {
             

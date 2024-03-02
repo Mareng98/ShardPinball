@@ -441,8 +441,7 @@ namespace Shard
                 renderedVertices[i] = v + new Vector2(x, y);
             }
             d.renderGeometry(renderedVertices, col);
-            // Debug
-            //DrawDebug(d, col);
+            
         }
 
         // Debug function to see how normals are calculated and bounding-box

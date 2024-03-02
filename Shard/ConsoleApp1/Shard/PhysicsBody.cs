@@ -215,25 +215,27 @@ namespace Shard
 
             // distance holds the x or y component of the vector from old point to new point
             // depending on if minXAndMaxX or minYAndMaxY
-            float distance;
+            //float distance;
             foreach (Collider col in myColliders)
             {
 
                 if (x)
                 {
                     tmp = col.MinAndMaxX;
-                    distance = Math.Abs(trans.X - trans.Lx);
+                    //distance = Math.Abs(trans.X - trans.Lx);
                 }
                 else
                 {
                     tmp = col.MinAndMaxY;
-                    distance = Math.Abs(trans.Y - trans.Ly);
+                    //distance = Math.Abs(trans.Y - trans.Ly);
                 }
 
+                min = Math.Min(tmp[0], min);
+                max = Math.Max(tmp[1], max);
                 // we then use distance to increase the perimeter of the min and max points
                 // that are later used in sweep and prune alg.
-                min = Math.Min(tmp[0], min) - distance;
-                max = Math.Max(max, tmp[1]) + distance;
+                //min = Math.Min(tmp[0], min) - distance;
+                //max = Math.Max(max, tmp[1]) + distance;
             }
 
             return new float[2] { min, max };
@@ -264,10 +266,11 @@ namespace Shard
             MinAndMaxX = new float[2];
             MinAndMaxY = new float[2];
             gravityDir = new Vector2(0, 1);
-            timeInterval = PhysicsManager.getInstance().TimeInterval;
             momentOfInertia = 1;
             rotationPivot = new Vector2(0, 0);
-            PhysicsManager.getInstance().addPhysicsObject(this);
+            timeInterval = Bootstrap.GetPhysicsManager().TimeInterval;
+            //            Debug.getInstance().log ("Setting physics enabled");
+            Bootstrap.GetPhysicsManager().addPhysicsObject(this);
         }
 
         public void addTorque(float dir)

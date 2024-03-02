@@ -14,6 +14,8 @@ namespace Shard
     abstract class Game
     {
         public AssetManagerBase assets;
+        public PhysicsManager physicsManager;
+        public GameObjectManager gameObjectManager;
 
         public AssetManagerBase getAssetManager() {
             if (assets == null) {
@@ -21,6 +23,12 @@ namespace Shard
             }
 
             return assets;
+        }
+
+        public Game()
+        {
+            physicsManager = new();
+            gameObjectManager = new();
         }
 
         public abstract void initialize();

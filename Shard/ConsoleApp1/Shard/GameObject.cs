@@ -109,7 +109,7 @@ namespace Shard
 
         public GameObject()
         {
-            GameObjectManager.getInstance().addGameObject(this);
+            Bootstrap.GetGameObjectManager().addGameObject(this);
 
             transform = new Transform3D(this);
             visible = false;
@@ -144,7 +144,7 @@ namespace Shard
 
         public virtual void killMe()
         {
-            PhysicsManager.getInstance().removePhysicsObject(myBody);
+            Bootstrap.GetPhysicsManager().removePhysicsObject(myBody);
 
             myBody = null;
             transform = null;

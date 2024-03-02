@@ -6,10 +6,13 @@
 *   
 */
 
+using Shard.Pinball;
+using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Shard
@@ -18,12 +21,9 @@ namespace Shard
     {
         public static string DEFAULT_CONFIG = "config.cfg";
 
-
-        private static Game runningGame;
         private static Display displayEngine;
         private static Sound soundEngine;
         private static InputSystem input;
-        private static PhysicsManager phys;
         private static AssetManagerBase asset;
 
         private static int targetFrameRate;
@@ -63,6 +63,7 @@ namespace Shard
 
             setupEnvironmentalVariables(baseDir + "\\" + "envar.cfg");
             setup(baseDir + "\\" + DEFAULT_CONFIG);
+
 
         }
 
@@ -108,9 +109,20 @@ namespace Shard
             return asset;
         }
 
+        public static PhysicsManager GetPhysicsManager()
+        {
+            return GameStateManager.getInstance().physicsManager;
+        }
+
+        public static GameObjectManager GetGameObjectManager()
+        {
+            return GameStateManager.getInstance().gameObjectManager;
+        }
+
+
         public static Game getRunningGame()
         {
-            return runningGame;
+            return GameStateManager.getInstance().runningGame;
         }
 
         public static void setup(string path)
@@ -125,7 +137,7 @@ namespace Shard
             object ob;
             bool bailOut = false;
 
-            phys = PhysicsManager.getInstance();
+            //phys = PhysicsManager.getInstance();
 
             foreach (KeyValuePair<string, string> kvp in config)
             {
@@ -154,8 +166,9 @@ namespace Shard
                         asset.registerAssets();
                         break;
                     case "game":
-                        runningGame = (Game)ob;
-                        targetFrameRate = runningGame.getTargetFrameRate();
+                        GameStateManager.getInstance().SetGame((Game)ob);
+                        //GameStateManager.getInstance().runningGame = (Game)ob;
+                        targetFrameRate = GameStateManager.getInstance().runningGame.getTargetFrameRate();
                         millisPerFrame = 1000 / targetFrameRate;
                         break;
                     case "input":
@@ -168,7 +181,7 @@ namespace Shard
                 Debug.getInstance().log("Config file... setting " + kvp.Key + " to " + kvp.Value);
             }
 
-            if (runningGame == null)
+            if (GameStateManager.getInstance().runningGame == null)
             {
                 Debug.getInstance().log("No game set", Debug.DEBUG_LEVEL_ERROR);
                 bailOut = true;
@@ -250,6 +263,7 @@ namespace Shard
             int tfro = 1;
             bool physUpdate = false;
             bool physDebug = false;
+            bool callOnce = false;
 
 
 
@@ -261,12 +275,19 @@ namespace Shard
             frames = 0;
             frameTimes = new List<long>();
             // Start the game running.
-            runningGame.initialize();
+            /*            GameStateManager gameState = GameStateManager.getInstance();
+                        Game runningGame = gameState.runningGame;
+                        runningGame.initialize();
+                        PhysicsManager phys = gameState.physicsManager;
+                        GameObjectManager gameObjectManager = gameState.gameObjectManager;
+
+                        */
+            GameStateManager.getInstance().runningGame.initialize();
 
             timeInMillisecondsStart = startTime;
             lastTick = startTime;
 
-            phys.GravityModifier = 0.15f;
+            GameStateManager.getInstance().physicsManager.GravityModifier = 0.15f;
             // This is our game loop.
 
             if (getEnvironmentalVariable("physics_debug") == "1")
@@ -274,6 +295,10 @@ namespace Shard
                 physDebug = true;
             }
             int tickNumber = 0;
+
+
+            //paneManager.SetPane(new MainMenuPane());
+
             while (true)
             {
                 frames += 1;
@@ -284,10 +309,11 @@ namespace Shard
                 Bootstrap.getDisplay().clearDisplay();
 
                 // Update 
-                runningGame.update();
+                GameStateManager.getInstance().runningGame.update();
                 // Input
 
-                if (runningGame.isRunning() == true)
+                if (GameStateManager.getInstance().runningGame.isRunning() == true && 
+                    GameStateManager.getInstance().gameObjectManager != null && GameStateManager.getInstance().physicsManager != null)
                 {
 
                     // Get input, which works at 50 FPS to make sure it doesn't interfere with the 
@@ -296,30 +322,34 @@ namespace Shard
 
                     // Update runs as fast as the system lets it.  Any kind of movement or counter 
                     // increment should be based then on the deltaTime variable.
-                    GameObjectManager.getInstance().update();
+                    GameStateManager.getInstance().gameObjectManager.update();
 
                     // This will update every 20 milliseconds or thereabouts.  Our physics system aims 
                     // at a 50 FPS cycle.
-                    if (phys.willTick())
+                    if (GameStateManager.getInstance().physicsManager.willTick())
                     {
-                        GameObjectManager.getInstance().prePhysicsUpdate();
+                        GameStateManager.getInstance().gameObjectManager.prePhysicsUpdate();
                         tickNumber += 1;
+                    }
+
+                    if(tickNumber == 200)
+                    {
+                        GameStateManager.getInstance().physicsManager.GravityModifier = 0.3f;
                     }
                     // Update the physics.  If it's too soon, it'll return false.   Otherwise 
                     // it'll return true.
-                    physUpdate = phys.update();
+                    physUpdate = GameStateManager.getInstance().physicsManager.update();
 
                     if (physUpdate)
                     {
                         // If it did tick, give every object an update
                         // that is pinned to the timing of the physics system.
-                        GameObjectManager.getInstance().physicsUpdate();
+                        GameStateManager.getInstance().gameObjectManager.physicsUpdate();
                     }
 
                     if (physDebug) {
-                        phys.drawDebugColliders();
+                        GameStateManager.getInstance().physicsManager.drawDebugColliders();
                     }
-
                 }
 
                 // Render the screen.
@@ -332,7 +362,6 @@ namespace Shard
                 interval = timeInMillisecondsEnd - timeInMillisecondsStart;
 
                 sleep = (int)(millisPerFrame - interval);
-
 
                 TimeElapsed += deltaTime;
 
@@ -352,6 +381,7 @@ namespace Shard
                 millisPerFrame = 1000 / targetFrameRate;
 
                 lastTick = timeInMillisecondsStart;
+
 
             } 
 

@@ -22,6 +22,7 @@
 *   
 */
 
+using Pinball;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -88,7 +89,7 @@ namespace Shard
 
     class PhysicsManager
     {
-        private static PhysicsManager me;
+        //private static PhysicsManager me;
         private List<CollidingObject> collisionsToCheck;
         HashSet<CollidingObject> colliding;
             
@@ -100,7 +101,7 @@ namespace Shard
         List<PhysicsBody> allPhysicsObjects;
         private long lastUpdate;
         private long lastDebugDraw;
-        private PhysicsManager()
+        public PhysicsManager()
         {
             string tmp = "";
             string[] tmpbits;
@@ -140,7 +141,7 @@ namespace Shard
 
             
     }
-
+/*
     public static PhysicsManager getInstance()
         {
             if (me == null)
@@ -150,6 +151,7 @@ namespace Shard
 
             return me;
         }
+*/
 
 
         public long LastUpdate { get => lastUpdate; set => lastUpdate = value; }
@@ -279,6 +281,8 @@ namespace Shard
         {
             CollisionHandler ch, ch2;
             List<CollidingObject> toRemove;
+            bool useQuadTreeForCollisions = false;
+            QuadTree qt;
 
             if (willTick() == false)
             {
@@ -347,14 +351,75 @@ namespace Shard
 
             toRemove.Clear();
             // Check for new collisions
-            checkForCollisions();
+
+            if (useQuadTreeForCollisions)
+            {
+                qt = new QuadTree(0, 0, Bootstrap.getDisplay().getWidth(), Bootstrap.getDisplay().getHeight());
+                foreach (var physicsObject in allPhysicsObjects)
+                {
+                    var minmaxX = physicsObject.getMinAndMax(true);
+                    var minmaxY = physicsObject.getMinAndMax(false);
+
+                    var box = new Box(minmaxX[0], minmaxY[1], minmaxX[1] - minmaxX[0], minmaxY[1] - minmaxY[0], physicsObject);
+                    qt.Insert(box);
+
+
+                }
+                collisionsToCheck = qt.findAllIntersections();
+                narrowPass();
+            }
+            else
+            {
+                checkForCollisions();
+            }
 
 
 
                 //            Debug.Log("Time Interval is " + (Bootstrap.getCurrentMillis() - lastUpdate) + ", " + colliding.Count);
 
 
-                return true;
+            return true;
+        }
+       
+        /* here for debugging purposes */
+        public void drawBoxes(QuadTree qt)
+        {
+            var boxes = traverseQuadTree(qt);
+            foreach (var b in boxes)
+            {
+                //PinballRectangle r = new("", (int)b.Left, (int)b.Top, (int)b.Width, (int)b.Height);
+            }
+        }
+
+        // basically bfs
+        public List<Box> traverseQuadTree(QuadTree qt)
+        {
+            var boxes = new List<Box>();
+            var nodes = new List<QNode>();
+            var currNode = qt.Root;
+            while(currNode != null)
+            {
+                boxes.AddRange(currNode.boxes);
+                if (currNode.children is not null)
+                {
+                    foreach(var child in currNode.children)
+                    {
+                        if (child.boxes.Count > 0)
+                            nodes.Add(child);
+                    }
+                }
+
+                if (nodes.Count > 0)
+                {
+                    currNode = nodes[nodes.Count - 1];
+                    nodes.RemoveAt(nodes.Count - 1);
+                } 
+                else
+                {
+                    currNode = null;
+                }
+            }
+            return boxes;
         }
 
         public void drawDebugColliders()
@@ -715,6 +780,5 @@ namespace Shard
 
 
         }
-
     }
 }

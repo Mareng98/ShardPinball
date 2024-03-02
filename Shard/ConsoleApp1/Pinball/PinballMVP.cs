@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Drawing;
+using System.Data;
 
 namespace Shard
 {
@@ -21,6 +22,8 @@ namespace Shard
         PinballBall ball;
         Spring flipperSpring;
         Vector2 initialBallPosition = new Vector2(1008, 964);
+
+        public PinballMVP() : base() {}
         public void handleInput(InputEvent inp, string eventType)
         {
             switch (inp.Key)
@@ -28,22 +31,22 @@ namespace Shard
                 case 80: // 80 left arrow
                     if (eventType.Equals("KeyDown"))
                     {
-                        Bootstrap.getSound().playSound("mechanical.wav");
                         leftFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else
                     {
+                        Bootstrap.getSound().playSound("mechanical.wav");
                         leftFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;
                 case 79: // 79 right arrow
                     if (eventType.Equals("KeyDown"))
                     {
-                        Bootstrap.getSound().playSound("mechanical.wav");
                         rightFlipper.RotatationDirection = FlipperDirection.Up;
                     }
                     else
                     {
+                        Bootstrap.getSound().playSound("mechanical.wav");
                         rightFlipper.RotatationDirection = FlipperDirection.Stop;
                     }
                     break;

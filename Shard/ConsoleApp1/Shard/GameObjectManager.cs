@@ -14,14 +14,15 @@ namespace Shard
 {
     class GameObjectManager
     {
-        private static GameObjectManager me;
+        //private static GameObjectManager me;
         List<GameObject> myObjects;
 
-        private GameObjectManager()
+        public GameObjectManager()
         {
             myObjects = new List<GameObject>();
         }
 
+        /*
         public static GameObjectManager getInstance()
         {
             if (me == null)
@@ -31,6 +32,7 @@ namespace Shard
 
             return me;
         }
+        */
 
         public void addGameObject(GameObject gob)
         {

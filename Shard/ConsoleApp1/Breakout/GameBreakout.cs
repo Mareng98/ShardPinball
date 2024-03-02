@@ -1,5 +1,6 @@
 ﻿using GameBreakout;
 using Pinball;
+using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -11,8 +12,15 @@ namespace Shard
         GameObject top, left, right, bottom;
         Random rand;
         List<Brick> myBricks;
+        bool callOnce = false;
+
+        public GameBreakout() : base()
+        {
+            GameStateManager.getInstance().SetGame(this);
+        }
         public override void update()
         {
+
 
             Bootstrap.getDisplay().showText("FPS: " + Bootstrap.getFPS(), 10, 10, 12, 255, 255, 255);
             Bootstrap.getDisplay().showText("Delta: " + Bootstrap.getDeltaTime(), 10, 20, 12, 255, 255, 255);
@@ -57,6 +65,8 @@ namespace Shard
 
         public override void initialize()
         {
+
+
             rand = new Random();
 
             myBricks = new List<Brick>();

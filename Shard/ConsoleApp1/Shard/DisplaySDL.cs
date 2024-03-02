@@ -235,14 +235,16 @@ namespace Shard
         /// <param name="vertices">The vertices to render from.</param>
         public override void renderGeometry(Vector2[] vertices, Color color)
         {
-            
+
             if (vertices is null)
             {
                 throw new ArgumentNullException("vertices");
-            }else if(vertices.Length < 3)
+            }
+            else if (vertices.Length < 3)
             {
                 throw new ArgumentOutOfRangeException("needs at least 3 vertices");
-            }else if(vertices.Length == 3)
+            }
+            else if (vertices.Length == 3)
             {
                 AddTriangleToDraw(vertices, color);
                 return;
@@ -250,7 +252,7 @@ namespace Shard
 
             // Perform ear clipping
             List<Vector2[]> triangles = Triangulator.Triangulate(vertices);
-            foreach(Vector2[] triangle in triangles)
+            foreach (Vector2[] triangle in triangles)
             {
                 AddTriangleToDraw(triangle, color);
             }
@@ -262,11 +264,11 @@ namespace Shard
             SDL.SDL_Rect sRect;
             SDL.SDL_Rect tRect;
 
-            foreach(SDL.SDL_Vertex[] polygon in _polygonsToDraw)
+            foreach (SDL.SDL_Vertex[] polygon in _polygonsToDraw)
             {
                 SDL.SDL_SetRenderDrawColor(_rend, 255, 255, 255, 255);
-                int[] indices = { 0, 1, 2};
-                SDL.SDL_RenderGeometry(_rend, nint.Zero, polygon, polygon.Length, indices,3);
+                int[] indices = { 0, 1, 2 };
+                SDL.SDL_RenderGeometry(_rend, nint.Zero, polygon, polygon.Length, indices, 3);
             }
 
             foreach (Transform trans in _toDraw)
