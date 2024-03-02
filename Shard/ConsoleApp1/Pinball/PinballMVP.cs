@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Drawing;
 using System.Data;
+using Shard.Pinball;
 
 namespace Shard
 {
@@ -21,6 +22,7 @@ namespace Shard
         LifeBar lifeBar;
         PinballBall ball;
         Spring flipperSpring;
+
         Vector2 initialBallPosition = new Vector2(1008, 964);
 
         public PinballMVP() : base() {}
@@ -72,14 +74,26 @@ namespace Shard
         }
         public override void initialize()
         {
-            Bootstrap.getInput().addListener(this);
 
             int arenaWidth = 825;
             int arenaHeight = 1080;
-            leftFlipper = new Flipper("Flipper", 505, arenaHeight-65, 100, 30, 20, FlipperSide.Left);
-            rightFlipper = new Flipper("Flipper", 655, arenaHeight-65, 100, 20, 30, FlipperSide.Right);
+            int arenaMinX = 250;
+            int arenaMaxX = arenaMinX + arenaWidth;
+            Bootstrap.getInput().addListener(this);
+
+            leftFlipper = new Flipper("Flipper", 505, arenaHeight-65, 107, 32, 22, FlipperSide.Left);
+            rightFlipper = new Flipper("Flipper", 654, arenaHeight-65, 107, 22, 32, FlipperSide.Right);
             obstacles = new List<Obstacle>();
             ScoreKeeper scoreKeeper = new ScoreKeeper(new Vector2(20, 20), 60, 0);
+            string sensorArrayText = "FLIPPER";
+            int sensorArrayRad = 15;
+            int sensorArrayWidth = TouchSensorArray.GetPixelLength(sensorArrayText, sensorArrayRad);
+            TouchSensorArray sensorArray = new TouchSensorArray(scoreKeeper, 
+                new Vector2((arenaMaxX + arenaMinX) / 2 - sensorArrayWidth/2, 700), 
+                new Vector2(1, 0), sensorArrayRad, 
+                Color.Wheat, Color.DarkSalmon, 
+                sensorArrayText);
+
             for (int i = 0; i < 4; i++)
             {
                 int offset = 220;
@@ -120,7 +134,7 @@ namespace Shard
                     new Vector2(0,200),
                 ]);*/
 
-            PinballPolygon arena = new PinballPolygon("Arena", 250, 0,
+            PinballPolygon arena = new PinballPolygon("Arena", arenaMinX, 0,
                 [new Vector2(0, 0),
                     new Vector2(arenaWidth, 0),
                     new Vector2(arenaWidth, arenaHeight),
@@ -166,7 +180,7 @@ namespace Shard
                     new Vector2(257, arenaHeight-50),
                     new Vector2(0, arenaHeight-50),
                 ]);
-            PinballPolygon gutterDivider = new PinballPolygon("gutterDivider", 253, -3,
+            PinballPolygon gutterDivider = new PinballPolygon("gutterDivider", arenaMinX + 3, -3,
                     [
                         // Rounded corner
                         new Vector2(arenaWidth - 95, 70),
@@ -179,11 +193,13 @@ namespace Shard
                         new Vector2(arenaWidth - 70, 95),
                         // Bottomright ramp
                         new Vector2(arenaWidth - 70, arenaHeight-50),
-                        new Vector2(arenaWidth - 310, arenaHeight-50),
-                        new Vector2(arenaWidth - 310, arenaHeight - 70),
+                        new Vector2(arenaWidth - 302, arenaHeight-50),
+                        new Vector2(arenaWidth - 302, arenaHeight - 70),
                         new Vector2(arenaWidth - 95, arenaHeight-300),
                     ]
                 );
+
+
             /*PinballRectangle leftWall = new PinballRectangle("LeftWall", 210, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 260, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);*/

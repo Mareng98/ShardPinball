@@ -9,7 +9,7 @@ using Shard;
 
 namespace Pinball
 {
-    class Obstacle : GameObject, InputListener, CollisionHandler
+    class Obstacle : GameObject, CollisionHandler
     {
         ColliderCircle circleCollider;
         private ObstacleTypes obstacleType;
@@ -88,14 +88,6 @@ namespace Pinball
         }
 
         public override void initialize()
-        {
-
-
-
-
-        }
-
-        public void handleInput(InputEvent inp, string eventType)
         {
 
 
