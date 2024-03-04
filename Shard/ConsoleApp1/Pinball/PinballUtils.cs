@@ -70,19 +70,9 @@ namespace Shard.Pinball
         {
             string workDir = Environment.CurrentDirectory;
             string baseDir = Directory.GetParent(workDir).Parent.Parent.Parent.Parent.FullName;
-
             var filePath = baseDir + "\\Shard\\ConsoleApp1\\Pinball\\pinball_highscores.dat";
 
-            //StringBuilder sb = new();
-
-//            foreach (var entry in highscores)
-//            {
-//                sb.Append(entry.Item1 + ":" +  entry.Item2 + "\r\n");
-//            }
-
             var fileOutput = string.Join("\r\n", highscores.Select(entry => $"{entry.Item1}:{entry.Item2}"));
-//            var fileOutput = sb.ToString();
-
             using (StreamWriter sw = new StreamWriter(filePath, false) )
             {
                 sw.Write(fileOutput);
