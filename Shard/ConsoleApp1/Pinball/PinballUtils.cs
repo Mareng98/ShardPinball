@@ -73,7 +73,7 @@ namespace Shard.Pinball
             var filePath = baseDir + "\\Shard\\ConsoleApp1\\Pinball\\pinball_highscores.dat";
 
             var fileOutput = string.Join("\r\n", highscores.Select(entry => $"{entry.Item1}:{entry.Item2}"));
-            using (StreamWriter sw = new StreamWriter(filePath, false) )
+            using (StreamWriter sw = new StreamWriter(filePath, false /* append = false */) )
             {
                 sw.Write(fileOutput);
             }
