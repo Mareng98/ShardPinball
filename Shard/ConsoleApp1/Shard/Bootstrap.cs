@@ -110,12 +110,12 @@ namespace Shard
 
         public static PhysicsManager GetPhysicsManager()
         {
-            return GameStateManager.getInstance().physicsManager;
+            return GameStateManager.getInstance().GetPhysicsManager();
         }
 
         public static GameObjectManager GetGameObjectManager()
         {
-            return GameStateManager.getInstance().gameObjectManager;
+            return GameStateManager.getInstance().GetGameObjectManager();
         }
 
 
@@ -281,12 +281,13 @@ namespace Shard
                         GameObjectManager gameObjectManager = gameState.gameObjectManager;
 
                         */
-            GameStateManager.getInstance().runningGame.initialize();
+            getRunningGame().initialize();
 
             timeInMillisecondsStart = startTime;
             lastTick = startTime;
 
-            GameStateManager.getInstance().physicsManager.GravityModifier = 0.15f;
+            // Sätt denna när vi initialiserar running game
+            GetPhysicsManager().GravityModifier = 0.15f;
             // This is our game loop.
 
             if (getEnvironmentalVariable("physics_debug") == "1")
@@ -311,8 +312,8 @@ namespace Shard
                 GameStateManager.getInstance().runningGame.update();
                 // Input
 
-                if (GameStateManager.getInstance().runningGame.isRunning() == true && 
-                    GameStateManager.getInstance().gameObjectManager != null && GameStateManager.getInstance().physicsManager != null)
+                if (getRunningGame().isRunning() == true && 
+                    GetGameObjectManager() != null && GetPhysicsManager() != null)
                 {
 
                     // Get input, which works at 50 FPS to make sure it doesn't interfere with the 
@@ -321,33 +322,33 @@ namespace Shard
 
                     // Update runs as fast as the system lets it.  Any kind of movement or counter 
                     // increment should be based then on the deltaTime variable.
-                    GameStateManager.getInstance().gameObjectManager.update();
+                    GetGameObjectManager().update();
 
                     // This will update every 20 milliseconds or thereabouts.  Our physics system aims 
                     // at a 50 FPS cycle.
-                    if (GameStateManager.getInstance().physicsManager.willTick())
+                    if (GetPhysicsManager().willTick())
                     {
-                        GameStateManager.getInstance().gameObjectManager.prePhysicsUpdate();
+                        GetGameObjectManager().prePhysicsUpdate();
                         tickNumber += 1;
                     }
 
                     if(tickNumber == 200)
                     {
-                        GameStateManager.getInstance().physicsManager.GravityModifier = 0.3f;
+                        GetPhysicsManager().GravityModifier = 0.3f;
                     }
                     // Update the physics.  If it's too soon, it'll return false.   Otherwise 
                     // it'll return true.
-                    physUpdate = GameStateManager.getInstance().physicsManager.update();
+                    physUpdate = GetPhysicsManager().update();
 
                     if (physUpdate)
                     {
                         // If it did tick, give every object an update
                         // that is pinned to the timing of the physics system.
-                        GameStateManager.getInstance().gameObjectManager.physicsUpdate();
+                        GetGameObjectManager().physicsUpdate();
                     }
 
                     if (physDebug) {
-                        GameStateManager.getInstance().physicsManager.drawDebugColliders();
+                        GetPhysicsManager().drawDebugColliders();
                     }
                 }
 
