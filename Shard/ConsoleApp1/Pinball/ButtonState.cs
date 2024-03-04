@@ -37,9 +37,18 @@ namespace Shard.Pinball
             }
             else
             {
-                return buttonAsset;  
+                return buttonAsset;
             }
 
+        }
+        public void CreateButton(float x, float y, ref List<GameObject> gameObjsToDraw, ref Dictionary<GameObject, ButtonState> buttonStates)
+        {
+            GameObject button = new();
+            button.Transform.X = x;
+            button.Transform.Y = y;
+            gameObjsToDraw.Add(button);
+
+            buttonStates.Add(button, this);
         }
     }
 }

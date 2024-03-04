@@ -12,6 +12,7 @@ namespace Shard
         List<GameObject> gameObjsToDraw = new();
         Dictionary<GameObject, ButtonState> buttonStates = new();
         Game pinball = new PinballMVP();
+        Game highScores = new Highscore();
 
         public MainMenu() : base() { }
 
@@ -36,7 +37,11 @@ namespace Shard
                         {
                             Environment.Exit(0);
                         }
-
+                        else if (buttonStates[button].Tag == "Highscore")
+                        {
+                            GameStateManager.getInstance().SetGame(highScores);
+                            highScores.initialize();
+                        }
                    }
                 } else if (eventType.Equals("MouseMotion"))
                 {
@@ -68,26 +73,18 @@ namespace Shard
             gameObjsToDraw.Add(background);
 
             var playButtonState = new ButtonState("Play", "play.png", "play_hovered.png", null);
-            CreateButton(disp.getWidth() / 2 - 100, disp.getHeight() / 2 - 100, playButtonState); 
+            playButtonState.CreateButton(disp.getWidth() / 2 - 100, disp.getHeight() / 2 - 100, ref gameObjsToDraw, ref buttonStates); 
 
             var exitButtonState = new ButtonState("Exit", "exit.png", "exit_hovered.png", null);
-            CreateButton(disp.getWidth() - 100, 10, exitButtonState);
+            exitButtonState.CreateButton(disp.getWidth() - 100, 10, ref gameObjsToDraw, ref buttonStates);
 
             var highScoreButtonState = new ButtonState("Highscore", "highscore.png", "highscore_hovered.png", null);
-            CreateButton(disp.getWidth() / 2 + 100, disp.getHeight() / 2 - 140, highScoreButtonState);
+            highScoreButtonState.CreateButton(disp.getWidth() / 2 + 100, disp.getHeight() / 2 - 140, ref gameObjsToDraw, ref buttonStates);
 
             Bootstrap.getInput().addListener(this);
         }
 
-        public void CreateButton(float x, float y, ButtonState buttonState)
-        {
-            GameObject button = new();
-            button.Transform.X = x;
-            button.Transform.Y = y;
-            gameObjsToDraw.Add(button);
 
-            buttonStates.Add(button, buttonState);
-        }
 
         public override void update()
         {

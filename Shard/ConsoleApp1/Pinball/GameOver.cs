@@ -1,26 +1,31 @@
-﻿using System;
+﻿using Shard.Pinball;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shard
 {
     class GameOver : Game, InputListener
     {
+        List<GameObject> gameObjsToDraw = new();
+        Dictionary<GameObject, ButtonState> buttonStates = new();
         public void handleInput(InputEvent inp, string eventType)
         {
-            throw new NotImplementedException();
         }
+
+        public GameOver() : base() { }
 
         public override void initialize()
         {
-            throw new NotImplementedException();
+            Display disp = Bootstrap.getDisplay();
+
+            GameObject background = new();
+            background.Transform.SpritePath = getAssetManager().getAssetPath("pinball_blurred.png");
+            background.Transform.X = 0f;
+            background.Transform.Y = 0f;
+            gameObjsToDraw.Add(background);
         }
 
         public override void update()
         {
-            throw new NotImplementedException();
         }
     }
 }
