@@ -59,6 +59,7 @@ namespace Shard
             // Important that background is added first, otherwise it will be potentially render
             // on top of other gameobjects.
             // probably should implement a fix such that we can sort our gameobjects depending on render "priority" or visibility.
+            Display disp = Bootstrap.getDisplay();
 
             GameObject background = new();
             background.Transform.SpritePath = getAssetManager().getAssetPath("pinball_blurred.png");
@@ -66,32 +67,26 @@ namespace Shard
             background.Transform.Y = 0f;
             gameObjsToDraw.Add(background);
 
-            GameObject playButton = new();
-            playButton.Transform.SpritePath = getAssetManager().getAssetPath("play.png");
-            playButton.Transform.X = Bootstrap.getDisplay().getWidth() / 2 - 100; 
-            playButton.Transform.Y = Bootstrap.getDisplay().getHeight() / 2 - 100;
-            gameObjsToDraw.Add(playButton);
-
             var playButtonState = new ButtonState("Play", "play.png", "play_hovered.png", null);
-            buttonStates.Add(playButton, playButtonState);
-
-            GameObject exitButton = new();
-            exitButton.Transform.X = Bootstrap.getDisplay().getWidth() - 100;
-            exitButton.Transform.Y = 10;
-            gameObjsToDraw.Add(exitButton);
+            CreateButton(disp.getWidth() / 2 - 100, disp.getHeight() / 2 - 100, playButtonState); 
 
             var exitButtonState = new ButtonState("Exit", "exit.png", "exit_hovered.png", null);
-            buttonStates.Add(exitButton, exitButtonState);
+            CreateButton(disp.getWidth() - 100, 10, exitButtonState);
 
-            GameObject highScoreButton = new();
-            highScoreButton.Transform.X = Bootstrap.getDisplay().getWidth() / 2 + 100;
-            highScoreButton.Transform.Y = Bootstrap.getDisplay().getHeight() / 2 - 140;
-            gameObjsToDraw.Add(highScoreButton);
-
-            var highScoreButtonstate = new ButtonState("Highscore", "highscore.png", "highscore_hovered.png", null);
-            buttonStates.Add(highScoreButton, highScoreButtonstate);
+            var highScoreButtonState = new ButtonState("Highscore", "highscore.png", "highscore_hovered.png", null);
+            CreateButton(disp.getWidth() / 2 + 100, disp.getHeight() / 2 - 140, highScoreButtonState);
 
             Bootstrap.getInput().addListener(this);
+        }
+
+        public void CreateButton(float x, float y, ButtonState buttonState)
+        {
+            GameObject button = new();
+            button.Transform.X = x;
+            button.Transform.Y = y;
+            gameObjsToDraw.Add(button);
+
+            buttonStates.Add(button, buttonState);
         }
 
         public override void update()
