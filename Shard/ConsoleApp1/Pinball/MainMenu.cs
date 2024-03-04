@@ -83,6 +83,14 @@ namespace Shard
             var exitButtonState = new ButtonState("Exit", "exit.png", "exit_hovered.png", null);
             buttonStates.Add(exitButton, exitButtonState);
 
+            GameObject highScoreButton = new();
+            highScoreButton.Transform.X = Bootstrap.getDisplay().getWidth() / 2 + 100;
+            highScoreButton.Transform.Y = Bootstrap.getDisplay().getHeight() / 2 - 140;
+            gameObjsToDraw.Add(highScoreButton);
+
+            var highScoreButtonstate = new ButtonState("Highscore", "highscore.png", "highscore_hovered.png", null);
+            buttonStates.Add(highScoreButton, highScoreButtonstate);
+
             Bootstrap.getInput().addListener(this);
         }
 
