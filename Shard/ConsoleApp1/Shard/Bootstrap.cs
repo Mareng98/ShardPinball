@@ -301,6 +301,8 @@ namespace Shard
 
             while (true)
             {
+                // we might've changed "game" (scene) so let's update our targetfps
+                targetFrameRate = getRunningGame().getTargetFrameRate();
                 frames += 1;
 
                 timeInMillisecondsStart = getCurrentMillis();

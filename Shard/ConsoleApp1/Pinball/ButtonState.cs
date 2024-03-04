@@ -44,6 +44,7 @@ namespace Shard.Pinball
         public void CreateButton(float x, float y, ref List<GameObject> gameObjsToDraw, ref Dictionary<GameObject, ButtonState> buttonStates)
         {
             GameObject button = new();
+            button.Transform.SpritePath = buttonAsset;
             button.Transform.X = x;
             button.Transform.Y = y;
             gameObjsToDraw.Add(button);

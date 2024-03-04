@@ -22,10 +22,15 @@ namespace Shard
             background.Transform.X = 0f;
             background.Transform.Y = 0f;
             gameObjsToDraw.Add(background);
+            Bootstrap.getInput().addListener(this);
         }
 
         public override void update()
         {
+        }
+        public override int getTargetFrameRate()
+        {
+            return 200;
         }
     }
 }

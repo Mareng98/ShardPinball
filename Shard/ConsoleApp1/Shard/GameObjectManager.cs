@@ -14,25 +14,12 @@ namespace Shard
 {
     class GameObjectManager
     {
-        //private static GameObjectManager me;
         List<GameObject> myObjects;
 
         public GameObjectManager()
         {
             myObjects = new List<GameObject>();
         }
-
-        /*
-        public static GameObjectManager getInstance()
-        {
-            if (me == null)
-            {
-                me = new GameObjectManager();
-            }
-
-            return me;
-        }
-        */
 
         public void addGameObject(GameObject gob)
         {
@@ -44,7 +31,6 @@ namespace Shard
         {
             myObjects.Remove(gob);
         }
-
 
         public void physicsUpdate()
         {
@@ -97,8 +83,6 @@ namespace Shard
             }
 
             toDestroy.Clear();
-
-            //            Debug.Log ("NUm Objects is " + myObjects.Count);
         }
 
     }

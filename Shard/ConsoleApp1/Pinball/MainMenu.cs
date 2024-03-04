@@ -11,14 +11,13 @@ namespace Shard
     {
         List<GameObject> gameObjsToDraw = new();
         Dictionary<GameObject, ButtonState> buttonStates = new();
-        Game pinball = new PinballMVP();
-        Game highScores = new Highscore();
 
         public MainMenu() : base() { }
 
         public void handleInput(InputEvent inp, string eventType)
         {
             // TODO: Every button state should also hold something similar to an "Action" (func ptr) that is called
+            // (the advantage being that it would make this code more robust and prettier)
             foreach (var button in buttonStates.Keys)
             {
                 Transform t = button.Transform;
@@ -29,6 +28,9 @@ namespace Shard
                     {
                         if (buttonStates[button].Tag == "Play")
                         {
+                            Bootstrap.getInput().removeListener(this);
+
+                            Game pinball = new PinballMVP();
                             pinball.physicsManager.GravityModifier = 0.15f;
                             GameStateManager.getInstance().SetGame(pinball);
                             pinball.initialize();
@@ -39,8 +41,10 @@ namespace Shard
                         }
                         else if (buttonStates[button].Tag == "Highscore")
                         {
-                            GameStateManager.getInstance().SetGame(highScores);
-                            highScores.initialize();
+                            Bootstrap.getInput().removeListener(this);
+                            Game highscores = new Highscore();
+                            GameStateManager.getInstance().SetGame(highscores);
+                            highscores.initialize();
                         }
                    }
                 } else if (eventType.Equals("MouseMotion"))
@@ -84,14 +88,16 @@ namespace Shard
             Bootstrap.getInput().addListener(this);
         }
 
-
-
         public override void update()
         {
             foreach(var gameObj in gameObjsToDraw)
             {
                 Bootstrap.getDisplay().addToDraw(gameObj);
             }
+        }
+        public override int getTargetFrameRate()
+        {
+            return 200;
         }
     }
 }
