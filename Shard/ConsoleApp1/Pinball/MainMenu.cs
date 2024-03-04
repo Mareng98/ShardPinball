@@ -60,7 +60,6 @@ namespace Shard
                     t.SpritePath = buttonStates[button].getButtonAsset();
                 }               
             }
-
         }
 
         public override void initialize()
@@ -97,7 +96,7 @@ namespace Shard
         }
         public override int getTargetFrameRate()
         {
-            return 200;
+            return 30;
         }
     }
 }
