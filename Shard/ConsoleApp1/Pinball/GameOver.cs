@@ -1,7 +1,9 @@
-﻿using Shard.Pinball;
+﻿using Pinball;
+using Shard.Pinball;
 using Shard.Shard;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Shard
 {
@@ -9,7 +11,13 @@ namespace Shard
     {
         List<GameObject> gameObjsToDraw = new();
         Dictionary<GameObject, ButtonState> buttonStates = new();
-        public GameOver() : base() { }
+        int score;
+
+        public GameOver(int score) : base() 
+        {
+            this.score = score;
+        }
+
         public void handleInput(InputEvent inp, string eventType)
         {
             foreach (var button in buttonStates.Keys)
@@ -25,6 +33,13 @@ namespace Shard
                             Environment.Exit(0);
                         } else if (buttonStates[button].Tag == "Back")
                         {
+                            var highscores = PinballUtils.LoadHighscores();
+                            // TODO: this is currently only for testing purposes
+                            // The GameOver view should let the player input a name
+                            Tuple<string, int> newEntry = new Tuple<string, int>("zenotest", score);
+                            var updatedHighscores = PinballUtils.UpdateHighscores(highscores, newEntry);
+                            PinballUtils.saveHighscores(updatedHighscores);
+
                             Game game = new MainMenu();
                             GameStateManager.getInstance().SetGame(game);
                             game.initialize();
@@ -45,7 +60,6 @@ namespace Shard
                 }
             }
         }
-
 
         public override void initialize()
         {
@@ -69,6 +83,10 @@ namespace Shard
             {
                 Bootstrap.getDisplay().addToDraw(gameObj);
             }
+
+            var disp = Bootstrap.getDisplay();
+            disp.showText("Game", disp.getWidth() / 2 - 100, 100, 70, Color.White);
+            disp.showText("Over!", disp.getWidth() / 2 - 90, 200, 70, Color.White);
         }
         public override int getTargetFrameRate()
         {

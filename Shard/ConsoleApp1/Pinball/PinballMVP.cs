@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Data;
 using Shard.Pinball;
+using Shard.Shard;
 
 namespace Shard
 {
@@ -22,6 +23,7 @@ namespace Shard
         LifeBar lifeBar;
         PinballBall ball;
         Spring flipperSpring;
+        ScoreKeeper scoreKeeper;
 
         Vector2 initialBallPosition = new Vector2(1008, 964);
 
@@ -84,7 +86,7 @@ namespace Shard
             leftFlipper = new Flipper("Flipper", 505, arenaHeight-65, 107, 32, 22, FlipperSide.Left);
             rightFlipper = new Flipper("Flipper", 654, arenaHeight-65, 107, 22, 32, FlipperSide.Right);
             obstacles = new List<Obstacle>();
-            ScoreKeeper scoreKeeper = new ScoreKeeper(new Vector2(20, 20), 60, 0);
+            scoreKeeper = new ScoreKeeper(new Vector2(20, 20), 60, 0);
             string sensorArrayText = "FLIPPER";
             int sensorArrayRad = 15;
             int sensorArrayWidth = TouchSensorArray.GetPixelLength(sensorArrayText, sensorArrayRad);
@@ -217,6 +219,10 @@ namespace Shard
             }
             else
             {
+                Game gameOver = new GameOver(scoreKeeper.Score);
+                GameStateManager.getInstance().SetGame(gameOver);
+                gameOver.initialize();
+                Bootstrap.getInput().removeListener(this);
                 // Game over
             }
         }

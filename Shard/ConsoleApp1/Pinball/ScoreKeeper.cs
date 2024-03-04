@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Pinball
 {
-    internal class ScoreKeeper: GameObject
+    class ScoreKeeper : GameObject
     {
         private int noOfFramesToDisplayAddedScore;
         private int score;
