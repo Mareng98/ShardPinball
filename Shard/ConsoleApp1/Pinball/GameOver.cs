@@ -74,7 +74,7 @@ namespace Shard
                     SetMainMenu();
                 }
                 // Any key A-Z
-                else if (key >= 4 && (int) key <= 29 && name.Length <= 10)
+                else if (key >= 4 && key <= 29 && name.Length <= 10)
                 {
                     // idk why ConsoleKey stuff is so buggy, but ugly fix:
                     var character = (char)('a' + key - 4);
