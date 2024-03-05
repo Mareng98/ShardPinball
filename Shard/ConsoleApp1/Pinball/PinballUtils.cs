@@ -26,6 +26,13 @@ namespace Shard.Pinball
                 }
             }
 
+            /*
+             * parse highscores with format
+             * name:score
+             * name:score
+             * ...
+             */
+
             var fileContentLines = fileContent.Split("\r\n");
             foreach (var line in fileContentLines)
             {
