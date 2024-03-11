@@ -125,7 +125,8 @@ namespace Shard
         }
         public override Vector2? checkCollision(ColliderPolygon c)
         {
-            return null;
+            // The collisionCheck for this combination is already defined in ColliderPolygon
+            return -c.checkCollision(this);
         }
         public override Vector2? checkCollision(ColliderRect other)
         {

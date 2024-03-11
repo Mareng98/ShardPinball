@@ -99,7 +99,7 @@ namespace Shard
             return calculatedVertices;
         }
 
-        // 
+        // Rotate all vertices by angle targetRotation around rotationPivot
         public void RotateVertices(float targetRotation, Vector2 rotationPivot)
         {
             float newRotation = (targetRotation * MathF.PI / 180.0f) - rotation;
@@ -251,7 +251,7 @@ namespace Shard
             return isInsideX && isInsideY;
         }
 
-        // Just remembered that this function has to be in colliderCircle to check against this, but we'll fix it later
+        // Check collision on circle
         public override Vector2? checkCollision(ColliderCircle c)
         {
             Vector2 ballOrigin = new Vector2(c.X, c.Y);
@@ -441,7 +441,7 @@ namespace Shard
                 renderedVertices[i] = v + new Vector2(x, y);
             }
             d.renderGeometry(renderedVertices, col);
-            
+            //DrawDebug(d, col);
         }
 
         // Debug function to see how normals are calculated and bounding-box

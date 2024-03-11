@@ -50,7 +50,6 @@ namespace Shard
         private float angularAcceleration;
         private float angularVelocity;
         private float momentOfInertia;
-        private Vector2 rotationPivot;
         private Vector2 force;
         private float mass;
         private float frictionCoefficient;
@@ -62,15 +61,17 @@ namespace Shard
         private bool impartForce;
         private bool passThrough;
         private bool usesGravity;
+        private float minForce;
         private Color debugColor;
         private List<Vector2> collisionNormals;
         private List<PhysicsBody> collisionObjects;
         private Vector2 gravityDir;
 
-        public Vector2 RotationPivot { get => rotationPivot; set => rotationPivot = value; }
         public float AngularVelocity { get => angularVelocity; set => angularVelocity = value; }
         public Color DebugColor { get => debugColor; set => debugColor = value; }
         public Vector2 Force { get => force; set => force = value; }
+
+        public float MinForce { get => minForce; set => minForce = value; }
 
         public float MomentOfInertia
         {
@@ -78,7 +79,8 @@ namespace Shard
             set { momentOfInertia = value; }
         }
 
-        public float FrictionCoefficient {
+        public float FrictionCoefficient
+        {
             get { return frictionCoefficient; }
             set { frictionCoefficient = value; }
         }
@@ -93,18 +95,18 @@ namespace Shard
             float speed = force.Length();
 
             // Only apply friction when there's a sliding collision, the gravityDir.Y is never 1 when this happens.
-            if(gravityDir.Y != 1)
+            if (gravityDir.Y != 1)
             {
                 Vector2 frictionForce = -frictionCoefficient * force;
                 // Only reduce speed if it's above a threshold, so it never truly stops
-                if (speed - frictionForce.Length() > 1f)
+                if (speed - frictionForce.Length() > minForce)
                 {
                     // Apply the friction force to the ball
                     addForce(frictionForce);
                 }
                 else
                 {
-                    force = Vector2.Normalize(force) * 1f;
+                    force = Vector2.Normalize(force) * minForce;
                 }
             }
         }
@@ -114,7 +116,7 @@ namespace Shard
             if (modifier == 0 || dir == Vector2.Zero) return;
             Vector2 projectedGravity;
             Vector2 newDirection;
-            Vector2 collisionNormal = new Vector2(0,0);
+            Vector2 collisionNormal = new Vector2(0, 0);
             // Calculate the direction and magnitude of gravity (Depends on the surface which the object might be in contact with.
             for (int i = 0; i < collisionNormals.Count; i++)
             {
@@ -149,15 +151,15 @@ namespace Shard
                     }
                 }
             }
-            if(collisionNormal.Y < 0)
+            if (collisionNormal.Y < 0)
             {
-                if(collisionNormal.X > 0)
+                if (collisionNormal.X > 0)
                 {
                     // First quadrant - Rotate normal 90 degrees clockwise
-                    newDirection = new Vector2(-collisionNormal.Y,collisionNormal.X);
+                    newDirection = new Vector2(-collisionNormal.Y, collisionNormal.X);
                     projectedGravity = (Vector2.Dot(dir, newDirection) / Vector2.Dot(newDirection, newDirection)) * newDirection;
                 }
-                else if(collisionNormal.X < 0)
+                else if (collisionNormal.X < 0)
                 {
                     // Second quadrant - Rotate normal 90 degrees anti-clockwise
                     newDirection = new Vector2(collisionNormal.Y, -collisionNormal.X);
@@ -174,7 +176,7 @@ namespace Shard
             }
 
             gravityDir = projectedGravity;
-            force += projectedGravity* modifier;
+            force += projectedGravity * modifier;
         }
 
         public float AngularDrag { get => angularDrag; set => angularDrag = value; }
@@ -200,9 +202,9 @@ namespace Shard
         {
             foreach (Collider col in myColliders)
             {
-                if(col.DrawingColor != null)
+                if (col.DrawingColor != null)
                 {
-                    col.drawMe((Color) col.DrawingColor);
+                    col.drawMe((Color)col.DrawingColor);
                 }
             }
         }
@@ -252,7 +254,7 @@ namespace Shard
             Parent = p;
             Trans = p.Transform;
             Colh = (CollisionHandler)p;
-
+            minForce = 1f;
             AngularDrag = 0.01f;
             Drag = 0.01f;
             Drag = 0.01f;
@@ -267,7 +269,6 @@ namespace Shard
             MinAndMaxY = new float[2];
             gravityDir = new Vector2(0, 1);
             momentOfInertia = 1;
-            rotationPivot = new Vector2(0, 0);
             timeInterval = Bootstrap.GetPhysicsManager().TimeInterval;
             //            Debug.getInstance().log ("Setting physics enabled");
             Bootstrap.GetPhysicsManager().addPhysicsObject(this);
@@ -285,7 +286,8 @@ namespace Shard
             if (netTorque > MaxTorque)
             {
                 netTorque = MaxTorque;
-            }else if (netTorque < -1 * MaxTorque)
+            }
+            else if (netTorque < -1 * MaxTorque)
             {
                 netTorque = -1 * MaxTorque;
             }
@@ -318,7 +320,7 @@ namespace Shard
         public void AddCollisionInfo(Vector2 normal, PhysicsBody other)
         {
             normal = Vector2.Normalize(normal);
-            if(!(normal.X == 0 && normal.Y == 0))
+            if (!(normal.X == 0 && normal.Y == 0))
             {
                 collisionNormals.Add(normal);
                 collisionObjects.Add(other);
@@ -327,7 +329,7 @@ namespace Shard
 
         public void Reflect()
         {
-            for(int i = 0; i < collisionNormals.Count; i++)
+            for (int i = 0; i < collisionNormals.Count; i++)
             {
 
                 Vector2 normal = collisionNormals[i];
@@ -337,18 +339,18 @@ namespace Shard
                 // The proportation of which dspeed is along the normal pointing out from the collision surface of other object
                 float relativeVelocityAlongCollisionNormal = Vector2.Dot(normal, dspeed);
                 // If dotProduct is positive, then the objects are colliding (without accounting for the possiblity of rotation)
-                if(relativeVelocityAlongCollisionNormal > 0)
+                if (relativeVelocityAlongCollisionNormal > 0)
                 {
                     // This physics on rotational impact is very bad, it only works in very specific situations
-                    if(other.AngularVelocity != 0) // The other object is rotating, calculate induced velocity
+                    if (other.AngularVelocity != 0) // The other object is rotating, calculate induced velocity
                     {
 
                         // Radius from axis
                         Vector2 r1 = trans.Centre - other.trans.Pivot;
-                        float rLength = r1.Length()/20;
+                        float rLength = r1.Length() / 200;
                         Vector2 rotationVelocityVector;
                         // Negative rotation is anti-clockwise, positive rotation is clockwise
-                        // there's a flaw here with the rotation velocity might not beeing 100% correct
+                        // there's a flaw here with the rotation velocity direction, which might not be 100% at all times
                         if (other.AngularVelocity < 0)
                         {
                             rotationVelocityVector = Vector2.Normalize(new Vector2(r1.Y, -r1.X));
@@ -358,53 +360,53 @@ namespace Shard
                             rotationVelocityVector = Vector2.Normalize(new Vector2(-r1.Y, r1.X));
                         }
                         // Speed the other object is rotating with into this object, if negative it is rotating away, if 0 it has no effect
-                        float rvAlongCollisionNormal = Vector2.Dot(normal, rotationVelocityVector*rLength);
-                        // v1 = (u1(m1-m2) + 2(m2u2))/(m1+m2) where u is initial velocity
-                        //or replace one velocity with angular speed w times r, and their mass with moment of inertia.
-                        // L = Iw = P = m2u2 <=> m2 = Iw/u2
-                        // v1 = (u1(m1-Iw/u2) + 2(Iw))/(m1+ Iw/u2)
+                        float rvAlongCollisionNormal = Vector2.Dot(normal, rotationVelocityVector * rLength);
                         Vector2 rotationalImpulse = rvAlongCollisionNormal * normal; // needs to be fixed, just for test
-                        
-
-
                         force = Vector2.Reflect(this.Force, normal);
                         // The mass of other is infinite, simply give this body all the force along the normal
-                        addForce(normal,rotationalImpulse.Length());
-                        
+                        addForce(normal, rotationalImpulse.Length());
 
                         collisionNormals.Clear();
                         collisionObjects.Clear();
                         return;
 
+                        // Could potentially be used in a future version:
+                        // v1 = (u1(m1-m2) + 2(m2u2))/(m1+m2) where u is initial velocity
+                        //or replace one velocity with angular speed w times r, and their mass with moment of inertia.
+                        // L = Iw = P = m2u2 <=> m2 = Iw/u2
+                        // v1 = (u1(m1-Iw/u2) + 2(Iw))/(m1+ Iw/u2)
+
                     }
-                    
-                    
+
+
                     if (other.reflectOnCollision && this.reflectOnCollision)
                     {
                         // The force which to add along the collision normal to both objects
                         Vector2 impulse = 2 * relativeVelocityAlongCollisionNormal * normal;
+                        Vector2 thisAddedForce = (other.mass / (this.mass + other.mass)) * impulse;
                         // Split the impulse in proportion to their masses
                         this.force += (other.mass / (this.mass + other.mass)) * impulse;
-                        other.force -= (this.mass / (this.mass + other.mass)) * impulse;
                     }
                     else
                     {
                         // The mass of other is infinite, simply reflect along the normal
                         force = Vector2.Reflect(this.Force, normal);
                     }
-                    
-                    
+
+
                 }
             }
             collisionNormals.Clear();
             collisionObjects.Clear();
         }
 
-        public void reduceForces(float prop) {
+        public void reduceForces(float prop)
+        {
             force *= prop;
         }
 
-        public void addForce(Vector2 dir, float force) {
+        public void addForce(Vector2 dir, float force)
+        {
             addForce(dir * force);
         }
 
@@ -447,7 +449,7 @@ namespace Shard
         {
             // Where thisAngularMomentum = this.mass * angularVelocity * Math.Pow(radius, 2)
             // And otherLinearMomentum = other.mass * other.Velocity
-            
+
         }
 
         /*private float CalculateRotationCollisionForce(Vector2 perpendicularForce)
@@ -480,15 +482,15 @@ namespace Shard
         private float CalcAngularAcceleration()
         {
             float addedAcceleration = netTorque / momentOfInertia;
-            if(addedAcceleration > 0)
+            if (addedAcceleration > 0)
             {
                 addedAcceleration -= angularDrag;
-                if(addedAcceleration < 0 && angularAcceleration > 0)
+                if (addedAcceleration < 0 && angularAcceleration > 0)
                 {
                     // Deaccelerate
                     return angularAcceleration + addedAcceleration;
                 }
-                else if(addedAcceleration < 0)
+                else if (addedAcceleration < 0)
                 {
                     // Stop
                     return 0;
@@ -498,7 +500,8 @@ namespace Shard
                     // Accelerate
                     return angularAcceleration + addedAcceleration;
                 }
-            }else if(addedAcceleration < 0)
+            }
+            else if (addedAcceleration < 0)
             {
                 addedAcceleration += angularDrag;
                 if (addedAcceleration > 0 && angularAcceleration < 0)
@@ -571,7 +574,7 @@ namespace Shard
                     Debug.Log(Vector2.Normalize(new Vector2(-test.Y, test.X)).ToString());
                 }
             }*/
-            
+
             // Torque = Intertia * acceleration
             angularAcceleration = netTorque / momentOfInertia;
             angularVelocity += angularAcceleration;
@@ -587,12 +590,12 @@ namespace Shard
             }
 
             // Check if the object has come to a stop
-            if(trans.UsesMaxAngle && Math.Abs(trans.getRotationAngle(angularVelocity)) < 0.001)
+            if (trans.UsesMaxAngle && Math.Abs(trans.getRotationAngle(angularVelocity)) < 0.001)
             {
                 angularVelocity = 0;
                 angularAcceleration = 0;
             }
-            else if(angularVelocity != 0)
+            else if (angularVelocity != 0)
             {
                 trans.getRotationAngle(angularVelocity);
                 trans.rotate(angularVelocity);
@@ -608,7 +611,7 @@ namespace Shard
             }
             else if (forceLength > 0)
             {
-                force = (force/ forceLength) * (forceLength - Drag);
+                force = (force / forceLength) * (forceLength - Drag);
             }
         }
 
@@ -635,7 +638,7 @@ namespace Shard
                 netTorque -= Math.Sign(netTorque) * AngularDrag;
             }
 
-            
+
             force = this.force.Length();
             trans.translate(this.force);
 
@@ -738,7 +741,7 @@ namespace Shard
         {
             Vector2? d;
 
-//            Debug.Log("Checking collision with " + other);
+            //            Debug.Log("Checking collision with " + other);
             foreach (Collider c in myColliders)
             {
                 d = c.checkCollision(other);
