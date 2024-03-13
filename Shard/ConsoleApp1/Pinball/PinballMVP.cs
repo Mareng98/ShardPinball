@@ -77,6 +77,7 @@ namespace Shard
         }
         public override void initialize()
         {
+            Bootstrap.SetShadowColor(Color.FromArgb(255, 0, 0, 0));
             Bootstrap.EnableLight();
             int arenaWidth = 825;
             int arenaHeight = 1080;

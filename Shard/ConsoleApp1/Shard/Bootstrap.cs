@@ -36,40 +36,6 @@ namespace Shard
         private static string baseDir;
         private static Dictionary<string,string> enVars;
         private static Lighting lighting;
-
-        public static void EnableLight()
-        {
-            lighting.EnableLight();
-        }
-
-        public static void DisableLight()
-        {
-            lighting.DisableLight();
-        }
-
-        public static bool IsLightingOn()
-        {
-            return lighting.IsLightingOn();
-        }
-
-        public static void DrawLightMap()
-        {
-            lighting.DrawLightMap();
-        }
-
-        public static List<LightInfo> GetLightObjects()
-        {
-            return lighting.GetLightObjects(); 
-        }
-        public static void ClearLightObjects()
-        {
-            lighting.ClearLightObjects();
-        }
-
-        public static void AddLightObject(int x, int y, int radius, Color lightColor)
-        {
-            lighting.AddLightObject(x, y, radius, lightColor);
-        }
         public static bool checkEnvironmentalVariable (string id) {
             return enVars.ContainsKey (id);
         }
@@ -153,6 +119,50 @@ namespace Shard
         {
             return GameStateManager.getInstance().runningGame;
         }
+        public static void EnableLight()
+        {
+            lighting.EnableLight();
+        }
+
+        public static void DisableLight()
+        {
+            lighting.DisableLight();
+        }
+
+        public static bool IsLightingOn()
+        {
+            return lighting.IsLightingOn();
+        }
+
+        public static void DrawLightMap()
+        {
+            lighting.DrawLightMap();
+        }
+
+        public static List<LightInfo> GetLightObjects()
+        {
+            return lighting.GetLightObjects(); 
+        }
+        public static void ClearLightObjects()
+        {
+            lighting.ClearLightObjects();
+        }
+
+        public static void AddLightObject(int x, int y, int radius, Color lightColor)
+        {
+            lighting.AddLightObject(x, y, radius, lightColor);
+        }
+
+        public static void SetShadowColor(Color shadowColor)
+        {
+            lighting.ShadowColor = shadowColor;
+        }
+
+        public static Color GetShadowColor()
+        {
+            return lighting.ShadowColor;    
+        }
+
 
         public static void setup(string path)
         {
