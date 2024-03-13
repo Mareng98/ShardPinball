@@ -9,6 +9,7 @@
 using Shard.Shard;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -34,7 +35,41 @@ namespace Shard
         private static long startTime;
         private static string baseDir;
         private static Dictionary<string,string> enVars;
+        private static Lighting lighting;
 
+        public static void EnableLight()
+        {
+            lighting.EnableLight();
+        }
+
+        public static void DisableLight()
+        {
+            lighting.DisableLight();
+        }
+
+        public static bool IsLightingOn()
+        {
+            return lighting.IsLightingOn();
+        }
+
+        public static void DrawLightMap()
+        {
+            lighting.DrawLightMap();
+        }
+
+        public static List<LightInfo> GetLightObjects()
+        {
+            return lighting.GetLightObjects(); 
+        }
+        public static void ClearLightObjects()
+        {
+            lighting.ClearLightObjects();
+        }
+
+        public static void AddLightObject(int x, int y, int radius, Color lightColor)
+        {
+            lighting.AddLightObject(x, y, radius, lightColor);
+        }
         public static bool checkEnvironmentalVariable (string id) {
             return enVars.ContainsKey (id);
         }
@@ -135,6 +170,8 @@ namespace Shard
             Type t;
             object ob;
             bool bailOut = false;
+
+            lighting = new();
 
             //phys = PhysicsManager.getInstance();
 

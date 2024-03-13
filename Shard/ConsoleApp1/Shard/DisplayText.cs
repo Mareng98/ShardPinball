@@ -132,13 +132,15 @@ namespace Shard
             SDL.SDL_RenderCopy(_rend, screenTextureBuf, IntPtr.Zero, IntPtr.Zero);
             if (Bootstrap.IsLightingOn())
             {
-                drawLightMap(Color.FromArgb(200, 0, 0, 0));
+
+                //drawLightMap(Color.FromArgb(255, 0, 0, 0));
+                Bootstrap.DrawLightMap();
                 SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
             }
             SDL.SDL_RenderPresent(_rend);
         }
 
-        public virtual void drawLightMap(Color shadowMap)
+        public override void drawLightMap(Color shadowMap)
         {
         }
 
@@ -298,33 +300,6 @@ namespace Shard
                     error += (tx - dia);
                 }
             }
-        }
-
-        public override void renderFilledCircle(int x, int y, int rad, Color col)
-        {
-            SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);
-            while (rad > 0)
-            {
-                renderCircle(x, y, rad);
-                rad -= 1;
-            }
-        }
-
-        public void _renderFilledCircle(int x, int y, int rad, Color col)
-        {
-            SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);
-            for (int width = 0; width < rad * 2; width++) 
-            {
-                for (int height = 0; height < rad * 2; height++) 
-                {
-                    var horizontalOffset = rad - width;
-                    var verticalOffset = rad - height;
-                    if ((horizontalOffset * horizontalOffset + verticalOffset * verticalOffset) <= (rad * rad))
-                    {
-                        SDL.SDL_RenderDrawPoint(_rend, x + horizontalOffset, y + verticalOffset);
-                    }
-                }
-            } 
         }
     }
 }

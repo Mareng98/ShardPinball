@@ -68,7 +68,7 @@ namespace Shard
         }
         public override void update()
         {
-            display.AddLightObject((int)ball.Transform.Centre.X, (int)ball.Transform.Centre.Y, 40, Color.FromArgb(175, 237, 223, 128));
+            Bootstrap.AddLightObject((int)ball.Transform.Centre.X, (int)ball.Transform.Centre.Y, 40, Color.FromArgb(175, 237, 223, 128));
             display.renderGeometry([new Vector2(0,0),
                 new Vector2(display.getWidth(),0),
                 new Vector2(display.getWidth(),display.getHeight()),

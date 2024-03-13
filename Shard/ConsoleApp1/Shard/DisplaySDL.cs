@@ -62,7 +62,6 @@ namespace Shard
 
         // fix this definition later, for now it will work
         // Transform, radius
-        private List<LightInfo> lightObjects;
         public override void initialize()
         {
             spriteBuffer = new Dictionary<string, IntPtr>();
@@ -73,7 +72,6 @@ namespace Shard
             _linesToDraw = new List<Line>();
             _circlesToDraw = new List<Circle>();
             _polygonsToDraw = new List<SDL.SDL_Vertex[]>();
-            lightObjects = new();
 
         }
 
@@ -271,37 +269,16 @@ namespace Shard
 
         }
 
-        struct LightInfo
-        {
-            public int x;
-            public int y;
-            public int radius;
-            public Color color;
-            public LightInfo(int x, int y, int radius, Color color)
-            {
-                this.x = x;
-                this.y = y;
-                this.radius = radius;
-                this.color  = color;
-            }
-        }
-        
-        public override void AddLightObject(int x, int y, int radius, Color col)
-        {
-            lightObjects.Add(new LightInfo(x, y, radius, col));
-        }
-
         public override void drawLightMap(Color shadowColor)
         {
             // set lightmap as render target
             SDL.SDL_SetRenderTarget(_rend, lightMapTex);
-            // specify rgba = (0,0,0,0)
-            // parametrize this
+            // fill the lightmap with shadowColor
             SDL.SDL_SetRenderDrawColor(_rend, shadowColor.R, shadowColor.G, shadowColor.B, shadowColor.A);
             // draw it to the texture
             SDL.SDL_RenderClear(_rend);
 
-            foreach (var light in lightObjects)
+            foreach (var light in Bootstrap.GetLightObjects())
             {
                 _renderFilledCircle(light.x, light.y, light.radius, light.color);
             }
@@ -309,11 +286,22 @@ namespace Shard
             SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
         }
 
-        public void renderFilledCircle(int x, int y, int radius)
+        public void _renderFilledCircle(int x, int y, int rad, Color col)
         {
-
+            SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);
+            for (int width = 0; width < rad * 2; width++) 
+            {
+                for (int height = 0; height < rad * 2; height++) 
+                {
+                    var horizontalOffset = rad - width;
+                    var verticalOffset = rad - height;
+                    if ((horizontalOffset * horizontalOffset + verticalOffset * verticalOffset) <= (rad * rad))
+                    {
+                        SDL.SDL_RenderDrawPoint(_rend, x + horizontalOffset, y + verticalOffset);
+                    }
+                }
+            } 
         }
-
 
         public override void clearDisplay()
         {
@@ -322,7 +310,7 @@ namespace Shard
             _circlesToDraw.Clear();
             _linesToDraw.Clear();
             _polygonsToDraw.Clear();
-            lightObjects.Clear();
+            Bootstrap.ClearLightObjects();
             base.clearDisplay();
         }
 
