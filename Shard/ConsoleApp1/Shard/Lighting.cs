@@ -9,7 +9,7 @@ namespace Shard
         private bool lighting = false;
         private Color shadowColor = Color.FromArgb(200, 0, 0, 0);
 
-        public Color ShadowColor { get ; set; }
+        public Color ShadowColor { get => shadowColor; set => shadowColor = value; }
 
         public Lighting(){}
 
