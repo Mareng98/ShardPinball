@@ -68,6 +68,7 @@ namespace Shard
         }
         public override void update()
         {
+            display.AddLightObject((int)ball.Transform.Centre.X, (int)ball.Transform.Centre.Y, 40, Color.FromArgb(175, 237, 223, 128));
             display.renderGeometry([new Vector2(0,0),
                 new Vector2(display.getWidth(),0),
                 new Vector2(display.getWidth(),display.getHeight()),
@@ -76,7 +77,7 @@ namespace Shard
         }
         public override void initialize()
         {
-
+            Bootstrap.EnableLight();
             int arenaWidth = 825;
             int arenaHeight = 1080;
             int arenaMinX = 250;
@@ -223,6 +224,7 @@ namespace Shard
                 GameStateManager.getInstance().SetGame(gameOver);
                 gameOver.initialize();
                 Bootstrap.getInput().removeListener(this);
+                Bootstrap.DisableLight();
                 // Game over
             }
         }

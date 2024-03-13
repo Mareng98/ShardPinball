@@ -54,12 +54,15 @@ namespace Shard
 
     class DisplaySDL : DisplayText
     {
-
         private List<Transform> _toDraw;
         private List<Line> _linesToDraw;
         private List<Circle> _circlesToDraw;
         private List<SDL.SDL_Vertex[]> _polygonsToDraw;
         private Dictionary<string, IntPtr> spriteBuffer;
+
+        // fix this definition later, for now it will work
+        // Transform, radius
+        private List<LightInfo> lightObjects;
         public override void initialize()
         {
             spriteBuffer = new Dictionary<string, IntPtr>();
@@ -70,6 +73,7 @@ namespace Shard
             _linesToDraw = new List<Line>();
             _circlesToDraw = new List<Circle>();
             _polygonsToDraw = new List<SDL.SDL_Vertex[]>();
+            lightObjects = new();
 
         }
 
@@ -130,51 +134,6 @@ namespace Shard
         public override void removeToDraw(GameObject gob)
         {
             _toDraw.Remove(gob.Transform);
-        }
-
-
-        void renderCircle(int centreX, int centreY, int rad)
-        {
-            int dia = (rad * 2);
-            byte r, g, b, a;
-            int x = (rad - 1);
-            int y = 0;
-            int tx = 1;
-            int ty = 1;
-            int error = (tx - dia);
-
-            SDL.SDL_GetRenderDrawColor(_rend, out r, out g, out b, out a);
-
-            // We draw an octagon around the point, and then turn it a bit.  Do 
-            // that until we have an outline circle.  If you want a filled one, 
-            // do the same thing with an ever decreasing radius.
-            while (x >= y)
-            {
-
-                SDL.SDL_RenderDrawPoint(_rend, centreX + x, centreY - y);
-                SDL.SDL_RenderDrawPoint(_rend, centreX + x, centreY + y);
-                SDL.SDL_RenderDrawPoint(_rend, centreX - x, centreY - y);
-                SDL.SDL_RenderDrawPoint(_rend, centreX - x, centreY + y);
-                SDL.SDL_RenderDrawPoint(_rend, centreX + y, centreY - x);
-                SDL.SDL_RenderDrawPoint(_rend, centreX + y, centreY + x);
-                SDL.SDL_RenderDrawPoint(_rend, centreX - y, centreY - x);
-                SDL.SDL_RenderDrawPoint(_rend, centreX - y, centreY + x);
-
-                if (error <= 0)
-                {
-                    y += 1;
-                    error += ty;
-                    ty += 2;
-                }
-
-                if (error > 0)
-                {
-                    x -= 1;
-                    tx += 2;
-                    error += (tx - dia);
-                }
-
-            }
         }
 
         public override void drawCircle(int x, int y, int rad, int r, int g, int b, int a)
@@ -312,6 +271,50 @@ namespace Shard
 
         }
 
+        struct LightInfo
+        {
+            public int x;
+            public int y;
+            public int radius;
+            public Color color;
+            public LightInfo(int x, int y, int radius, Color color)
+            {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color  = color;
+            }
+        }
+        
+        public override void AddLightObject(int x, int y, int radius, Color col)
+        {
+            lightObjects.Add(new LightInfo(x, y, radius, col));
+        }
+
+        public override void drawLightMap(Color shadowColor)
+        {
+            // set lightmap as render target
+            SDL.SDL_SetRenderTarget(_rend, lightMapTex);
+            // specify rgba = (0,0,0,0)
+            // parametrize this
+            SDL.SDL_SetRenderDrawColor(_rend, shadowColor.R, shadowColor.G, shadowColor.B, shadowColor.A);
+            // draw it to the texture
+            SDL.SDL_RenderClear(_rend);
+
+            foreach (var light in lightObjects)
+            {
+                _renderFilledCircle(light.x, light.y, light.radius, light.color);
+            }
+
+            SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
+        }
+
+        public void renderFilledCircle(int x, int y, int radius)
+        {
+
+        }
+
+
         public override void clearDisplay()
         {
 
@@ -319,6 +322,7 @@ namespace Shard
             _circlesToDraw.Clear();
             _linesToDraw.Clear();
             _polygonsToDraw.Clear();
+            lightObjects.Clear();
             base.clearDisplay();
         }
 

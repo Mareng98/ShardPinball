@@ -68,6 +68,12 @@ namespace Shard
         {
         }
 
+        public virtual void AddLightObject(int x, int y, int radius, Color col)
+        {
+
+        }
+
+
         public virtual void removeToDraw(GameObject gob)
         {
         }
@@ -93,5 +99,8 @@ namespace Shard
 
         public abstract void showText(string text, double x, double y, int size, int r, int g, int b);
         public abstract void showText(char[,] text, double x, double y, int size, int r, int g, int b);
+        public abstract void renderCircle(int x, int y, int radius);
+        public abstract void renderFilledCircle(int x, int y, int rad, Color col);
+        
     }
 }

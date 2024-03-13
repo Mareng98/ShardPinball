@@ -11,6 +11,7 @@
 using SDL2;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace Shard
@@ -67,7 +68,7 @@ namespace Shard
 
     class DisplayText : Display
     {
-        protected IntPtr _window, _rend;
+        protected IntPtr _window, _rend, screenTextureBuf, lightMapTex;
         uint _format;
         int _access;
         private List<TextDetails> myTexts;
@@ -82,6 +83,8 @@ namespace Shard
             myTexts.Clear();
             SDL.SDL_SetRenderDrawColor(_rend, 0, 0, 0, 255);
             SDL.SDL_RenderClear(_rend);
+            // reset render target to screenTextBuf 
+            SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
 
         }
 
@@ -123,9 +126,22 @@ namespace Shard
 
             }
 
+            // first render pass
+            // copy firstRenderPass texture to renderer
+            SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
+            SDL.SDL_RenderCopy(_rend, screenTextureBuf, IntPtr.Zero, IntPtr.Zero);
+            if (Bootstrap.IsLightingOn())
+            {
+                drawLightMap(Color.FromArgb(200, 0, 0, 0));
+                SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
+            }
             SDL.SDL_RenderPresent(_rend);
-
         }
+
+        public virtual void drawLightMap(Color shadowMap)
+        {
+        }
+
 
         public override void display()
         {
@@ -160,11 +176,19 @@ namespace Shard
                 -1,
                 SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
-
-            SDL.SDL_SetRenderDrawBlendMode(_rend, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+//            SDL.SDL_SetRenderDrawBlendMode(_rend, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 
             SDL.SDL_SetRenderDrawColor(_rend, 0, 0, 0, 255);
 
+            // render to a texture
+            lightMapTex = SDL.SDL_CreateTexture(_rend, SDL.SDL_PIXELFORMAT_RGBA8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
+            screenTextureBuf = SDL.SDL_CreateTexture(_rend, SDL.SDL_PIXELFORMAT_RGBA8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, _width, _height);
+
+            //SDL.SDL_SetTextureBlendMode(lightMapTex, SDL.SDL_BlendMode.SDL_BLENDMODE_MUL);
+
+            SDL.SDL_SetTextureBlendMode(screenTextureBuf, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
+            SDL.SDL_SetTextureBlendMode(lightMapTex, SDL.SDL_BlendMode.SDL_BLENDMODE_MUL);
+            SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
 
             myTexts = new List<TextDetails>();
         }
@@ -232,6 +256,75 @@ namespace Shard
 
             }
 
+        }
+        public override void renderCircle(int centreX, int centreY, int rad)
+        {
+            int dia = (rad * 2);
+            byte r, g, b, a;
+            int x = (rad - 1);
+            int y = 0;
+            int tx = 1;
+            int ty = 1;
+            int error = (tx - dia);
+
+            SDL.SDL_GetRenderDrawColor(_rend, out r, out g, out b, out a);
+
+            // We draw an octagon around the point, and then turn it a bit.  Do 
+            // that until we have an outline circle.  If you want a filled one, 
+            // do the same thing with an ever decreasing radius.
+            while (x >= y)
+            {
+
+                SDL.SDL_RenderDrawPoint(_rend, centreX + x, centreY - y);
+                SDL.SDL_RenderDrawPoint(_rend, centreX + x, centreY + y);
+                SDL.SDL_RenderDrawPoint(_rend, centreX - x, centreY - y);
+                SDL.SDL_RenderDrawPoint(_rend, centreX - x, centreY + y);
+                SDL.SDL_RenderDrawPoint(_rend, centreX + y, centreY - x);
+                SDL.SDL_RenderDrawPoint(_rend, centreX + y, centreY + x);
+                SDL.SDL_RenderDrawPoint(_rend, centreX - y, centreY - x);
+                SDL.SDL_RenderDrawPoint(_rend, centreX - y, centreY + x);
+
+                if (error <= 0)
+                {
+                    y += 1;
+                    error += ty;
+                    ty += 2;
+                }
+
+                if (error > 0)
+                {
+                    x -= 1;
+                    tx += 2;
+                    error += (tx - dia);
+                }
+            }
+        }
+
+        public override void renderFilledCircle(int x, int y, int rad, Color col)
+        {
+            SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);
+            while (rad > 0)
+            {
+                renderCircle(x, y, rad);
+                rad -= 1;
+            }
+        }
+
+        public void _renderFilledCircle(int x, int y, int rad, Color col)
+        {
+            SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);
+            for (int width = 0; width < rad * 2; width++) 
+            {
+                for (int height = 0; height < rad * 2; height++) 
+                {
+                    var horizontalOffset = rad - width;
+                    var verticalOffset = rad - height;
+                    if ((horizontalOffset * horizontalOffset + verticalOffset * verticalOffset) <= (rad * rad))
+                    {
+                        SDL.SDL_RenderDrawPoint(_rend, x + horizontalOffset, y + verticalOffset);
+                    }
+                }
+            } 
         }
     }
 }
