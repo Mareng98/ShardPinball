@@ -336,7 +336,6 @@ namespace Shard
                 }
 
                 impulse = checkCollisionBetweenObjects(col.A, col.B);
-                //impulse = checkRaycastCollisionBetweenObjects(col.A, col.B);
                 if (impulse != null)
                 {
                     ch.onCollisionStay(col.B);
@@ -382,7 +381,6 @@ namespace Shard
 
 
 
-            //            Debug.Log("Time Interval is " + (Bootstrap.getCurrentMillis() - lastUpdate) + ", " + colliding.Count);
 
 
             return true;
@@ -438,25 +436,6 @@ namespace Shard
             }
         }
 
-        /*private Vector2? checkRaycastCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
-        {
-            float minimumDistance = -1;
-            List<Vector2> distanceList = new List<Vector2>();
-            foreach (Collider col in a.getColliders())
-            {
-                foreach (Collider col2 in b.getColliders())
-                {
-
-                    minimumDistance = col.CheckRaycastCollision(col2);
-                    if(impulse != null)
-                    {
-                        impulseTrain.Add((Vector2)impulse);
-                    }
-                }
-            }
-
-            return impulse;
-        }*/
 
         private Vector2? checkCollisionBetweenObjects(PhysicsBody a, PhysicsBody b)
         {
@@ -524,7 +503,6 @@ namespace Shard
                 }
             }
 
-            //            Debug.Log("Checking " + collisionsToCheck.Count + " collisions");
 
         }
 
@@ -552,7 +530,6 @@ namespace Shard
                 if (possibleImpulse.HasValue)
                 {
                     impulse = possibleImpulse.Value;
-                    Debug.Log("Col is " + ob + ", impulse " + possibleImpulse);
 
                     if (ob.A.PassThrough != true && ob.B.PassThrough != true)
                     {
@@ -730,7 +707,6 @@ namespace Shard
 
             }
 
-            //            Debug.Log("Checking " + collisionsToCheck.Count + " collisions");
 
         }
 

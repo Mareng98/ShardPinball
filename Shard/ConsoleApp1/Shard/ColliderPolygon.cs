@@ -183,10 +183,6 @@ namespace Shard
             return null;
         }
 
-        public override Vector2? CheckRaycastCollision(ColliderCircle c)
-        {
-            return null;
-        }
 
         // For debugging purposes
         private void DrawTriangle(Vector2[] triangle, Color col )

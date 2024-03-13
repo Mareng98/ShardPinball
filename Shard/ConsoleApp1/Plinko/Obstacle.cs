@@ -25,11 +25,11 @@ namespace Plinko
             Transform.Scaley = 3;
             Transform.Wid = 6;
             Transform.Ht = 6;
-            MyBody.Mass = 1;
+            MyBody.Mass = 10000000;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
-            MyBody.ReflectOnCollision = false;
+            MyBody.ReflectOnCollision = true;
             circleCollider = MyBody.addCircleCollider();
             circleCollider.DrawingColor = Color.White;
             addTag("Obstacle");

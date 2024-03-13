@@ -217,27 +217,22 @@ namespace Shard
 
             // distance holds the x or y component of the vector from old point to new point
             // depending on if minXAndMaxX or minYAndMaxY
-            //float distance;
+
             foreach (Collider col in myColliders)
             {
 
                 if (x)
                 {
                     tmp = col.MinAndMaxX;
-                    //distance = Math.Abs(trans.X - trans.Lx);
                 }
                 else
                 {
                     tmp = col.MinAndMaxY;
-                    //distance = Math.Abs(trans.Y - trans.Ly);
                 }
 
                 min = Math.Min(tmp[0], min);
                 max = Math.Max(tmp[1], max);
-                // we then use distance to increase the perimeter of the min and max points
-                // that are later used in sweep and prune alg.
-                //min = Math.Min(tmp[0], min) - distance;
-                //max = Math.Max(max, tmp[1]) + distance;
+
             }
 
             return new float[2] { min, max };
@@ -250,7 +245,6 @@ namespace Shard
             collisionObjects = new List<PhysicsBody>();
             myColliders = new List<Collider>();
             collisionCandidates = new List<Collider>();
-
             Parent = p;
             Trans = p.Transform;
             Colh = (CollisionHandler)p;
@@ -331,7 +325,6 @@ namespace Shard
         {
             for (int i = 0; i < collisionNormals.Count; i++)
             {
-
                 Vector2 normal = collisionNormals[i];
                 PhysicsBody other = collisionObjects[i];
                 // The speed at which this object is moving away from the other object
@@ -347,7 +340,7 @@ namespace Shard
 
                         // Radius from axis
                         Vector2 r1 = trans.Centre - other.trans.Pivot;
-                        float rLength = r1.Length() / 200;
+                        float rLength = r1.Length() / 20;
                         Vector2 rotationVelocityVector;
                         // Negative rotation is anti-clockwise, positive rotation is clockwise
                         // there's a flaw here with the rotation velocity direction, which might not be 100% at all times
@@ -361,9 +354,8 @@ namespace Shard
                         }
                         // Speed the other object is rotating with into this object, if negative it is rotating away, if 0 it has no effect
                         float rvAlongCollisionNormal = Vector2.Dot(normal, rotationVelocityVector * rLength);
-                        Vector2 rotationalImpulse = rvAlongCollisionNormal * normal; // needs to be fixed, just for test
+                        Vector2 rotationalImpulse = rvAlongCollisionNormal * normal;
                         force = Vector2.Reflect(this.Force, normal);
-                        // The mass of other is infinite, simply give this body all the force along the normal
                         addForce(normal, rotationalImpulse.Length());
 
                         collisionNormals.Clear();
@@ -383,7 +375,6 @@ namespace Shard
                     {
                         // The force which to add along the collision normal to both objects
                         Vector2 impulse = 2 * relativeVelocityAlongCollisionNormal * normal;
-                        Vector2 thisAddedForce = (other.mass / (this.mass + other.mass)) * impulse;
                         // Split the impulse in proportion to their masses
                         this.force += (other.mass / (this.mass + other.mass)) * impulse;
                     }
@@ -399,6 +390,7 @@ namespace Shard
             collisionNormals.Clear();
             collisionObjects.Clear();
         }
+
 
         public void reduceForces(float prop)
         {
@@ -445,136 +437,9 @@ namespace Shard
             MinAndMaxY = getMinAndMax(false);
         }
 
-        private void ImpartForces(Vector2 thisAngularMomentum, Vector2 otherLinearMomentum)
-        {
-            // Where thisAngularMomentum = this.mass * angularVelocity * Math.Pow(radius, 2)
-            // And otherLinearMomentum = other.mass * other.Velocity
-
-        }
-
-        /*private float CalculateRotationCollisionForce(Vector2 perpendicularForce)
-        {
-            // Considering a fully elastic collision, we can calculate the new velocities
-            float thisLinearVelocity = angularVelocity * radius;
-            // Conservation of energy gives us
-            float newAngularVelocity = massOther*otherVelocity + 
-            float thisAngularMomentum = (float) (this.mass * angularVelocity * Math.Pow(radius, 2));
-
-            Vector2 impulse = 2 * dotProduct * normal;
-            // Split the impulse in proportion to their masses
-            this.force += (other.mass / (this.mass + other.mass)) * impulse;
-            other.force -= (this.mass / (this.mass + other.mass)) * impulse;
-        }*/
-
-        private float CalculateAngularVelocity()
-        {
-            if (momentOfInertia >= 0)
-            {
-                float angularVelocity = netTorque / momentOfInertia;
-                return angularVelocity;
-            }
-            else
-            {
-                return 0; // To avoid division by zero error and to keep momentOfInertia positive
-            }
-        }
-
-        private float CalcAngularAcceleration()
-        {
-            float addedAcceleration = netTorque / momentOfInertia;
-            if (addedAcceleration > 0)
-            {
-                addedAcceleration -= angularDrag;
-                if (addedAcceleration < 0 && angularAcceleration > 0)
-                {
-                    // Deaccelerate
-                    return angularAcceleration + addedAcceleration;
-                }
-                else if (addedAcceleration < 0)
-                {
-                    // Stop
-                    return 0;
-                }
-                else
-                {
-                    // Accelerate
-                    return angularAcceleration + addedAcceleration;
-                }
-            }
-            else if (addedAcceleration < 0)
-            {
-                addedAcceleration += angularDrag;
-                if (addedAcceleration > 0 && angularAcceleration < 0)
-                {
-                    // Deaccelerate
-                    return angularAcceleration + addedAcceleration;
-                }
-                else if (addedAcceleration > 0)
-                {
-                    // Stop
-                    return 0;
-                }
-                else
-                {
-                    // Accelerate
-                    return angularAcceleration + addedAcceleration;
-                }
-            }
-            return angularAcceleration;
-        }
-
 
         public void physicsTick()
         {
-            /*float rotation = 1;
-            Vector2 test = new Vector2(-1, 1f);
-            if(test.X > 0 && test.Y < 0)
-            {
-                // First quadrant
-                if(rotation > 0)
-                {
-                    // Rotating clockwise
-                    Debug.Log(Vector2.Normalize(new Vector2(-test.Y, test.X)).ToString());
-                }
-                else
-                {
-                    // Rotating antiClockwise
-                }
-            }
-            else if(test.X < 0 && test.Y < 0)
-            {
-                // Second quadrant
-            }else if(test.X < 0 && test.Y > 0)
-            {
-                // Third quadrant
-            }
-            else
-            {
-                // Fourth quadrants
-            }
-            if(test.X > 0)
-            {
-                if (rotation < 0)
-                {
-                    Debug.Log(Vector2.Normalize(new Vector2(test.Y, -test.X)).ToString());
-                }
-                else
-                {
-                    Debug.Log(Vector2.Normalize(new Vector2(-test.Y, test.X)).ToString());
-                }
-            }
-            else
-            {
-                if (rotation < 0)
-                {
-                    Debug.Log(Vector2.Normalize(new Vector2(test.Y, -test.X)).ToString());
-                }
-                else
-                {
-                    Debug.Log(Vector2.Normalize(new Vector2(-test.Y, test.X)).ToString());
-                }
-            }*/
-
             // Torque = Intertia * acceleration
             angularAcceleration = netTorque / momentOfInertia;
             angularVelocity += angularAcceleration;
@@ -613,45 +478,6 @@ namespace Shard
             {
                 force = (force / forceLength) * (forceLength - Drag);
             }
-        }
-
-        public void PhysicsTick()
-        {
-            List<Vector2> toRemove;
-            angularAcceleration += netTorque;
-            float force;
-            float rot = 0;
-            //double dt = Bootstrap.getDeltaTime();
-            toRemove = new List<Vector2>();
-
-            float angularVelocity = CalculateAngularVelocity();
-            AngularVelocity = angularVelocity;
-            float rotation = angularVelocity; //* (float)dt;
-            trans.rotate(rotation);
-            // Decrease torque
-            if (Math.Abs(netTorque) < AngularDrag)
-            {
-                netTorque = 0;
-            }
-            else
-            {
-                netTorque -= Math.Sign(netTorque) * AngularDrag;
-            }
-
-
-            force = this.force.Length();
-            trans.translate(this.force);
-
-            if (force < Drag)
-            {
-                stopForces();
-            }
-            else if (force > 0)
-            {
-                this.force = (this.force / force) * (force - Drag);
-            }
-
-
         }
 
 

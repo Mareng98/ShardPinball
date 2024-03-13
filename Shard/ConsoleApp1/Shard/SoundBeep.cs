@@ -52,7 +52,6 @@ namespace Shard
             SDL.SDL_LoadWAV(file, out device.have, out buffer, out device.length);
             
             string test = SDL.SDL_GetError();
-            Debug.Log(test);
             int success = SDL.SDL_QueueAudio(device.dev, buffer, device.length);
             SDL.SDL_PauseAudioDevice(device.dev, 0);
 

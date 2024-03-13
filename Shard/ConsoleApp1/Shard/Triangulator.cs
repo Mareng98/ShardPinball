@@ -35,6 +35,8 @@ namespace Shard
             return triangles;
         }
 
+
+
         private static int FindEarTip(List<Vector2> vertices)
         {
             int count = vertices.Count;
@@ -47,6 +49,13 @@ namespace Shard
                 Vector2 prev = vertices[iPrev];
                 Vector2 current = vertices[i];
                 Vector2 next = vertices[iNext];
+
+                // Is potential ear convex? ( Measured clockwise around polygon )
+                if (CrossProduct2D(prev - current, next - current) < 0f)
+                {
+                    continue;
+                }
+
 
                 if (IsEar(prev, current, next, vertices))
                     return i;
@@ -66,16 +75,48 @@ namespace Shard
             return true;
         }
 
-        private static bool IsPointInTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
+        private static float CrossProduct2D(Vector2 v1, Vector2 v2)
         {
-            float d1 = Sign(p, a, b);
-            float d2 = Sign(p, b, c);
-            float d3 = Sign(p, c, a);
+            return (v1.X * -v2.Y) - (-v1.Y * v2.X);
+        }
+        public static bool IsPointInTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
+        {
+            Vector2 ab = b - a;
+            Vector2 bc = c - b;
+            Vector2 ca = a - c;
 
-            bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-            bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+            Vector2 ap = p - a;
+            Vector2 bp = p - b;
+            Vector2 cp = p - c;
 
-            return !(hasNeg && hasPos);
+            float cross1 = CrossProduct2D(ab, ap);
+            float cross2 = CrossProduct2D(bc, bp);
+            float cross3 = CrossProduct2D(ca, cp);
+
+            if (cross1 >= 0f || cross2 >= 0f || cross3 >= 0f)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsPointOnLine(Vector2 p, Vector2 start, Vector2 end)
+        {
+            if (start.X == end.X && p.X == start.X && p.Y >= Math.Min(start.Y, end.Y) && p.Y <= Math.Max(start.Y, end.Y)) return true;
+            if (start.Y == end.Y && p.Y == start.Y && p.Y >= Math.Min(start.X, end.X) && p.X <= Math.Max(start.X, end.X)) return true;
+            return false;
+            float k = (start.Y - end.Y) / (start.X - end.X);
+            // Check if the point is collinear with the line segment
+            float area = 0.5f * ((end.Y - start.Y) * (p.X - start.X) - (end.X - start.X) * (p.Y - start.Y));
+            return IsApproximately(area, 0f) &&
+                   (p.X >= Math.Min(start.X, end.X) && p.X <= Math.Max(start.X, end.X)) &&
+                   (p.Y >= Math.Min(start.Y, end.Y) && p.Y <= Math.Max(start.Y, end.Y));
+        }
+
+        private static bool IsApproximately(float a, float b, float epsilon = 0.0001f)
+        {
+            return Math.Abs(a - b) < epsilon;
         }
 
         private static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)

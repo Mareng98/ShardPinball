@@ -19,7 +19,6 @@ namespace Shard
         Flipper rightFlipper;
         public void handleInput(InputEvent inp, string eventType)
         {
-            Debug.Log(inp.Key.ToString());
             
             
             switch (inp.Key)
