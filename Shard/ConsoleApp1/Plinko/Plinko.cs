@@ -33,16 +33,12 @@ namespace Shard
                 balls.Add(new PlinkoBall("test", inp.X, inp.Y, Vector2.Zero));
             }
         }
+
+        // Plinko Simulation
+
         public override void update()
         {
-            rotator.MyBody.AngularVelocity = 0.5f;
-            display.renderGeometry([new Vector2(0, 0),
-                new Vector2(display.getWidth(), 0),
-                new Vector2(display.getWidth(), display.getHeight()),
-                new Vector2(0, display.getHeight())
-            ], Color.DarkSlateGray);
         }
-        // Plinko Simulation
         public override void initialize()
         {
             balls = new List<PlinkoBall>();
@@ -112,13 +108,23 @@ namespace Shard
             someList.Add(new Vector2(1210, 250));
             someList.Add(new Vector2(0, 250));
             someList.Add(new Vector2(0, 0));
-
             PlinkoPolygon well = new PlinkoPolygon("test", 20, 800,
                 someList.ToArray()
                 );
         }
         // Rotation simulation
-        /*public override void initialize()
+        /*
+        public override void update()
+        {
+            rotator.MyBody.AngularVelocity = 0.5f;
+            display.renderGeometry([new Vector2(0, 0),
+                new Vector2(display.getWidth(), 0),
+                new Vector2(display.getWidth(), display.getHeight()),
+                new Vector2(0, display.getHeight())
+            ], Color.DarkSlateGray);
+        }
+        
+        public override void initialize()
         {
             balls = new List<PlinkoBall>();
 

@@ -47,10 +47,6 @@ namespace Shard
 
         }
 
-        public ColliderCircle(CollisionHandler gob) : base(gob)
-        {
-        }
-
 
 
         public void calculateBoundingBox()
@@ -119,10 +115,7 @@ namespace Shard
         {
             calculateBoundingBox();
         }
-        public override Vector2? CheckRaycastCollision(ColliderCircle c)
-        {
-            return null;
-        }
+
         public override Vector2? checkCollision(ColliderPolygon c)
         {
             // The collisionCheck for this combination is already defined in ColliderPolygon

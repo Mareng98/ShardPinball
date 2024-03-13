@@ -40,19 +40,22 @@ namespace Pinball
 
         public override void update()
         {
-            Debug.Log(power.ToString());
             if(charge == FlipperDirection.Up)
             {
                 if(power < maxPower)
                 {
-                    power += 0.1f;
+                    power += 50*(float)Bootstrap.getDeltaTime();
+                }
+                else
+                {
+                    power = maxPower;
                 }
             }
             else
             {
                 if(power > 0.1f)
                 {
-                    power -= 0.2f;
+                    power -= 100*(float)Bootstrap.getDeltaTime();
                 }
                 else
                 {
@@ -66,8 +69,8 @@ namespace Pinball
 
                 d.renderGeometry([
 
-                    new Vector2(Transform.X, Transform.Y - power),
-                    new Vector2(Transform.X + Transform.Wid, Transform.Y  - power),
+                    new Vector2(Transform.X, Transform.Y - 40*power/maxPower),
+                    new Vector2(Transform.X + Transform.Wid, Transform.Y  - 40 * power / maxPower),
                     new Vector2(Transform.X + Transform.Wid, Transform.Y + Transform.Ht),
                     new Vector2(Transform.X + Transform.Wid, Transform.Y + Transform.Ht),
                 ], Color.GreenYellow);
@@ -88,8 +91,8 @@ namespace Pinball
             if (x.Parent.checkTag("Ball") && charge == FlipperDirection.Stop && power != 0)
             {
 
-                Bootstrap.getSound().playSound("spring.wav");
-                x.Force += new Vector2(0, -power);
+                 Bootstrap.getSound().playSound("spring.wav");
+                x.addForce(new Vector2(0, -power));
                 power = 0;
             }
         }

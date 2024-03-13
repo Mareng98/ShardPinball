@@ -31,13 +31,13 @@ namespace Plinko
         {
             setPhysicsEnabled();
 
-            MyBody.Mass = 15000;
+            MyBody.Mass = 15000000;
             MyBody.MaxForce = 15000;
             MyBody.AngularDrag = 0;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
-            MyBody.ReflectOnCollision = false;
+            MyBody.ReflectOnCollision = true;
         }
 
 

@@ -84,11 +84,6 @@ namespace Shard
             return deltaTime;
         }
 
-        public static float getDeltaTimeMultiplier()
-        {
-            return (float)deltaTime * 100;
-        }
-
         public static Display getDisplay()
         {
             return displayEngine;
@@ -229,7 +224,6 @@ namespace Shard
 
 
 
-            Debug.Log ("Frametimes is " + frameTimes.Count);
 
             if (frameTimes.Count == 0) {
                 return -1;
@@ -287,7 +281,7 @@ namespace Shard
             lastTick = startTime;
 
             // Sätt denna när vi initialiserar running game
-            GetPhysicsManager().GravityModifier = 0.15f;
+            GetPhysicsManager().GravityModifier = 0.3f;
             // This is our game loop.
 
             if (getEnvironmentalVariable("physics_debug") == "1")
@@ -332,11 +326,6 @@ namespace Shard
                     {
                         GetGameObjectManager().prePhysicsUpdate();
                         tickNumber += 1;
-                    }
-
-                    if(tickNumber == 200)
-                    {
-                        GetPhysicsManager().GravityModifier = 0.3f;
                     }
                     // Update the physics.  If it's too soon, it'll return false.   Otherwise 
                     // it'll return true.

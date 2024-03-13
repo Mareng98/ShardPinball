@@ -32,12 +32,12 @@ namespace Pinball
             MyBody.addCircleCollider();
 
             MyBody.Mass = 0.2f;
-            MyBody.MaxForce = 25;
+            MyBody.MaxForce = 30;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
-            MyBody.FrictionCoefficient = 0.01f;
+            MyBody.FrictionCoefficient = 0.014f;
 
 
             Debug.Log(this.Transform.ToString());

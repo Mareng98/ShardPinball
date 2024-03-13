@@ -39,15 +39,13 @@ namespace Plinko
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = true;
-            MyBody.FrictionCoefficient = 0.0f;
+            MyBody.FrictionCoefficient = 0.048f;
 
 
-            Debug.Log(this.Transform.ToString());
         }
 
         public override void update()
         {
-            //            Debug.Log ("" + this);
 
             Bootstrap.getDisplay().addToDraw(this);
         }
