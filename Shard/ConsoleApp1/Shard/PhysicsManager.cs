@@ -383,7 +383,7 @@ namespace Shard
                     var minmaxX = physicsObject.getMinAndMax(true);
                     var minmaxY = physicsObject.getMinAndMax(false);
 
-                    var box = new Box(minmaxX[0], minmaxY[0], (minmaxX[1] - minmaxX[0]) * 4, (minmaxY[1] - minmaxY[0])*4, physicsObject);
+                    var box = new Box(minmaxY[0], minmaxX[0], (minmaxX[1] - minmaxX[0]), (minmaxY[1] - minmaxY[0]), physicsObject);
                     qt.Insert(box);
                 }
                 collisionsToCheck = qt.findAllIntersections();
@@ -546,69 +546,6 @@ namespace Shard
                 if (possibleImpulse.HasValue)
                 {
                     impulse = possibleImpulse.Value;
-
-                    if (ob.A.PassThrough != true && ob.B.PassThrough != true)
-                    {
-                        /*
-
-                        massTotal = ob.A.Mass + ob.B.Mass;
-
-                        if (ob.A.Kinematic)
-                        {
-                            massProp = 1;
-                        }
-                        else
-                        {
-                            massProp = ob.A.Mass / massTotal;
-
-                        }
-
-
-                        if (ob.A.ImpartForce)
-                        {
-                            ob.A.impartForces(ob.B, massProp);
-                            ob.A.reduceForces(1.0f - massProp);
-                        }
-
-                        massb = massProp;
-
-                        if (ob.B.Kinematic == false)
-                        {
-                            ob.B.Parent.Transform.translate(-1 * (impulse.X * massProp), -1 * (impulse.Y * massProp));
-                        }
-
-
-                        if (ob.B.Kinematic)
-                        {
-                            massProp = 1;
-                        }
-                        else
-                        {
-                            massProp = 1.0f - massProp;
-                        }
-
-                        massa = massProp;
-
-
-                        if (ob.A.Kinematic == false)
-                        {
-
-                            ob.A.Parent.Transform.translate((impulse.X * massProp), (impulse.Y * massProp));
-                        }
-
-
-                        if (ob.A.StopOnCollision)
-                        {
-                            ob.A.stopForces();
-                        }
-
-                        if (ob.B.StopOnCollision)
-                        {
-                            ob.B.stopForces();
-                        }
-
-                        */
-                    }
                     ((CollisionHandler)ob.A.Parent).onCollisionEnter(ob.B);
                     ((CollisionHandler)ob.B.Parent).onCollisionEnter(ob.A);
                     colliding.Add(ob);
@@ -625,9 +562,6 @@ namespace Shard
                             ob.B.AddCollisionInfo(impulse, ob.A);
                         }
                     }
-
-
-
                 }
 
 
@@ -748,7 +682,6 @@ namespace Shard
 
 
                 sapX = addToList(sapX, sx);
-
             }
 
             //            outputList (sapX);

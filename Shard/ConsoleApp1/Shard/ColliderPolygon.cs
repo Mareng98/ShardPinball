@@ -471,7 +471,7 @@ namespace Shard
                     miny = v.Y;
                 }
             }
-            return [ miny + y - 10, maxy + y + 10 ];
+            return [ miny + y, maxy + y];
         }
 
         public override float[] getMinAndMaxX()
@@ -489,7 +489,7 @@ namespace Shard
                     minx = v.X;
                 }
             }
-            return [minx + x - 10 , maxx + x + 10];
+            return [minx + x, maxx + x];
         }
     }
 }
