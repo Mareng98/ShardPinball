@@ -358,7 +358,7 @@ namespace Shard
             toRemove.Clear();
             // Check for new collisions
 
-            if (!useQuadTreeForCollisions)
+            if (useQuadTreeForCollisions)
             {
                 // this is very inefficient. This is recreated every frame, but we'd rather just update all dynamic objects in the tree.
                 // TODO i guess. This is much faster than the current Sweep and Prune implementation though. :)
