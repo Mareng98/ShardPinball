@@ -63,6 +63,7 @@ namespace Shard
                 }
             }
 
+
             List<Vector2> someList = new List<Vector2>();
             int slotWidth = 30;
             int slotHeight = 200;

@@ -57,7 +57,7 @@ namespace Shard
         private List<Transform> _toDraw;
         private List<Line> _linesToDraw;
         private List<Circle> _circlesToDraw;
-        private List<SDL.SDL_Vertex[]> _polygonsToDraw;
+        private List<SDL.SDL_Vertex[]> _trianglesToDraw;
         private Dictionary<string, IntPtr> spriteBuffer;
 
         // fix this definition later, for now it will work
@@ -71,7 +71,7 @@ namespace Shard
             _toDraw = new List<Transform>();
             _linesToDraw = new List<Line>();
             _circlesToDraw = new List<Circle>();
-            _polygonsToDraw = new List<SDL.SDL_Vertex[]>();
+            _trianglesToDraw = new List<SDL.SDL_Vertex[]>();
 
         }
 
@@ -183,7 +183,7 @@ namespace Shard
                 };
             }
 
-            _polygonsToDraw.Add(sdlVertices);
+            _trianglesToDraw.Add(sdlVertices);
         }
 
         /// <summary>
@@ -221,9 +221,8 @@ namespace Shard
             SDL.SDL_Rect sRect;
             SDL.SDL_Rect tRect;
 
-            foreach (SDL.SDL_Vertex[] polygon in _polygonsToDraw)
+            foreach (SDL.SDL_Vertex[] polygon in _trianglesToDraw)
             {
-                SDL.SDL_SetRenderDrawColor(_rend, 255, 255, 255, 255);
                 int[] indices = { 0, 1, 2 };
                 SDL.SDL_RenderGeometry(_rend, nint.Zero, polygon, polygon.Length, indices, 3);
             }
@@ -308,7 +307,7 @@ namespace Shard
             _toDraw.Clear();
             _circlesToDraw.Clear();
             _linesToDraw.Clear();
-            _polygonsToDraw.Clear();
+            _trianglesToDraw.Clear();
             Bootstrap.ClearLightObjects();
             base.clearDisplay();
         }

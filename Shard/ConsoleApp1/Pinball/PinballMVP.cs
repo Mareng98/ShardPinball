@@ -118,25 +118,8 @@ namespace Shard
                     obstacles.Add(o);
                 }
             }
-            lifeBar = new LifeBar(3,1200, 20);
+            lifeBar = new LifeBar(2,1200, 20);
             ball = new PinballBall("Ball",(int)initialBallPosition.X,(int)initialBallPosition.Y, Vector2.Zero);
-            /*PinballRectangle ramp = new PinballRectangle("LeftRamp", 210, Bootstrap.getDisplay().getHeight() - 480,
-                [new Vector2(0, 0),
-                    new Vector2(300, 400),
-                    new Vector2(0, 400)]);
-            PinballRectangle ramp2 = new PinballRectangle("RightRamp", Bootstrap.getDisplay().getWidth() - 510, Bootstrap.getDisplay().getHeight() - 480,
-                [new Vector2(300, 0),
-                    new Vector2(300, 400),
-                    new Vector2(0, 400)
-                ]);
-
-            PinballRectangle wellish = new PinballRectangle("Test", 500, Bootstrap.getDisplay().getHeight() - 280,
-                [new Vector2(0,0),
-                    new Vector2(150,100),
-                    new Vector2(300,0),
-                    new Vector2(300,200),
-                    new Vector2(0,200),
-                ]);*/
 
             PinballPolygon arena = new PinballPolygon("Arena", arenaMinX, 0,
                 [new Vector2(0, 0),
@@ -175,9 +158,6 @@ namespace Shard
                     new Vector2(51, 89),
                     new Vector2(50, 94),
                     new Vector2(50, 100),
-
-
-
                     // Bottomleft ramp
                     new Vector2(50, arenaHeight-300),
                     new Vector2(257, arenaHeight - 70),
@@ -203,12 +183,7 @@ namespace Shard
                     ]
                 );
 
-
-            /*PinballRectangle leftWall = new PinballRectangle("LeftWall", 210, 0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 260, 0, 50, Bootstrap.getDisplay().getHeight());
-            PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);*/
             Well well = new Well("Well", 10, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 200, this);
-
             flipperSpring = new Spring("Spring", (int)initialBallPosition.X - 10, (int)initialBallPosition.Y - 20, 40, 40, 35);
 
         }
