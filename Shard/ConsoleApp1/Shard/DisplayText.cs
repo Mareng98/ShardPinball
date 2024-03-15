@@ -110,6 +110,7 @@ namespace Shard
         private void draw()
         {
 
+
             foreach (TextDetails td in myTexts)
             {
 
@@ -132,12 +133,13 @@ namespace Shard
             SDL.SDL_RenderCopy(_rend, screenTextureBuf, IntPtr.Zero, IntPtr.Zero);
             if (Bootstrap.IsLightingOn())
             {
-
-                //drawLightMap(Color.FromArgb(255, 0, 0, 0));
                 Bootstrap.DrawLightMap();
                 SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
             }
             SDL.SDL_RenderPresent(_rend);
+            SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
+            SDL.SDL_SetRenderDrawColor(_rend, 0, 0, 0, 0);
+            SDL.SDL_RenderClear(_rend);
         }
 
         public override void drawLightMap(Color shadowMap)
