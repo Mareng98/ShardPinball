@@ -109,16 +109,6 @@ namespace Shard
 
         private void draw()
         {
-            // first render pass
-            // copy firstRenderPass texture to renderer
-            SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
-            SDL.SDL_RenderCopy(_rend, screenTextureBuf, IntPtr.Zero, IntPtr.Zero);
-            if (Bootstrap.IsLightingOn())
-            {
-                Bootstrap.DrawLightMap();
-                SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
-            }
-
             foreach (TextDetails td in myTexts)
             {
 
@@ -133,6 +123,18 @@ namespace Shard
                 SDL.SDL_RenderCopy(_rend, td.LblText, IntPtr.Zero, ref sRect);
 
             }
+
+            // first render pass
+            // copy firstRenderPass texture to renderer
+            SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
+            SDL.SDL_RenderCopy(_rend, screenTextureBuf, IntPtr.Zero, IntPtr.Zero);
+            if (Bootstrap.IsLightingOn())
+            {
+                Bootstrap.DrawLightMap();
+                SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
+            }
+
+
 
             SDL.SDL_RenderPresent(_rend);
             SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
