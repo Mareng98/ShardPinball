@@ -134,8 +134,6 @@ namespace Shard
                 SDL.SDL_RenderCopy(_rend, lightMapTex, IntPtr.Zero, IntPtr.Zero);
             }
 
-
-
             SDL.SDL_RenderPresent(_rend);
             SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
             SDL.SDL_SetRenderDrawColor(_rend, 0, 0, 0, 0);
@@ -180,7 +178,6 @@ namespace Shard
                 -1,
                 SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
-//            SDL.SDL_SetRenderDrawBlendMode(_rend, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
 
             SDL.SDL_SetRenderDrawColor(_rend, 0, 0, 0, 255);
 
@@ -188,9 +185,6 @@ namespace Shard
             lightMapTex = SDL.SDL_CreateTexture(_rend, SDL.SDL_PIXELFORMAT_RGBA8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, getWidth(), getHeight());
             screenTextureBuf = SDL.SDL_CreateTexture(_rend, SDL.SDL_PIXELFORMAT_RGBA8888, (int)SDL.SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET, _width, _height);
 
-            //SDL.SDL_SetTextureBlendMode(lightMapTex, SDL.SDL_BlendMode.SDL_BLENDMODE_MUL);
-
-            SDL.SDL_SetTextureBlendMode(screenTextureBuf, SDL.SDL_BlendMode.SDL_BLENDMODE_BLEND);
             SDL.SDL_SetTextureBlendMode(lightMapTex, SDL.SDL_BlendMode.SDL_BLENDMODE_MUL);
             SDL.SDL_SetRenderTarget(_rend, screenTextureBuf);
 
