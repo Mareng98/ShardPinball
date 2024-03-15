@@ -66,6 +66,17 @@ namespace Shard
         private List<Vector2> collisionNormals;
         private List<PhysicsBody> collisionObjects;
         private Vector2 gravityDir;
+        private bool isStatic = false;
+
+        public bool IsStatic()
+        {
+            return isStatic;
+        }
+
+        public void SetStatic()
+        {
+            isStatic = true;
+        }
 
         public float AngularVelocity { get => angularVelocity; set => angularVelocity = value; }
         public Color DebugColor { get => debugColor; set => debugColor = value; }

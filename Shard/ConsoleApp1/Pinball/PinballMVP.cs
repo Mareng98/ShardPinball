@@ -77,7 +77,7 @@ namespace Shard
         }
         public override void initialize()
         {
-            Bootstrap.SetShadowColor(Color.FromArgb(255, 0, 0, 0));
+            Bootstrap.SetShadowColor(Color.FromArgb(200, 0, 0, 0));
             Bootstrap.EnableLight();
             int arenaWidth = 825;
             int arenaHeight = 1080;
@@ -207,9 +207,10 @@ namespace Shard
             /*PinballRectangle leftWall = new PinballRectangle("LeftWall", 210, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle rightWall = new PinballRectangle("RightWall", Bootstrap.getDisplay().getWidth() - 260, 0, 50, Bootstrap.getDisplay().getHeight());
             PinballRectangle topWall = new PinballRectangle("TopWall", 0, 0, Bootstrap.getDisplay().getWidth(), 50);*/
-            Well well = new Well("Well", 0, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 50, this);
+            Well well = new Well("Well", 10, Bootstrap.getDisplay().getHeight() - 50, Bootstrap.getDisplay().getWidth(), 200, this);
 
             flipperSpring = new Spring("Spring", (int)initialBallPosition.X - 10, (int)initialBallPosition.Y - 20, 40, 40, 35);
+
         }
 
         public void ResetBall()

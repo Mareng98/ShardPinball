@@ -24,6 +24,7 @@ namespace Pinball
             setPhysicsEnabled();
             MyBody.Mass = 10000;
             MyBody.Kinematic = false;
+            MyBody.SetStatic();
             
             MyBody.addRectCollider();
         }

@@ -48,6 +48,7 @@ namespace Pinball
             circleCollider = MyBody.addCircleCollider();
             addTag("Obstacle");
             rnd = new Random();
+            MyBody.SetStatic();
         }
 
         private void ObstacleLightOff()

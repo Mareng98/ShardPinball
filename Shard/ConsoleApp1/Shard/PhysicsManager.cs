@@ -287,7 +287,7 @@ namespace Shard
         {
             CollisionHandler ch, ch2;
             List<CollidingObject> toRemove;
-            bool useQuadTreeForCollisions = false;
+            bool useQuadTreeForCollisions = true;
             QuadTree qt;
 
             if (willTick() == false)
@@ -358,21 +358,22 @@ namespace Shard
             toRemove.Clear();
             // Check for new collisions
 
-            if (useQuadTreeForCollisions)
+            if (!useQuadTreeForCollisions)
             {
+                // this is very inefficient. This is recreated every frame, but we'd rather just update all dynamic objects in the tree.
+                // TODO i guess. This is much faster than the current Sweep and Prune implementation though. :)
                 qt = new QuadTree(0, 0, Bootstrap.getDisplay().getWidth(), Bootstrap.getDisplay().getHeight());
                 foreach (var physicsObject in allPhysicsObjects)
                 {
                     var minmaxX = physicsObject.getMinAndMax(true);
                     var minmaxY = physicsObject.getMinAndMax(false);
 
-                    var box = new Box(minmaxX[0], minmaxY[1], minmaxX[1] - minmaxX[0], minmaxY[1] - minmaxY[0], physicsObject);
+                    var box = new Box(minmaxX[0], minmaxY[0], (minmaxX[1] - minmaxX[0]) * 4, (minmaxY[1] - minmaxY[0])*4, physicsObject);
                     qt.Insert(box);
-
-
                 }
                 collisionsToCheck = qt.findAllIntersections();
                 narrowPass();
+                collisionsToCheck.Clear();
             }
             else
             {
@@ -392,7 +393,7 @@ namespace Shard
             var boxes = traverseQuadTree(qt);
             foreach (var b in boxes)
             {
-                //PinballRectangle r = new("", (int)b.Left, (int)b.Top, (int)b.Width, (int)b.Height);
+                PinballPolygon r = new("", (int)b.Left, (int)b.Top, (int)b.Width, (int)b.Height);
             }
         }
 

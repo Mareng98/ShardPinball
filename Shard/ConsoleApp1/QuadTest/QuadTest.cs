@@ -3,6 +3,7 @@ using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,9 @@ namespace Shard
 {
     internal class QuadTest : Game
     {
+        public QuadTest() : base() {}
+        Vector2 initialBallPosition = new Vector2(1008, 964);
+
         public override void initialize()
         {
             Display display = Bootstrap.getDisplay();
@@ -28,9 +32,12 @@ namespace Shard
             qt.Insert(b3);
             Box b4 = new Box(400, 400, 30, 30);
             qt.Insert(b4);
-            var intersections = qt.findAllIntersections();
+            //var intersections = qt.findAllIntersections();
 
             drawBoxes(qt);
+            PinballBall ball = new PinballBall("Ball",(int)initialBallPosition.X,(int)initialBallPosition.Y, Vector2.Zero);
+
+
         }
 
         public void drawBoxes(QuadTree qt)

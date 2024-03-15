@@ -146,7 +146,7 @@ namespace Shard
             if (isLeaf(node))
             {
                 // If it's a leaf and there are less than 16 nodes (our threshold) then insert. 
-                if (depth >= maxDepth || node.boxes.Count < 1)
+                if (depth >= maxDepth || node.boxes.Count < maxThreshold)
                 {
                     node.boxes.Add(boxToBeInserted);
                 }
@@ -217,6 +217,17 @@ namespace Shard
             return intersections;
         }
 
+        public void AddIntersectingBox(PhysicsBody physBodyA, PhysicsBody physBodyB, List<CollidingObject> intersections)
+        {
+            var cb = new CollidingObject();
+            cb.A = physBodyA;
+            cb.B = physBodyB;
+            if (!(cb.A.IsStatic() && cb.B.IsStatic()))
+            {
+                intersections.Add(cb);
+            }
+        }
+
         private void internalFindAllIntersections(QNode node, List<CollidingObject> intersections)
         {
             for (int i = 0; i < node.boxes.Count; i++)
@@ -225,10 +236,7 @@ namespace Shard
                 {
                     if (node.boxes[i].Intersects(node.boxes[j]))
                     {
-                        var cb = new CollidingObject();
-                        cb.A = node.boxes[i].body;
-                        cb.B = node.boxes[j].body;
-                        intersections.Add(cb);
+                        AddIntersectingBox(node.boxes[i].body, node.boxes[j].body, intersections);
                     }
                 }
             }
@@ -243,7 +251,7 @@ namespace Shard
                     }
                 }
 
-                foreach (var child in  node.children)
+                foreach (var child in node.children)
                 {
                     internalFindAllIntersections(child, intersections);
                 }
@@ -256,10 +264,7 @@ namespace Shard
             {
                 if (box.Intersects(b))
                 {
-                    var cb = new CollidingObject();
-                    cb.A = box.body;
-                    cb.B = b.body;
-                    intersections.Add(cb);
+                    AddIntersectingBox(box.body, b.body, intersections);
                 }
             }
 

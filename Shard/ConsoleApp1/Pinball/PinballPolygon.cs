@@ -39,6 +39,7 @@ namespace Pinball
             MyBody.UsesGravity = false;
             MyBody.StopOnCollision = false;
             MyBody.ReflectOnCollision = false;
+            MyBody.SetStatic();
         }
 
 

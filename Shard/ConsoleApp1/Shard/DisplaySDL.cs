@@ -285,7 +285,6 @@ namespace Shard
 
             SDL.SDL_SetRenderTarget(_rend, IntPtr.Zero);
         }
-
         public void _renderFilledCircle(int x, int y, int rad, Color col)
         {
             SDL.SDL_SetRenderDrawColor(_rend, (byte)col.R, (byte)col.G, (byte)col.B, (byte)col.A);

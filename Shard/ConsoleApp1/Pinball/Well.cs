@@ -28,6 +28,7 @@ namespace Shard
             MyBody.Mass = 10000;
             MyBody.Kinematic = false;
             MyBody.PassThrough = true;
+            MyBody.SetStatic();
             MyBody.addRectCollider();
         }
 

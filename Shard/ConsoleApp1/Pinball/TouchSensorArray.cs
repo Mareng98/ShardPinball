@@ -37,6 +37,7 @@ namespace Shard.Pinball
                 MyBody.ReflectOnCollision = false;
                 MyBody.PassThrough = true;
                 MyBody.addCircleCollider((int)pos.X,(int)pos.Y,rad);
+                MyBody.SetStatic();
             }
             public override void update()
             {
