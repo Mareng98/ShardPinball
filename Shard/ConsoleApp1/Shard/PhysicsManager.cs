@@ -287,8 +287,23 @@ namespace Shard
         {
             CollisionHandler ch, ch2;
             List<CollidingObject> toRemove;
-            bool useQuadTreeForCollisions = true;
+
             QuadTree qt;
+            bool useQuadTreeForCollisions = true;
+            string collisionSystem = Bootstrap.getCollisionSystem();
+
+            if (collisionSystem == "quadtree")
+            {
+                useQuadTreeForCollisions = true; 
+            } else if (collisionSystem == "sap")
+            {
+                useQuadTreeForCollisions = false;
+            }
+            else
+            {
+                Debug.Log("shouldn't happen");
+                Environment.Exit(0);
+            }
 
             if (willTick() == false)
             {

@@ -9,6 +9,7 @@
 using Shard.Shard;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -36,6 +37,7 @@ namespace Shard
         private static string baseDir;
         private static Dictionary<string,string> enVars;
         private static Lighting lighting;
+        private static string COLLISION_SYSTEM = "";
         public static bool checkEnvironmentalVariable (string id) {
             return enVars.ContainsKey (id);
         }
@@ -47,6 +49,11 @@ namespace Shard
             }
 
             return null;
+        }
+
+        public static string getCollisionSystem()
+        {
+            return COLLISION_SYSTEM;
         }
 
 
@@ -184,13 +191,25 @@ namespace Shard
             {
                 t = Type.GetType("Shard." + kvp.Value);
 
-                if (t == null)
+                if (t == null && kvp.Key != "collision")
                 {
                     Debug.getInstance().log("Missing Class Definition: " + kvp.Value + " in " + kvp.Key, Debug.DEBUG_LEVEL_ERROR);
                     Environment.Exit(0);
                 }
 
-                ob = Activator.CreateInstance(t);
+                if (kvp.Key == "collision")
+                {
+                    ob = null;
+
+                }
+                else
+                {
+                    ob = Activator.CreateInstance(t);
+                }
+
+
+
+
 
 
                 switch (kvp.Key)
@@ -216,7 +235,13 @@ namespace Shard
                         input = (InputSystem)ob;
                         input.initialize();
                         break;
-
+                    case "collision":
+                        if (kvp.Value != "quadtree" && kvp.Value != "sap")
+                        {
+                            bailOut = true;
+                        }
+                        COLLISION_SYSTEM = kvp.Value;
+                        break;
                 }
 
                 Debug.getInstance().log("Config file... setting " + kvp.Key + " to " + kvp.Value);
