@@ -77,8 +77,8 @@ namespace Shard
         }
         public override void initialize()
         {
-            Bootstrap.SetShadowColor(Color.FromArgb(200, 0, 0, 0));
-            Bootstrap.EnableLight();
+            //Bootstrap.SetShadowColor(Color.FromArgb(200, 0, 0, 0));
+            //Bootstrap.EnableLight();
             int arenaWidth = 825;
             int arenaHeight = 1080;
             int arenaMinX = 250;
@@ -118,7 +118,7 @@ namespace Shard
                     obstacles.Add(o);
                 }
             }
-            lifeBar = new LifeBar(2,1200, 20);
+            lifeBar = new LifeBar(0,1200, 20);
             ball = new PinballBall("Ball",(int)initialBallPosition.X,(int)initialBallPosition.Y, Vector2.Zero);
 
             PinballPolygon arena = new PinballPolygon("Arena", arenaMinX, 0,
@@ -197,7 +197,7 @@ namespace Shard
             }
             else
             {
-                Game gameOver = new GameOver(scoreKeeper.Score);
+                GameOver gameOver = new GameOver(scoreKeeper.Score);
                 GameStateManager.getInstance().SetGame(gameOver);
                 gameOver.initialize();
                 Bootstrap.getInput().removeListener(this);

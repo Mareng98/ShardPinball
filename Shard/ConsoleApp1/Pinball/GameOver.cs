@@ -4,6 +4,7 @@ using Shard.Shard;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Shard
@@ -22,6 +23,7 @@ namespace Shard
 
         public void handleInput(InputEvent inp, string eventType)
         {
+
             foreach (var button in buttonStates.Keys)
             {
                 Transform t = button.Transform;
@@ -33,21 +35,22 @@ namespace Shard
                         if (buttonStates[button].Tag == "Exit")
                         {
                             Environment.Exit(0);
-                        } else if (buttonStates[button].Tag == "Back")
+                        }
+                        else if (buttonStates[button].Tag == "Back")
                         {
-                            SaveScore("Anonymous", score);
                             SetMainMenu();
                             // cleanup after ourselves
                             // probably should implement IDisposable for this.
                             Bootstrap.getInput().removeListener(this);
                         }
-                   }
-                } else if (eventType.Equals("MouseMotion"))
+                    }
+                }
+                else if (eventType.Equals("MouseMotion"))
                 {
                     if (isMouseInsideButton)
                     {
                         buttonStates[button].IsHovered = true;
-                    } 
+                    }
                     else
                     {
                         buttonStates[button].IsHovered = false;
@@ -55,6 +58,7 @@ namespace Shard
                     t.SpritePath = buttonStates[button].getButtonAsset();
                 }
             }
+            
 
             if (eventType.Equals("KeyDown"))
             {
@@ -85,9 +89,8 @@ namespace Shard
 
         private void SaveScore(string name, int score)
         {
-            var highscores = PinballUtils.LoadHighscores();
             Tuple<string, int> newEntry = new Tuple<string, int>(name, score);
-            var updatedHighscores = PinballUtils.UpdateHighscores(highscores, newEntry);
+            var updatedHighscores = PinballUtils.UpdateHighscores(newEntry);
             PinballUtils.saveHighscores(updatedHighscores);
         }
 

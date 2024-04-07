@@ -49,18 +49,6 @@ namespace Shard
                     t.SpritePath = buttonStates[button].getButtonAsset();
                 }
             }
-            switch (inp.Key)
-            {
-                case 80:
-                    if (eventType.Equals("KeyDown"))
-                    {
-                        Game game = new GameOver(1);
-                        GameStateManager.getInstance().SetGame(game);
-                        game.initialize();
-                        Bootstrap.getInput().removeListener(this);
-                    }
-                    break;
-            }
         }
 
         public override void initialize()
@@ -79,7 +67,7 @@ namespace Shard
             var backButtonState = new ButtonState("Back", "back.png", "back_hovered.png", null);
             backButtonState.CreateButton(100, 10, ref gameObjsToDraw, ref buttonStates);
 
-            highscores = PinballUtils.LoadHighscores();
+            highscores = PinballUtils.HighScores;
 
             Bootstrap.getInput().addListener(this);
         }
