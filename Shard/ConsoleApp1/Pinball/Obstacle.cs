@@ -28,18 +28,23 @@ namespace Pinball
             {
                 obstacleLightOnPath = "blueObstacleOn.png";
                 obstacleLightOffPath = "blueObstacleOff.png";
+                Transform.Scalex = 3;
+                Transform.Scaley = 3;
+                Transform.Wid = 8;
+                Transform.Ht = 8;
             }
             else if(obstacleType == ObstacleTypes.SimpleRed)
             {
                 obstacleLightOnPath = "redObstacleOn.png";
                 obstacleLightOffPath = "redObstacleOff.png";
+                Transform.Scalex = 2;
+                Transform.Scaley = 2;
+                Transform.Wid = 6;
+                Transform.Ht = 6;
             }
             ObstacleLightOff();
             setPhysicsEnabled();
-            Transform.Scalex = 2;
-            Transform.Scaley = 2;
-            Transform.Wid = 6;
-            Transform.Ht = 6;
+
             MyBody.Mass = 1;
             MyBody.Drag = 0f;
             MyBody.UsesGravity = false;

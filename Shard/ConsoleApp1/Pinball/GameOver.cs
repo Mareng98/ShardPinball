@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Schema;
 
 namespace Shard
 {
@@ -15,6 +16,7 @@ namespace Shard
         Dictionary<GameObject, ButtonState> buttonStates = new();
         int score;
         StringBuilder name = new();
+        bool scoresSaved = false;
 
         public GameOver(int score) : base() 
         {
@@ -72,8 +74,9 @@ namespace Shard
                         name.Remove(name.Length - 1, 1);
                     }
                 // Enter
-                } else if (key == 40)
+                } else if (key == 40 && scoresSaved == false)
                 {
+                    scoresSaved = true;
                     SaveScore(name.ToString(), score);
                     SetMainMenu();
                 }

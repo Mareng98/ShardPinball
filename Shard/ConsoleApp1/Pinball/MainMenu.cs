@@ -46,19 +46,20 @@ namespace Shard
                             GameStateManager.getInstance().SetGame(highscores);
                             highscores.initialize();
                         }
-                   }
-                } else if (eventType.Equals("MouseMotion"))
+                    }
+                }
+                else if (eventType.Equals("MouseMotion"))
                 {
                     if (isMouseInsideButton)
                     {
                         buttonStates[button].IsHovered = true;
-                    } 
+                    }
                     else
                     {
                         buttonStates[button].IsHovered = false;
                     }
                     t.SpritePath = buttonStates[button].getButtonAsset();
-                }               
+                }
             }
         }
 
@@ -76,7 +77,7 @@ namespace Shard
             gameObjsToDraw.Add(background);
 
             var playButtonState = new ButtonState("Play", "play.png", "play_hovered.png", null);
-            playButtonState.CreateButton(disp.getWidth() / 2 - 100, disp.getHeight() / 2 - 100, ref gameObjsToDraw, ref buttonStates); 
+            playButtonState.CreateButton(disp.getWidth() / 2 - 100, disp.getHeight() / 2 - 100, ref gameObjsToDraw, ref buttonStates);
 
             var exitButtonState = new ButtonState("Exit", "exit.png", "exit_hovered.png", null);
             exitButtonState.CreateButton(disp.getWidth() - 100, 10, ref gameObjsToDraw, ref buttonStates);
@@ -89,7 +90,7 @@ namespace Shard
 
         public override void update()
         {
-            foreach(var gameObj in gameObjsToDraw)
+            foreach (var gameObj in gameObjsToDraw)
             {
                 Bootstrap.getDisplay().addToDraw(gameObj);
             }
